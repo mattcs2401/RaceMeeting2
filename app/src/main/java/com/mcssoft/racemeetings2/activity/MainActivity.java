@@ -1,5 +1,6 @@
 package com.mcssoft.racemeetings2.activity;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -7,13 +8,28 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.mcssoft.racemeetings2.R;
+import com.mcssoft.racemeetings2.interfaces.IAsyncResult;
+import com.mcssoft.racemeetings2.utility.DownloadData;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        IAsyncResult {
+
+    @Override
+    public void result(String s1, String results) {
+        InputStream instream = new ByteArrayInputStream(results.getBytes());
+        String bp = "";
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +86,16 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.id_nav_menu_1) {
-            // Handle the camera action
+        if (id == R.id.id_nav_menu_races_today) {
+            try {
+                URL url = new URL(createRaceDayUrl());
+                DownloadData dld = new DownloadData(this, url, "Retrieving today's races", null);
+                dld.asyncResult = this;
+                dld.execute();
+            } catch(MalformedURLException ex) {
+                Log.d("", ex.getMessage());
+            }
+
         } else if (id == R.id.id_nav_menu_2) {
 
         } else if (id == R.id.id_nav_menu_3) {
@@ -84,4 +108,13 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    private String createRaceDayUrl() {
+        Uri.Builder builder = new Uri.Builder();
+        builder.encodedPath("https://tatts.com/pagedata/racing/2017/3/28/RaceDay.xml");
+        //.appendPath(Resources.getInstance().getString(R.string.get_available_clubs));
+        builder.build();
+        return builder.toString();
+    }
+
 }
