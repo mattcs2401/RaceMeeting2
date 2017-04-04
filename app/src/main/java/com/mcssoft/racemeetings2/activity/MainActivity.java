@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity
 
     private String createRaceDayUrl() {
         Uri.Builder builder = new Uri.Builder();
-        builder.encodedPath("https://tatts.com/pagedata/racing/2017/3/28/RaceDay.xml");
+        builder.encodedPath("https://tatts.com/pagedata/racing/2017/4/4/RaceDay.xml");
         //.appendPath(Resources.getInstance().getString(R.string.get_available_clubs));
         builder.build();
         return builder.toString();
