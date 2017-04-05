@@ -14,7 +14,7 @@ import android.view.MenuItem;
 
 import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.interfaces.IAsyncResult;
-import com.mcssoft.racemeetings2.utility.DownloadData;
+import com.mcssoft.racemeetings2.network.DownloadData;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity
 
     private String createRaceDayUrl() {
         Uri.Builder builder = new Uri.Builder();
-        builder.encodedPath("https://tatts.com"); ///pagedata/racing/2017/4/5/RaceDay.xml");
+        builder.encodedPath("https://tatts.com/pagedata/racing/2017/4/5/RaceDay.xml");
         //.appendPath(Resources.getInstance().getString(R.string.get_available_clubs));
         builder.build();
         return builder.toString();

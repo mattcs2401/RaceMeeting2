@@ -1,4 +1,4 @@
-package com.mcssoft.racemeetings2.utility;
+package com.mcssoft.racemeetings2.network;
 
 
 import android.app.ProgressDialog;
@@ -9,6 +9,7 @@ import android.util.Log;
 import java.net.URL;
 
 import com.mcssoft.racemeetings2.interfaces.IAsyncResult;
+import com.mcssoft.racemeetings2.network.HttpWrapper;
 
 /**
  * Utility class - generic async task used for getting data via http.
