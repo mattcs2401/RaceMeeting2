@@ -20,41 +20,66 @@ import android.widget.Toast;
 
 import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.fragment.DateSelectFragment;
-import com.mcssoft.racemeetings2.interfaces.IAsyncResult;
+import com.mcssoft.racemeetings2.interfaces.IDownloadResult;
 import com.mcssoft.racemeetings2.interfaces.IDateSelect;
+import com.mcssoft.racemeetings2.interfaces.IProcessResult;
 import com.mcssoft.racemeetings2.network.DownloadData;
+import com.mcssoft.racemeetings2.utility.ProcessResult;
 import com.mcssoft.racemeetings2.utility.RaceDate;
 import com.mcssoft.racemeetings2.utility.Resources;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        IAsyncResult,
-        IDateSelect {
+                   IDownloadResult,
+                   IDateSelect,
+                   IProcessResult {
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Interface">
+    /**
+     * Result from async task DownloadData return here.
+     * @param s1
+     * @param results Results of the operation.
+     */
     @Override
-    public void result(String s1, String results) {
+    public void downloadResult(String s1, String results) {
+        String message;
         String[] result = results.split(":");
         if((result != null) && (result[0].equals("Exception"))) {
             // TODO - somesort of alert type dialog that has options.
             Toast.makeText(this, "Error: " + result[1], Toast.LENGTH_LONG).show();
         } else {
-            Toast.makeText(this, "Results downloaded (" + results.length() + ")", Toast.LENGTH_LONG).show();
-            // TODO - process the results in a background task, could potentially take a while.
-            InputStream instream = new ByteArrayInputStream(results.getBytes());
-            String bp = "";
+            message = Resources.getInstance().getString(R.string.raceday_raceinfo_dowload_msg);
+            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+
+            message = Resources.getInstance().getString(R.string.raceday_process_msg);
+            ProcessResult processResult = new ProcessResult(this, message, results, null);
         }
     }
 
+    /**
+     * Results of the DateSelectFragment return here.
+     * @param values [0] YYYY, [1] M(M), [2] D(D)
+     */
     @Override
     public void iDateValues(String[] values) {
         getRacesOnDay(values);
     }
 
+    /**
+     * Result from async task ProcessResult return here.
+     * @param s1
+     * @param results Results of the operation.
+     */
+    @Override
+    public void processResult(String s1, String results) {
+        // TBA
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Region: Lifecycle">
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,7 +109,9 @@ public class MainActivity extends AppCompatActivity
         super.onDestroy();
         Resources.getInstance().destroy();
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Navigation">
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -140,7 +167,9 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Utility">
     private void getRacesOnDay(@Nullable String[] date) {
         URL url = null;
         if(date == null) {
@@ -158,7 +187,7 @@ public class MainActivity extends AppCompatActivity
         }
         DownloadData dld = new DownloadData(this, url,
                 Resources.getInstance().getString(R.string.raceday_download_msg), null);
-        dld.asyncResult = this;
+        dld.downloadResult = this;
         dld.execute();
 
     }
@@ -176,7 +205,6 @@ public class MainActivity extends AppCompatActivity
                .appendPath(Resources.getInstance().getString(R.string.race_day_listing));
         builder.build();
         return builder.toString();
-
     }
 
     private boolean checkForNetwork() {
@@ -185,4 +213,5 @@ public class MainActivity extends AppCompatActivity
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isAvailable() && networkInfo.isConnected());
     }
+    //</editor-fold>
 }

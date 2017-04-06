@@ -60,10 +60,10 @@ public class XmlFeedParser {
             }
             String elementName = parser.getName();
             if(elementName.equals("Meeting")) {
-                meeting.setMeetingId(Integer.parseInt(parser.getAttributeValue(nameSpace, "MtgId")));
                 meeting.setMeetingType(parser.getAttributeValue(nameSpace,"MeetingType"));
                 meeting.setVenueName(parser.getAttributeValue(nameSpace,"VenuName"));
                 meeting.setMeetingCode(parser.getAttributeValue(nameSpace,"MeetingCode"));
+                meeting.setMeetingId(Integer.parseInt(parser.getAttributeValue(nameSpace, "MtgId")));
             }
 
         }

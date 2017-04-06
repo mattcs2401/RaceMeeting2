@@ -1,31 +1,26 @@
-package com.mcssoft.racemeetings2.network;
-
+package com.mcssoft.racemeetings2.utility;
 
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
-import java.net.URL;
+import com.mcssoft.racemeetings2.interfaces.IProcessResult;
 
-import com.mcssoft.racemeetings2.interfaces.IDownloadResult;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
-/**
- * Utility class - generic async task used for getting data via http.
- * Results are returned via the IDownloadResult interface.
- */
-public class DownloadData extends AsyncTask<String,Void,String> {
+public class ProcessResult extends AsyncTask<String,Void,String> {
     /**
      * Constructor.
      * @param context The app cpntext.
-     * @param url The url for the http operation.
      * @param message A message for the progress dialog.
+     * @param input   The data to process.
      * @param output Indicator as to where to direct the results returned.
      */
-    public DownloadData(Context context, URL url, String message, String output) {
+    public ProcessResult(Context context, String message, String input, String output) {
         this.context = context;
         this.message = message;
-        this.url = url;
+        this.input = input;
         this.output = output;
     }
 
@@ -39,33 +34,25 @@ public class DownloadData extends AsyncTask<String,Void,String> {
     }
 
     @Override
-    protected String doInBackground(String... params) {
-        String theResult = null;
-        try {
-            HttpsWrapper sw = new HttpsWrapper(url);
-            theResult = sw.remoteRequest();
-        }
-        catch (Exception ex) {
-            Log.d("", ex.getMessage());
-        }
-        finally {
-            return theResult;
-        }
+    protected String doInBackground(String... strings) {
+        InputStream instream = new ByteArrayInputStream(input.getBytes());
+
+        return null;
     }
 
     /*
-      Runs on UI thread after doInBackground().
-     */
+    Runs on UI thread after doInBackground().
+    */
     @Override
     protected void onPostExecute(String theResult) {
 //        super.onPostExecute(theResult);
         progressDialog.dismiss();
-        downloadResult.downloadResult(output, theResult);
+        processResult.processResult(output, theResult);
     }
 
-    public IDownloadResult downloadResult = null;
+    public IProcessResult processResult = null;
 
-    private URL url;
+    private String input;
     private String output;  // indicator as to where to direct the results returned.
     private String message;
     private Context context;

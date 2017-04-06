@@ -61,11 +61,14 @@ public class Meeting {
         this.trackRating = trackRating;
     }
 
-    private int meetingId;        // e.g. 1228669952
+    // From ...racing/YYYY/MM/DD/RaceDay.xml
     private String meetingType;   // e.g. "R"
-    private String meetingCode;   // e.g. "NR"
     private boolean abandoned;    // e.g. "N" = false etc.
     private String venueName;     // e.g. "Balina"
+    private String meetingCode;   // e.g. "NR"
+    private int meetingId;        // e.g. 1228669952
+
+    // From ...racing/YYYY/MM/DD/<meetingCode>.xml
     private String trackCondition;// e.g. "Heavy"
     private int trackRating;      // e.g. 9
 }

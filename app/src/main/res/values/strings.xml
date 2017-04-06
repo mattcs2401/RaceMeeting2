@@ -8,7 +8,9 @@
 
     <string name="base_path">https://tatts.com/pagedata/racing</string>
     <string name="race_day_listing">RaceDay.xml</string>
-    <string name="raceday_download_msg">Retrieving today\'s races.\r\nThis may take a minute.</string>
+    <string name="raceday_download_msg">Retrieving today\'s races.\r\nThis could take a minute or more.</string>
+    <string name="raceday_raceinfo_dowload_msg">Racing information successfully retrieved.</string>
+    <string name="raceday_process_msg">Collating information.\r\nThis could take a minute or more.</string>
 
     <string name="date_select_fragment_tag">date_search_fragment_tag</string>
 
