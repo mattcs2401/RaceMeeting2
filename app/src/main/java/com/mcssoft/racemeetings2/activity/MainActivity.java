@@ -1,6 +1,5 @@
 package com.mcssoft.racemeetings2.activity;
 
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -18,6 +17,7 @@ import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.interfaces.IAsyncResult;
 import com.mcssoft.racemeetings2.network.DownloadData;
 import com.mcssoft.racemeetings2.utility.RaceDate;
+import com.mcssoft.racemeetings2.utility.Resources;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Resources.getInstance(this);   // setup resources access.
         setContentView(R.layout.content_view_activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -53,6 +54,12 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Resources.getInstance().destroy();
     }
 
     @Override
@@ -95,7 +102,8 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.id_nav_menu_races_today) {
             try {
                 URL url = new URL(createRaceDayUrl());
-                DownloadData dld = new DownloadData(this, url, "Retrieving today's races. \n This may take a minute or two.", null);
+                DownloadData dld = new DownloadData(this, url,
+                        Resources.getInstance().getString(R.string.raceday_download_msg), null);
                 dld.asyncResult = this;
                 dld.execute();
             } catch(MalformedURLException ex) {
@@ -116,16 +124,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     private String createRaceDayUrl() {
-        // TODO - have download base path and RaceDay.xl as string resources.
         RaceDate raceDate = new RaceDate();
-        int[] date = raceDate.getDateComponents();
+        String[] date = raceDate.getDateComponents();
 
         Uri.Builder builder = new Uri.Builder();
-        builder.encodedPath("https://tatts.com/pagedata/racing")
-               .appendPath(Integer.toString(date[0]))
-               .appendPath(Integer.toString(date[1]))
-               .appendPath(Integer.toString(date[2]))
-               .appendPath("RaceDay.xml");
+        builder.encodedPath(Resources.getInstance().getString(R.string.base_path))
+               .appendPath(date[0])
+               .appendPath(date[1])
+               .appendPath(date[2])
+               .appendPath(Resources.getInstance().getString(R.string.race_day_listing));
         builder.build();
         return builder.toString();
     }

@@ -8,4 +8,5 @@
 
     <string name="base_path">https://tatts.com/pagedata/racing</string>
     <string name="race_day_listing">RaceDay.xml</string>
+    <string name="raceday_download_msg">Retrieving today\'s races.\r\n This may take a minute.</string>
 </resources>
