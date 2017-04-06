@@ -1,5 +1,8 @@
 package com.mcssoft.racemeetings2.activity;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -30,7 +33,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void result(String s1, String results) {
-        if (!checkForException(results)) {
+        String[] result = results.split(":");
+        if((result != null) && (result[0].equals("Exception"))) {
+            // TODO - somesort of alert type dialog that has options.
+            Toast.makeText(this, "Error: " + result[1], Toast.LENGTH_LONG).show();
+        } else {
             Toast.makeText(this, "Results downloaded (" + results.length() + ")", Toast.LENGTH_LONG).show();
             // TODO - process the results in a background task, could potentially take a while.
             InputStream instream = new ByteArrayInputStream(results.getBytes());
@@ -54,6 +61,12 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // TODO - check for network.
     }
 
     @Override
@@ -137,12 +150,10 @@ public class MainActivity extends AppCompatActivity
         return builder.toString();
     }
 
-    private boolean checkForException(String results) {
-        String[] result = results.split(":");
-        if((result != null) && (result[0] == "Exception")) {
-            Toast.makeText(this, result[1], Toast.LENGTH_LONG).show();
-            return true;
-        }
-        return false;
+    private boolean checkForNetwork() {
+        ConnectivityManager connMgr = (ConnectivityManager)
+                getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        return (networkInfo != null && networkInfo.isAvailable() && networkInfo.isConnected());
     }
 }
