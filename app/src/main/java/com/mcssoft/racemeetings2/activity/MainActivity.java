@@ -1,5 +1,6 @@
 package com.mcssoft.racemeetings2.activity;
 
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.interfaces.IAsyncResult;
 import com.mcssoft.racemeetings2.network.DownloadData;
+import com.mcssoft.racemeetings2.utility.RaceDate;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -115,10 +117,15 @@ public class MainActivity extends AppCompatActivity
 
     private String createRaceDayUrl() {
         // TODO - have download base path and RaceDay.xl as string resources.
-        // TODO - create download Uri from today's date.
+        RaceDate raceDate = new RaceDate();
+        int[] date = raceDate.getDateComponents();
+
         Uri.Builder builder = new Uri.Builder();
-        builder.encodedPath("https://tatts.com/pagedata/racing/2017/4/6/RaceDay.xml");
-        //.appendPath(Resources.getInstance().getString(R.string.get_available_clubs));
+        builder.encodedPath("https://tatts.com/pagedata/racing")
+               .appendPath(Integer.toString(date[0]))
+               .appendPath(Integer.toString(date[1]))
+               .appendPath(Integer.toString(date[2]))
+               .appendPath("RaceDay.xml");
         builder.build();
         return builder.toString();
     }
