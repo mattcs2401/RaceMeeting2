@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.interfaces.IAsyncResult;
@@ -27,8 +28,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void result(String s1, String results) {
-        InputStream instream = new ByteArrayInputStream(results.getBytes());
-        String bp = "";
+        if (!checkForException(results)) {
+            Toast.makeText(this, "Results downloaded (" + results.length() + ")", Toast.LENGTH_LONG).show();
+            // TODO - process the results in a background task, could potentially take a while.
+            InputStream instream = new ByteArrayInputStream(results.getBytes());
+            String bp = "";
+        }
     }
 
     @Override
@@ -80,7 +85,6 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -89,7 +93,7 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.id_nav_menu_races_today) {
             try {
                 URL url = new URL(createRaceDayUrl());
-                DownloadData dld = new DownloadData(this, url, "Retrieving today's races", null);
+                DownloadData dld = new DownloadData(this, url, "Retrieving today's races. \n This may take a minute or two.", null);
                 dld.asyncResult = this;
                 dld.execute();
             } catch(MalformedURLException ex) {
@@ -110,11 +114,21 @@ public class MainActivity extends AppCompatActivity
     }
 
     private String createRaceDayUrl() {
+        // TODO - have download base path and RaceDay.xl as string resources.
+        // TODO - create download Uri from today's date.
         Uri.Builder builder = new Uri.Builder();
-        builder.encodedPath("https://tatts.com/pagedata/racing/2017/4/5/RaceDay.xml");
+        builder.encodedPath("https://tatts.com/pagedata/racing/2017/4/6/RaceDay.xml");
         //.appendPath(Resources.getInstance().getString(R.string.get_available_clubs));
         builder.build();
         return builder.toString();
     }
 
+    private boolean checkForException(String results) {
+        String[] result = results.split(":");
+        if((result != null) && (result[0] == "Exception")) {
+            Toast.makeText(this, result[1], Toast.LENGTH_LONG).show();
+            return true;
+        }
+        return false;
+    }
 }

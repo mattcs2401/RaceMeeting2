@@ -1,31 +1,20 @@
 package com.mcssoft.racemeetings2.network;
 
-
-
 import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 
+public class HttpsWrapper {
 
-public class HttpWrapper {
-
-    public HttpWrapper(URL url) {
+    public HttpsWrapper(URL url) {
         this.url = url;
     }
 
@@ -43,11 +32,8 @@ public class HttpWrapper {
                 result = readStream(stream);
             }
         }
-        catch (SocketTimeoutException ex) {
-            result = ex.getMessage();
-        }
         catch (Exception ex) {
-            Log.d("", ex.getMessage());
+            result = "Exception: " + ex.getMessage();
         }
         finally {
             if(connection != null) {
@@ -78,10 +64,32 @@ public class HttpWrapper {
 
     public HttpsURLConnection getHttpsConnection() {
         HttpsURLConnection connection = null;
+        TrustsManager trustsManager = new TrustsManager();
 
         try {
-            // Create a trust manager that does not validate certificate chains
-            final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+            connection = (HttpsURLConnection) url.openConnection();
+
+            SSLContext sslContext = SSLContext.getInstance("SSL");
+            sslContext.init(null, trustsManager.getX509Trusts(), new SecureRandom());
+
+            connection.setSSLSocketFactory(sslContext.getSocketFactory());
+            connection.setHostnameVerifier(new HostNameVerifier());
+            connection.setRequestMethod("GET");
+            connection.setDoInput(true);
+            connection.setConnectTimeout(10000);
+            connection.setReadTimeout(10000);
+
+        } catch(Exception ex) {
+            Log.d("", ex.getMessage());
+        }
+        finally {
+            return connection;
+        }
+    }
+
+    private URL url;
+}
+/*            final TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
                 @Override
                 public void checkClientTrusted(
                         java.security.cert.X509Certificate[] chain,
@@ -99,35 +107,4 @@ public class HttpWrapper {
                     return new X509Certificate[0];
                 }
             } };
-
-            // Install the all-trusting trust manager
-            SSLContext sslContext = SSLContext.getInstance("SSL");
-            sslContext.init(null, trustAllCerts, new SecureRandom());
-            // Create an ssl socket factory with our all-trusting manager
-            SSLSocketFactory sslSocketFactory = sslContext.getSocketFactory();
-
-            connection = (HttpsURLConnection) url.openConnection();
-
-            connection.setHostnameVerifier(new HostnameVerifier() {
-                @Override
-                public boolean verify(String hostname, SSLSession session) {
-                    return true;
-                }
-            });
-
-            connection.setSSLSocketFactory(sslSocketFactory);
-            connection.setRequestMethod("GET");
-            connection.setDoInput(true);
-            connection.setConnectTimeout(15000);
-            connection.setReadTimeout(15000);
-
-        } catch(Exception ex) {
-            Log.d("", ex.getMessage());
-        }
-        finally {
-            return connection;
-        }
-    }
-
-    private URL url;
-}
+            */

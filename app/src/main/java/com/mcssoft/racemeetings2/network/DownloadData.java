@@ -9,7 +9,6 @@ import android.util.Log;
 import java.net.URL;
 
 import com.mcssoft.racemeetings2.interfaces.IAsyncResult;
-import com.mcssoft.racemeetings2.network.HttpWrapper;
 
 /**
  * Utility class - generic async task used for getting data via http.
@@ -44,7 +43,7 @@ public class DownloadData extends AsyncTask<String,Void,String> {
     protected String doInBackground(String... params) {
         String theResult = null;
         try {
-            HttpWrapper sw = new HttpWrapper(url);
+            HttpsWrapper sw = new HttpsWrapper(url);
             theResult = sw.remoteRequest();
         }
         catch (Exception ex) {
