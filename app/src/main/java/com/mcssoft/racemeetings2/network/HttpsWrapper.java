@@ -50,19 +50,7 @@ public class HttpsWrapper {
         return result;
     }
 
-    private String readStream(InputStream stream) throws IOException {
-        String line = null;
-        BufferedReader reader = new BufferedReader(new InputStreamReader(stream)); //, "UTF-8"));
-        StringBuilder sb = new StringBuilder();
-
-        while ((line = reader.readLine()) != null) {
-            sb.append(line).append("\n");
-        }
-        stream.close();
-        return sb.toString();
-    }
-
-    public HttpsURLConnection getHttpsConnection() {
+    private HttpsURLConnection getHttpsConnection() {
         HttpsURLConnection connection = null;
         TrustsManager trustsManager = new TrustsManager();
 
@@ -85,6 +73,18 @@ public class HttpsWrapper {
         finally {
             return connection;
         }
+    }
+
+    private String readStream(InputStream stream) throws IOException {
+        String line = null;
+        BufferedReader reader = new BufferedReader(new InputStreamReader(stream)); //, "UTF-8"));
+        StringBuilder sb = new StringBuilder();
+
+        while ((line = reader.readLine()) != null) {
+            sb.append(line).append("\n");
+        }
+        stream.close();
+        return sb.toString();
     }
 
     private URL url;
