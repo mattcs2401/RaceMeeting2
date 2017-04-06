@@ -1,10 +1,12 @@
 package com.mcssoft.racemeetings2.activity;
 
+import android.app.DialogFragment;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,7 +19,9 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.mcssoft.racemeetings2.R;
+import com.mcssoft.racemeetings2.fragment.DateSelectFragment;
 import com.mcssoft.racemeetings2.interfaces.IAsyncResult;
+import com.mcssoft.racemeetings2.interfaces.IDateSelect;
 import com.mcssoft.racemeetings2.network.DownloadData;
 import com.mcssoft.racemeetings2.utility.RaceDate;
 import com.mcssoft.racemeetings2.utility.Resources;
@@ -29,7 +33,8 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        IAsyncResult {
+        IAsyncResult,
+        IDateSelect {
 
     @Override
     public void result(String s1, String results) {
@@ -43,6 +48,11 @@ public class MainActivity extends AppCompatActivity
             InputStream instream = new ByteArrayInputStream(results.getBytes());
             String bp = "";
         }
+    }
+
+    @Override
+    public void iDateValues(String[] values) {
+        getRacesOnDay(values);
     }
 
     @Override
@@ -113,17 +123,12 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.id_nav_menu_races_today) {
-            try {
-                URL url = new URL(createRaceDayUrl());
-                DownloadData dld = new DownloadData(this, url,
-                        Resources.getInstance().getString(R.string.raceday_download_msg), null);
-                dld.asyncResult = this;
-                dld.execute();
-            } catch(MalformedURLException ex) {
-                Log.d("", ex.getMessage());
-            }
+            getRacesOnDay(null);
 
-        } else if (id == R.id.id_nav_menu_2) {
+        } else if (id == R.id.id_nav_menu_races_select) {
+            DialogFragment dateSelectFragment = new DateSelectFragment();
+            dateSelectFragment.show(getFragmentManager(),
+                    Resources.getInstance().getString(R.string.date_select_fragment_tag));
 
         } else if (id == R.id.id_nav_menu_3) {
 
@@ -136,10 +141,33 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private String createRaceDayUrl() {
-        RaceDate raceDate = new RaceDate();
-        String[] date = raceDate.getDateComponents();
+    private void getRacesOnDay(@Nullable String[] date) {
+        URL url = null;
+        if(date == null) {
+            try {
+                url = new URL(createRaceDayUrl(null));
+            } catch (MalformedURLException ex) {
+                Log.d("", ex.getMessage());
+            }
+        } else {
+            try {
+                url = new URL(createRaceDayUrl(date));
+            } catch (MalformedURLException ex) {
+                Log.d("", ex.getMessage());
+            }
+        }
+        DownloadData dld = new DownloadData(this, url,
+                Resources.getInstance().getString(R.string.raceday_download_msg), null);
+        dld.asyncResult = this;
+        dld.execute();
 
+    }
+
+    private String createRaceDayUrl(@Nullable String[] date) {
+        if(date == null) {
+            RaceDate raceDate = new RaceDate();
+            date = raceDate.getDateComponents();
+        }
         Uri.Builder builder = new Uri.Builder();
         builder.encodedPath(Resources.getInstance().getString(R.string.base_path))
                .appendPath(date[0])
@@ -148,6 +176,7 @@ public class MainActivity extends AppCompatActivity
                .appendPath(Resources.getInstance().getString(R.string.race_day_listing));
         builder.build();
         return builder.toString();
+
     }
 
     private boolean checkForNetwork() {

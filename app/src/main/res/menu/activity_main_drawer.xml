@@ -4,10 +4,10 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/id_nav_menu_races_today"
-            android:title="Races Today" />
+            android:title="Show Today's Races" />
         <item
-            android:id="@+id/id_nav_menu_2"
-            android:title="Menu 2" />
+            android:id="@+id/id_nav_menu_races_select"
+            android:title="Select Race Day" />
         <item
             android:id="@+id/id_nav_menu_3"
             android:title="Menu 3" />
