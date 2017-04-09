@@ -5,11 +5,11 @@ package com.mcssoft.racemeetings2.model;
  */
 public class Meeting {
 
-    public int getMeetingId() {
+    public String getMeetingId() {
         return meetingId;
     }
 
-    public void setMeetingId(int meetingId) {
+    public void setMeetingId(String meetingId) {
         this.meetingId = meetingId;
     }
 
@@ -29,11 +29,11 @@ public class Meeting {
         this.meetingCode = meetingCode;
     }
 
-    public boolean isAbandoned() {
+    public String isAbandoned() {
         return abandoned;
     }
 
-    public void setAbandoned(boolean abandoned) {
+    public void setAbandoned(String abandoned) {
         this.abandoned = abandoned;
     }
 
@@ -49,9 +49,9 @@ public class Meeting {
         return trackCondition;
     }
 
-    public int getNumRaces() { return numRaces; }
+    public String getHiRaceNo() { return hiRaceNo; }
 
-    public void setNumRaces(int numRaces) { this.numRaces = numRaces; }
+    public void setHiRaceNo(String hiRaceNo) { this.hiRaceNo = hiRaceNo; }
 
     public void setTrackCondition(String trackCondition) {
         this.trackCondition = trackCondition;
@@ -67,11 +67,11 @@ public class Meeting {
 
     // From ...racing/YYYY/MM/DD/RaceDay.xml
     private String meetingType;   // e.g. "R"
-    private boolean abandoned;    // e.g. "N" = false etc.
+    private String abandoned;     // e.g. "N"
     private String venueName;     // e.g. "Balina"
-    private int numRaces;         // e.g. "7" equates to HiRaceNo
+    private String hiRaceNo;      // e.g. "7"
     private String meetingCode;   // e.g. "NR"
-    private int meetingId;        // e.g. 1228669952
+    private String meetingId;     // e.g. "1228669952"
 
     // From ...racing/YYYY/MM/DD/<meetingCode>.xml
     private String trackCondition;// e.g. "Heavy"

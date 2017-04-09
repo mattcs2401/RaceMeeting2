@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void processResult(String s1, String results) {
         // TBA
+        String bp = "";
     }
     //</editor-fold>
 

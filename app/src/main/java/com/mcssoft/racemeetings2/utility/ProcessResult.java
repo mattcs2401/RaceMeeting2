@@ -5,9 +5,11 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.mcssoft.racemeetings2.interfaces.IProcessResult;
+import com.mcssoft.racemeetings2.model.Meeting;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.util.List;
 
 public class ProcessResult extends AsyncTask<String,Void,String> {
     /**
@@ -35,15 +37,16 @@ public class ProcessResult extends AsyncTask<String,Void,String> {
 
     @Override
     protected String doInBackground(String... params) {
+        List<Meeting> theResult = null;
         InputStream instream = new ByteArrayInputStream(input.getBytes());
         XmlParser parser = new XmlParser();
         try {
-            parser.parse(instream);
+            theResult = parser.parse(instream);
 
         } catch(Exception ex) {
 
         } finally {
-            return null;
+            return theResult.toString();
         }
     }
 

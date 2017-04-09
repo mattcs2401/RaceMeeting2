@@ -36,12 +36,14 @@ public class XmlParser {
         List entries = new ArrayList();
 
         parser.require(XmlPullParser.START_TAG, nameSpace, "RaceDay");
-        while (parser.next() != XmlPullParser.END_TAG) {
+        while (parser.next() != XmlPullParser.END_DOCUMENT) { //TAG) {
+            String text = parser.getText();
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
             // Starts by looking for the Meeting tag.
-            if (parser.getName().equals("Meeting")) {
+            String name = parser.getName();           // debugging purposes.
+            if (name.equals("Meeting")) {
                 entries.add(readMeeting());
             } else {
                 skip();
@@ -52,23 +54,14 @@ public class XmlParser {
 
     private Meeting readMeeting() throws XmlPullParserException, IOException {
         Meeting meeting = new Meeting();
-        parser.require(XmlPullParser.START_TAG, nameSpace, "Meeting");
 
-//        while (parser.next() != XmlPullParser.END_TAG) {
-//            if (parser.getEventType() != XmlPullParser.START_TAG) {
-//                continue;
-//            }
-//            String elementName = parser.getName();
-//            if(elementName.equals("Meeting")) {
-                meeting.setMeetingType(parser.getAttributeValue(nameSpace,"MeetingType"));
-                String str = parser.getAttributeValue(nameSpace,"Abandoned");
-                meeting.setAbandoned(str == "N" ? false : true);
-                meeting.setVenueName(parser.getAttributeValue(nameSpace,"VenuName"));
-                meeting.setNumRaces(Integer.parseInt(parser.getAttributeValue(nameSpace, "HiRaceNo")));
-                meeting.setMeetingCode(parser.getAttributeValue(nameSpace,"MeetingCode"));
-                meeting.setMeetingId(Integer.parseInt(parser.getAttributeValue(nameSpace, "MtgId")));
-//            }
-//        }
+        meeting.setMeetingType(parser.getAttributeValue(nameSpace,"MeetingType"));
+        meeting.setAbandoned(parser.getAttributeValue(nameSpace,"Abandoned"));
+        meeting.setVenueName(parser.getAttributeValue(nameSpace,"VenueName"));
+        meeting.setHiRaceNo(parser.getAttributeValue(nameSpace, "HiRaceNo"));
+        meeting.setMeetingCode(parser.getAttributeValue(nameSpace,"MeetingCode"));
+        meeting.setMeetingId(parser.getAttributeValue(nameSpace, "MtgId"));
+
         return meeting;
     }
 
@@ -89,6 +82,6 @@ public class XmlParser {
         }
     }
 
-    private String nameSpace; // = null;        // TBA
-    private XmlPullParser parser; // = null;
+    private String nameSpace;     // TBA
+    private XmlPullParser parser;
 }
