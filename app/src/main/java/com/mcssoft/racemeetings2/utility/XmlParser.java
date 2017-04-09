@@ -14,9 +14,10 @@ import java.util.List;
 
 //https://developer.android.com/training/basics/network-ops/xml.html#skip
 
-public class XmlFeedParser {
+public class XmlParser {
 
-    public XmlFeedParser() {
+    public XmlParser() {
+        nameSpace = null;
         parser = Xml.newPullParser();
     }
 
@@ -39,9 +40,8 @@ public class XmlFeedParser {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
-            String name = parser.getName();
             // Starts by looking for the Meeting tag.
-            if (name.equals("Meeting")) {
+            if (parser.getName().equals("Meeting")) {
                 entries.add(readMeeting());
             } else {
                 skip();
@@ -54,19 +54,21 @@ public class XmlFeedParser {
         Meeting meeting = new Meeting();
         parser.require(XmlPullParser.START_TAG, nameSpace, "Meeting");
 
-        while (parser.next() != XmlPullParser.END_TAG) {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                continue;
-            }
-            String elementName = parser.getName();
-            if(elementName.equals("Meeting")) {
+//        while (parser.next() != XmlPullParser.END_TAG) {
+//            if (parser.getEventType() != XmlPullParser.START_TAG) {
+//                continue;
+//            }
+//            String elementName = parser.getName();
+//            if(elementName.equals("Meeting")) {
                 meeting.setMeetingType(parser.getAttributeValue(nameSpace,"MeetingType"));
+                String str = parser.getAttributeValue(nameSpace,"Abandoned");
+                meeting.setAbandoned(str == "N" ? false : true);
                 meeting.setVenueName(parser.getAttributeValue(nameSpace,"VenuName"));
+                meeting.setNumRaces(Integer.parseInt(parser.getAttributeValue(nameSpace, "HiRaceNo")));
                 meeting.setMeetingCode(parser.getAttributeValue(nameSpace,"MeetingCode"));
                 meeting.setMeetingId(Integer.parseInt(parser.getAttributeValue(nameSpace, "MtgId")));
-            }
-
-        }
+//            }
+//        }
         return meeting;
     }
 
@@ -87,6 +89,6 @@ public class XmlFeedParser {
         }
     }
 
-    private String nameSpace = null;        // TBA
-    private XmlPullParser parser = null;
+    private String nameSpace; // = null;        // TBA
+    private XmlPullParser parser; // = null;
 }

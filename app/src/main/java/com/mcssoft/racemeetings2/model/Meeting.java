@@ -49,6 +49,10 @@ public class Meeting {
         return trackCondition;
     }
 
+    public int getNumRaces() { return numRaces; }
+
+    public void setNumRaces(int numRaces) { this.numRaces = numRaces; }
+
     public void setTrackCondition(String trackCondition) {
         this.trackCondition = trackCondition;
     }
@@ -65,6 +69,7 @@ public class Meeting {
     private String meetingType;   // e.g. "R"
     private boolean abandoned;    // e.g. "N" = false etc.
     private String venueName;     // e.g. "Balina"
+    private int numRaces;         // e.g. "7" equates to HiRaceNo
     private String meetingCode;   // e.g. "NR"
     private int meetingId;        // e.g. 1228669952
 

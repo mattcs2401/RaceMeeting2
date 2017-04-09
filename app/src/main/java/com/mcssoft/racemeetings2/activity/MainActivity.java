@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity
 
             message = Resources.getInstance().getString(R.string.raceday_process_msg);
             ProcessResult processResult = new ProcessResult(this, message, results, null);
+            processResult.processResult = this;
+            processResult.execute();
         }
     }
 

@@ -34,10 +34,17 @@ public class ProcessResult extends AsyncTask<String,Void,String> {
     }
 
     @Override
-    protected String doInBackground(String... strings) {
+    protected String doInBackground(String... params) {
         InputStream instream = new ByteArrayInputStream(input.getBytes());
+        XmlParser parser = new XmlParser();
+        try {
+            parser.parse(instream);
 
-        return null;
+        } catch(Exception ex) {
+
+        } finally {
+            return null;
+        }
     }
 
     /*
