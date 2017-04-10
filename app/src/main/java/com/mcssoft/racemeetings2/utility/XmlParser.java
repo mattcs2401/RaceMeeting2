@@ -55,7 +55,7 @@ public class XmlParser {
     private Meeting readMeeting() throws XmlPullParserException, IOException {
         Meeting meeting = new Meeting();
 
-        meeting.setMeetingType(parser.getAttributeValue(nameSpace,"MeetingType"));
+//        meeting.setMeetingType(parser.getAttributeValue(nameSpace,"MeetingType"));
         meeting.setAbandoned(parser.getAttributeValue(nameSpace,"Abandoned"));
         meeting.setVenueName(parser.getAttributeValue(nameSpace,"VenueName"));
         meeting.setHiRaceNo(parser.getAttributeValue(nameSpace, "HiRaceNo"));

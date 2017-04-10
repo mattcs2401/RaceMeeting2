@@ -13,13 +13,13 @@ public class Meeting {
         this.meetingId = meetingId;
     }
 
-    public String getMeetingType() {
-        return meetingType;
-    }
+//    public String getMeetingType() {
+//        return meetingType;
+//    }
 
-    public void setMeetingType(String meetingType) {
-        this.meetingType = meetingType;
-    }
+//    public void setMeetingType(String meetingType) {
+//        this.meetingType = meetingType;
+//    }
 
     public String getMeetingCode() {
         return meetingCode;
@@ -57,25 +57,33 @@ public class Meeting {
         this.trackCondition = trackCondition;
     }
 
-    public int getTrackRating() {
+    public String getTrackRating() {
         return trackRating;
     }
 
-    public void setTrackRating(int trackRating) {
+    public void setTrackRating(String trackRating) {
         this.trackRating = trackRating;
     }
 
+    public String getTrackWeather() {
+        return trackWeather;
+    }
+
+    public void setTrackWeather(String trackWeather) {
+        this.trackWeather = trackWeather;
+    }
+
     // From ...racing/YYYY/MM/DD/RaceDay.xml
-    private String meetingType;   // e.g. "R"
     private String abandoned;     // e.g. "N"
     private String venueName;     // e.g. "Balina"
     private String hiRaceNo;      // e.g. "7"
     private String meetingCode;   // e.g. "NR"
     private String meetingId;     // e.g. "1228669952"
 
-    // From ...racing/YYYY/MM/DD/<meetingCode>.xml
+    // From ...racing/YYYY/MM/DD/<meetingCode>.xml (<meeting></meeting> tag).
     private String trackCondition;// e.g. "Heavy"
-    private int trackRating;      // e.g. 9
+    private String trackRating;      // e.g. 9
+    private String trackWeather;  // e.g. "Overcast"
 }
 /*
  Example
