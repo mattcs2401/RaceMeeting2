@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.mcssoft.racemeetings2.R;
+import com.mcssoft.racemeetings2.database.DatabaseOperations;
 import com.mcssoft.racemeetings2.fragment.DateSelectFragment;
 import com.mcssoft.racemeetings2.interfaces.IDownloadResult;
 import com.mcssoft.racemeetings2.interfaces.IDateSelect;
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
                    IDownloadResult,
                    IDateSelect,
-        IMeetingResult {
+                   IMeetingResult {
 
     //<editor-fold defaultstate="collapsed" desc="Region: Interface">
     /**
@@ -73,10 +74,10 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Result from async task MeetingResult return here.
-     * @param results Results of the operation.
+     * @param resultList Results of the operation (list of Meeting objects).
      */
     @Override
-    public void meetingResult(List results) {
+    public void meetingResult(List resultList) {
         // TBA
         String bp = "";
     }
@@ -105,6 +106,7 @@ public class MainActivity extends AppCompatActivity
     protected void onStart() {
         super.onStart();
         // TODO - check for network.
+//        DatabaseOperations dbOper = new DatabaseOperations(this);
     }
 
     @Override

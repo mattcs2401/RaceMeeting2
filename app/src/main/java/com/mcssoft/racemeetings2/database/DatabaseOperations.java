@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 
+/**
+ * Utility class to perform database activities / actions.
+ */
 public class DatabaseOperations {
 
     public DatabaseOperations(Context context) {
@@ -51,7 +54,6 @@ public class DatabaseOperations {
      * @param whereClause Where clause (without the "where").
      * @param whereVals Where clause values
      * @return A cursor over the result set.
-     * Note: Returns all columns.
      */
     public Cursor getSelectionFromTable(String tableName, @Nullable String[] columnNames, String whereClause, String[] whereVals) {
         if(columnNames == null) {
@@ -59,9 +61,7 @@ public class DatabaseOperations {
         }
         SQLiteDatabase db = dbHelper.getDatabase();
         db.beginTransaction();
-        Cursor cursor =  db.query(tableName, columnNames, whereClause, whereVals,
-                null, null, null);
-//        db.setTransactionSuccessful();
+        Cursor cursor =  db.query(tableName, columnNames, whereClause, whereVals, null, null, null);
         db.endTransaction();
         return cursor;
     }
@@ -111,7 +111,11 @@ public class DatabaseOperations {
      * @return True if the row count > 0.
      */
     private boolean checkTableRowCount(String tableName) {
-        return (getAllFromTable(tableName).getCount() > 0);
+        SQLiteDatabase db = dbHelper.getDatabase();
+        db.beginTransaction();
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + tableName + ";", null);
+        db.endTransaction();
+        return (cursor.getCount() > 0);
     }
 
     private String[] getProjection(String tableName) {

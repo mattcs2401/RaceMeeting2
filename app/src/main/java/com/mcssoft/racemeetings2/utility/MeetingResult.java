@@ -3,6 +3,7 @@ package com.mcssoft.racemeetings2.utility;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.widget.Toast;
 
 import com.mcssoft.racemeetings2.interfaces.IMeetingResult;
 import com.mcssoft.racemeetings2.model.Meeting;
@@ -11,6 +12,10 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 
+/**
+ * Utility class to parse Meeting information (as Xml) into a list of Meeting objects.
+ * Results are returned via the IMeetingResult interface.
+ */
 public class MeetingResult extends AsyncTask<String,Void,List> {
     /**
      * Constructor.
@@ -40,9 +45,8 @@ public class MeetingResult extends AsyncTask<String,Void,List> {
         XmlParser parser = new XmlParser();
         try {
             theResult = parser.parse(instream);
-
         } catch(Exception ex) {
-             // TBA.
+             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
         } finally {
             return theResult;
         }
@@ -53,7 +57,6 @@ public class MeetingResult extends AsyncTask<String,Void,List> {
     */
     @Override
     protected void onPostExecute(List theResult) {
-//        super.onPostExecute(theResult);
         progressDialog.dismiss();
         processResult.meetingResult(theResult);
     }
