@@ -4,26 +4,24 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.mcssoft.racemeetings2.interfaces.IProcessResult;
+import com.mcssoft.racemeetings2.interfaces.IMeetingResult;
 import com.mcssoft.racemeetings2.model.Meeting;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.List;
 
-public class ProcessResult extends AsyncTask<String,Void,String> {
+public class MeetingResult extends AsyncTask<String,Void,List> {
     /**
      * Constructor.
      * @param context The app cpntext.
      * @param message A message for the progress dialog.
      * @param input   The data to process.
-     * @param output Indicator as to where to direct the results returned.
      */
-    public ProcessResult(Context context, String message, String input, String output) {
+    public MeetingResult(Context context, String message, String input) {
         this.context = context;
         this.message = message;
         this.input = input;
-        this.output = output;
     }
 
     @Override
@@ -36,7 +34,7 @@ public class ProcessResult extends AsyncTask<String,Void,String> {
     }
 
     @Override
-    protected String doInBackground(String... params) {
+    protected List doInBackground(String... params) {
         List<Meeting> theResult = null;
         InputStream instream = new ByteArrayInputStream(input.getBytes());
         XmlParser parser = new XmlParser();
@@ -46,7 +44,7 @@ public class ProcessResult extends AsyncTask<String,Void,String> {
         } catch(Exception ex) {
 
         } finally {
-            return theResult.toString();
+            return theResult;
         }
     }
 
@@ -54,16 +52,15 @@ public class ProcessResult extends AsyncTask<String,Void,String> {
     Runs on UI thread after doInBackground().
     */
     @Override
-    protected void onPostExecute(String theResult) {
+    protected void onPostExecute(List theResult) {
 //        super.onPostExecute(theResult);
         progressDialog.dismiss();
-        processResult.processResult(output, theResult);
+        processResult.meetingResult(theResult);
     }
 
-    public IProcessResult processResult = null;
+    public IMeetingResult processResult = null;
 
     private String input;
-    private String output;  // indicator as to where to direct the results returned.
     private String message;
     private Context context;
     private ProgressDialog progressDialog;

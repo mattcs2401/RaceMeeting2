@@ -1,13 +1,14 @@
 package com.mcssoft.racemeetings2.interfaces;
 
+import java.util.List;
+
 /**
  * Used to provide an interface between the async task of ProcessData and the MainActivity.
  */
-public interface IProcessResult {
+public interface IMeetingResult {
     /**
      * XML downloadResult results as a string
-     * @param table Results relate to this table.
      * @param results Results of the operation.
      */
-    void processResult(String table, String results);
+    void meetingResult(List results);
 }

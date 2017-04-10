@@ -22,20 +22,21 @@ import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.fragment.DateSelectFragment;
 import com.mcssoft.racemeetings2.interfaces.IDownloadResult;
 import com.mcssoft.racemeetings2.interfaces.IDateSelect;
-import com.mcssoft.racemeetings2.interfaces.IProcessResult;
+import com.mcssoft.racemeetings2.interfaces.IMeetingResult;
 import com.mcssoft.racemeetings2.network.DownloadData;
-import com.mcssoft.racemeetings2.utility.ProcessResult;
+import com.mcssoft.racemeetings2.utility.MeetingResult;
 import com.mcssoft.racemeetings2.utility.RaceDate;
 import com.mcssoft.racemeetings2.utility.Resources;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
                    IDownloadResult,
                    IDateSelect,
-                   IProcessResult {
+        IMeetingResult {
 
     //<editor-fold defaultstate="collapsed" desc="Region: Interface">
     /**
@@ -51,13 +52,13 @@ public class MainActivity extends AppCompatActivity
             // TODO - somesort of alert type dialog that has options.
             Toast.makeText(this, "Error: " + result[1], Toast.LENGTH_LONG).show();
         } else {
-            message = Resources.getInstance().getString(R.string.raceday_raceinfo_dowload_msg);
+            message = Resources.getInstance().getString(R.string.raceday_meetinginfo_dowload_msg);
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
 
-            message = Resources.getInstance().getString(R.string.raceday_process_msg);
-            ProcessResult processResult = new ProcessResult(this, message, results, null);
-            processResult.processResult = this;
-            processResult.execute();
+            message = Resources.getInstance().getString(R.string.raceday_meeting_process_msg);
+            MeetingResult meetingResult = new MeetingResult(this, message, results);
+            meetingResult.processResult = this;
+            meetingResult.execute();
         }
     }
 
@@ -71,12 +72,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Result from async task ProcessResult return here.
-     * @param s1
+     * Result from async task MeetingResult return here.
      * @param results Results of the operation.
      */
     @Override
-    public void processResult(String s1, String results) {
+    public void meetingResult(List results) {
         // TBA
         String bp = "";
     }
