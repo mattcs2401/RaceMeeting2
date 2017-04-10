@@ -42,7 +42,7 @@ public class MeetingResult extends AsyncTask<String,Void,List> {
             theResult = parser.parse(instream);
 
         } catch(Exception ex) {
-
+             // TBA.
         } finally {
             return theResult;
         }

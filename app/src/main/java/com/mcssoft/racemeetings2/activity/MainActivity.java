@@ -175,21 +175,26 @@ public class MainActivity extends AppCompatActivity
     //<editor-fold defaultstate="collapsed" desc="Region: Utility">
     private void getRacesOnDay(@Nullable String[] date) {
         URL url = null;
+        String msg = null;
         if(date == null) {
             try {
+                msg = Resources.getInstance().getString(R.string.raceday_download_msg) +
+                      Resources.getInstance().getString(R.string.raceday_download_msg_warn) ;
                 url = new URL(createRaceDayUrl(null));
             } catch (MalformedURLException ex) {
                 Log.d("", ex.getMessage());
             }
         } else {
             try {
+                msg = Resources.getInstance().getString(R.string.raceday_download_withdate_msg) +
+                      (date[2] + "/" + date[1] + "/" + date[0]) +
+                      Resources.getInstance().getString(R.string.raceday_download_msg_warn);
                 url = new URL(createRaceDayUrl(date));
             } catch (MalformedURLException ex) {
                 Log.d("", ex.getMessage());
             }
         }
-        DownloadData dld = new DownloadData(this, url,
-                Resources.getInstance().getString(R.string.raceday_download_msg), null);
+        DownloadData dld = new DownloadData(this, url, msg, null);
         dld.downloadResult = this;
         dld.execute();
 
