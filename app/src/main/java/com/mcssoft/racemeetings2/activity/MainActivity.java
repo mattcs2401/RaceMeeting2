@@ -19,10 +19,13 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.mcssoft.racemeetings2.R;
+import com.mcssoft.racemeetings2.database.DatabaseOperations;
+import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.fragment.DateSelectFragment;
 import com.mcssoft.racemeetings2.interfaces.IDownloadResult;
 import com.mcssoft.racemeetings2.interfaces.IDateSelect;
 import com.mcssoft.racemeetings2.interfaces.IResult;
+import com.mcssoft.racemeetings2.model.Meeting;
 import com.mcssoft.racemeetings2.network.DownloadData;
 import com.mcssoft.racemeetings2.utility.ParseResult;
 import com.mcssoft.racemeetings2.utility.RaceDate;
@@ -41,7 +44,7 @@ public class MainActivity extends AppCompatActivity
     //<editor-fold defaultstate="collapsed" desc="Region: Interface">
     /**
      * Result from async task DownloadData returns here.
-     * @param output
+     * @param output Indicator of what the results are for.
      * @param results Results of the operation.
      */
     @Override
@@ -77,8 +80,13 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void result(String output, List resultList) {
-        // TBA
-        String bp = "";
+        switch(output) {
+            case SchemaConstants.MEETINGS_TABLE:
+                checkOrUpdateMeetings(resultList);
+                break;
+            case SchemaConstants.RACES_TABLE:
+                break;
+        }
     }
     //</editor-fold>
 
@@ -174,6 +182,15 @@ public class MainActivity extends AppCompatActivity
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Region: Utility">
+    private void checkOrUpdateMeetings(List resultList) {
+        DatabaseOperations dbOper = new DatabaseOperations(this);
+        for(Object meeting : resultList) {
+            // TBA - check if meeting id exists in database else insert meeting. Async task ??
+            String bp = "";
+        }
+
+    }
+
     private void getMeetingsOnDay(@Nullable String[] date) {
         URL url = null;
         String msg = null;
@@ -188,17 +205,21 @@ public class MainActivity extends AppCompatActivity
         } else {
             try {
                 msg = Resources.getInstance().getString(R.string.raceday_download_withdate_msg) +
-                      (date[2] + "/" + date[1] + "/" + date[0]) +
+                      " " + (date[2] + "/" + date[1] + "/" + date[0]) +
                       Resources.getInstance().getString(R.string.raceday_download_msg_warn);
                 url = new URL(createRaceDayUrl(date));
             } catch (MalformedURLException ex) {
                 Log.d("", ex.getMessage());
             }
         }
-        DownloadData dld = new DownloadData(this, url, msg, "Meetings");
+        DownloadData dld = new DownloadData(this, url, msg, SchemaConstants.MEETINGS_TABLE);
         dld.downloadResult = this;
         dld.execute();
 
+    }
+
+    private void getRacesOnDay(@Nullable String[] date) {
+        // TBA
     }
 
     private String createRaceDayUrl(@Nullable String[] date) {

@@ -9,12 +9,16 @@
     <string name="base_path">https://tatts.com/pagedata/racing</string>
     <string name="race_day_listing">RaceDay.xml</string>
     <string name="raceday_download_msg">Retrieving today\'s meetings.</string>
-    <string name="raceday_download_withdate_msg">Retrieving meetings for </string>
+    <string name="raceday_download_withdate_msg">Retrieving meetings for</string>
     <string name="raceday_download_msg_warn">\r\nThis could take a minute or more.</string>
     <string name="raceday_meetinginfo_dowload_msg">Meeting information successfully retrieved.</string>
     <string name="raceday_meeting_process_msg">Collating meeting information.\r\nThis could take a minute or more.</string>
 
     <string name="date_select_fragment_tag">date_search_fragment_tag</string>
+
+    <!-- Xml tags. -->
+    <string name="meetings_xml_tag">Meetings</string>
+    <string name="races_xml_tag">Races</string>
 
     <!-- Button texts. -->
     <string name="button_cancel_text">Cancel</string>

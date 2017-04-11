@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import com.mcssoft.racemeetings2.R;
+import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.interfaces.IResult;
 import com.mcssoft.racemeetings2.model.Meeting;
 
@@ -47,11 +49,13 @@ public class ParseResult extends AsyncTask<String,Void,List> {
         XmlParser parser = new XmlParser();
         try {
             switch(output) {
-                case "Meetings":
-                    theResult = parser.parse("Meetings", instream);
+                case SchemaConstants.MEETINGS_TABLE:
+                    theResult = parser.parse(Resources.getInstance()
+                            .getString(R.string.meetings_xml_tag), instream);
                     break;
-                case "Races":
-                    theResult = parser.parse("Races", instream);
+                case SchemaConstants.RACES_TABLE:
+                    theResult = parser.parse(Resources.getInstance()
+                            .getString(R.string.races_xml_tag), instream);
                     break;
             }
         } catch(Exception ex) {
