@@ -5,7 +5,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
-import com.mcssoft.racemeetings2.interfaces.IMeetingResult;
+import com.mcssoft.racemeetings2.interfaces.IResult;
 import com.mcssoft.racemeetings2.model.Meeting;
 
 import java.io.ByteArrayInputStream;
@@ -14,19 +14,21 @@ import java.util.List;
 
 /**
  * Utility class to parse Meeting information (as Xml) into a list of Meeting objects.
- * Results are returned via the IMeetingResult interface.
+ * Results are returned via the IResult interface.
  */
-public class MeetingResult extends AsyncTask<String,Void,List> {
+public class ParseResult extends AsyncTask<String,Void,List> {
     /**
      * Constructor.
      * @param context The app cpntext.
      * @param message A message for the progress dialog.
      * @param input   The data to process.
+     * @param output  An indicator of what the out is.
      */
-    public MeetingResult(Context context, String message, String input) {
+    public ParseResult(Context context, String message, String input, String output) {
         this.context = context;
         this.message = message;
         this.input = input;
+        this.output = output;
     }
 
     @Override
@@ -40,11 +42,18 @@ public class MeetingResult extends AsyncTask<String,Void,List> {
 
     @Override
     protected List doInBackground(String... params) {
-        List<Meeting> theResult = null;
+        List theResult = null;
         InputStream instream = new ByteArrayInputStream(input.getBytes());
         XmlParser parser = new XmlParser();
         try {
-            theResult = parser.parse(instream);
+            switch(output) {
+                case "Meetings":
+                    theResult = parser.parse("Meetings", instream);
+                    break;
+                case "Races":
+                    theResult = parser.parse("Races", instream);
+                    break;
+            }
         } catch(Exception ex) {
              Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
         } finally {
@@ -58,12 +67,13 @@ public class MeetingResult extends AsyncTask<String,Void,List> {
     @Override
     protected void onPostExecute(List theResult) {
         progressDialog.dismiss();
-        processResult.meetingResult(theResult);
+        iResult.result(output, theResult);
     }
 
-    public IMeetingResult processResult = null;
+    public IResult iResult = null;
 
     private String input;
+    private String output;
     private String message;
     private Context context;
     private ProgressDialog progressDialog;

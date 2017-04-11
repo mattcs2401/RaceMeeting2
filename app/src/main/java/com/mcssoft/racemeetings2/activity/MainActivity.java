@@ -19,13 +19,12 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.mcssoft.racemeetings2.R;
-import com.mcssoft.racemeetings2.database.DatabaseOperations;
 import com.mcssoft.racemeetings2.fragment.DateSelectFragment;
 import com.mcssoft.racemeetings2.interfaces.IDownloadResult;
 import com.mcssoft.racemeetings2.interfaces.IDateSelect;
-import com.mcssoft.racemeetings2.interfaces.IMeetingResult;
+import com.mcssoft.racemeetings2.interfaces.IResult;
 import com.mcssoft.racemeetings2.network.DownloadData;
-import com.mcssoft.racemeetings2.utility.MeetingResult;
+import com.mcssoft.racemeetings2.utility.ParseResult;
 import com.mcssoft.racemeetings2.utility.RaceDate;
 import com.mcssoft.racemeetings2.utility.Resources;
 
@@ -37,16 +36,16 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
                    IDownloadResult,
                    IDateSelect,
-                   IMeetingResult {
+                   IResult {
 
     //<editor-fold defaultstate="collapsed" desc="Region: Interface">
     /**
-     * Result from async task DownloadData return here.
-     * @param s1
+     * Result from async task DownloadData returns here.
+     * @param output
      * @param results Results of the operation.
      */
     @Override
-    public void downloadResult(String s1, String results) {
+    public void downloadResult(String output, String results) {
         String message;
         String[] result = results.split(":");
         if((result != null) && (result[0].equals("Exception"))) {
@@ -57,27 +56,27 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(this, message, Toast.LENGTH_LONG).show();
 
             message = Resources.getInstance().getString(R.string.raceday_meeting_process_msg);
-            MeetingResult meetingResult = new MeetingResult(this, message, results);
-            meetingResult.processResult = this;
-            meetingResult.execute();
+            ParseResult parseResult = new ParseResult(this, message, results, output);
+            parseResult.iResult = this;
+            parseResult.execute();
         }
     }
 
     /**
-     * Results of the DateSelectFragment return here.
+     * Results of the DateSelectFragment returns here.
      * @param values [0] YYYY, [1] M(M), [2] D(D)
      */
     @Override
     public void iDateValues(String[] values) {
-        getRacesOnDay(values);
+        getMeetingsOnDay(values);
     }
 
     /**
-     * Result from async task MeetingResult return here.
+     * Result from async task ParseResult returns here.
      * @param resultList Results of the operation (list of Meeting objects).
      */
     @Override
-    public void meetingResult(List resultList) {
+    public void result(String output, List resultList) {
         // TBA
         String bp = "";
     }
@@ -155,7 +154,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.id_nav_menu_races_today) {
-            getRacesOnDay(null);
+            getMeetingsOnDay(null);
 
         } else if (id == R.id.id_nav_menu_races_select) {
             DialogFragment dateSelectFragment = new DateSelectFragment();
@@ -175,7 +174,7 @@ public class MainActivity extends AppCompatActivity
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Region: Utility">
-    private void getRacesOnDay(@Nullable String[] date) {
+    private void getMeetingsOnDay(@Nullable String[] date) {
         URL url = null;
         String msg = null;
         if(date == null) {
@@ -196,7 +195,7 @@ public class MainActivity extends AppCompatActivity
                 Log.d("", ex.getMessage());
             }
         }
-        DownloadData dld = new DownloadData(this, url, msg, null);
+        DownloadData dld = new DownloadData(this, url, msg, "Meetings");
         dld.downloadResult = this;
         dld.execute();
 
