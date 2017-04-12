@@ -138,14 +138,13 @@ public class DatabaseOperations {
     public void insertMeetingRecord(Meeting meeting) {
         SQLiteDatabase db = dbHelper.getDatabase();
         ContentValues cv = new ContentValues();
+
+        // Note: derived from RaceDay.xml.
         cv.put(SchemaConstants.MEETING_ABANDONED, meeting.getAbandoned());
         cv.put(SchemaConstants.MEETING_VENUE, meeting.getVenueName());
         cv.put(SchemaConstants.MEETING_HI_RACE, meeting.getHiRaceNo());
         cv.put(SchemaConstants.MEETING_CODE, meeting.getMeetingCode());
         cv.put(SchemaConstants.MEETING_ID, meeting.getMeetingId());
-//        cv.put(SchemaConstants.MEETING_TRACK_DESC, meeting.getTrackDescription());
-//        cv.put(SchemaConstants.MEETING_TRACK_RATING, meeting.getTrackRating());
-//        cv.put(SchemaConstants.MEETING_WEATHER_DESC, meeting.getTrackWeather());
 
         try {
             db.beginTransaction();

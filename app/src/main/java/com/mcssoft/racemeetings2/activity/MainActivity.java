@@ -101,7 +101,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void writeResult(String output, boolean result) {
-        String bp = "";
+        if(result) {
+            loadMainFragment();
+        }
     }
     //</editor-fold>
 
@@ -197,6 +199,10 @@ public class MainActivity extends AppCompatActivity
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Region: Utility">
+    private void loadMainFragment() {
+        // TBA
+    }
+
     private void getMeetingsOnDay(@Nullable String[] date) {
         URL url = null;
         String msg = null;
