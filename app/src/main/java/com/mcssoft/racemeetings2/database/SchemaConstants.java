@@ -56,4 +56,7 @@ public class SchemaConstants {
     public  static final String DROP_MEETINGS_TABLE = "DROP TABLE IF EXISTS " + DATABASE_NAME + "." + MEETINGS_TABLE + ";";
     public  static final String DROP_RACES_TABLE = "DROP TABLE IF EXISTS " + DATABASE_NAME + "." + RACES_TABLE + ";";
 
+    public static final String WHERE_MEETING_ID = MEETING_ID + "=?";
+    public static final String WHERE_RACE_MEETING_ID = RACE_MEETING_ID + "=?";
+
 }

@@ -3,8 +3,12 @@ package com.mcssoft.racemeetings2.database;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
+
+import com.mcssoft.racemeetings2.model.Meeting;
 
 /**
  * Utility class to perform database activities / actions.
@@ -53,7 +57,7 @@ public class DatabaseOperations {
      * @param columnNames The table columns required (Null equals all columns).
      * @param whereClause Where clause (without the "where").
      * @param whereVals Where clause values
-     * @return A cursor over the result set.
+     * @return A cursor over the parseResult set.
      */
     public Cursor getSelectionFromTable(String tableName, @Nullable String[] columnNames, String whereClause, String[] whereVals) {
         if(columnNames == null) {
@@ -106,6 +110,55 @@ public class DatabaseOperations {
     }
 
     /**
+     * Check a record exists using the given record identifier.
+     * @param tableName  The record's associated table.
+     * @param columnName The record's column to check.
+     * @param identifier The identifier in the column.
+     * @return True if record exists.
+     */
+    public boolean checkRecordExists(String tableName, String columnName, String identifier) {
+        Cursor cursor = null;
+        String[] col = new String[] {columnName};
+        String[] id = new String[] {identifier};
+        switch(tableName) {
+            case SchemaConstants.MEETINGS_TABLE:
+                cursor = getSelectionFromTable(tableName, col, SchemaConstants.WHERE_MEETING_ID, id);
+                break;
+            case SchemaConstants.RACES_TABLE:
+                cursor = getSelectionFromTable(tableName, col, SchemaConstants.WHERE_RACE_MEETING_ID, id);
+                break;
+        }
+        return ((cursor != null) && (cursor.getCount() > 0));
+    }
+
+    /**
+     * Insert a record into the MEETINGS table.
+     * @param meeting Meeting object to derive values from.
+     */
+    public void insertMeetingRecord(Meeting meeting) {
+        SQLiteDatabase db = dbHelper.getDatabase();
+        ContentValues cv = new ContentValues();
+        cv.put(SchemaConstants.MEETING_ABANDONED, meeting.getAbandoned());
+        cv.put(SchemaConstants.MEETING_VENUE, meeting.getVenueName());
+        cv.put(SchemaConstants.MEETING_HI_RACE, meeting.getHiRaceNo());
+        cv.put(SchemaConstants.MEETING_CODE, meeting.getMeetingCode());
+        cv.put(SchemaConstants.MEETING_ID, meeting.getMeetingId());
+//        cv.put(SchemaConstants.MEETING_TRACK_DESC, meeting.getTrackDescription());
+//        cv.put(SchemaConstants.MEETING_TRACK_RATING, meeting.getTrackRating());
+//        cv.put(SchemaConstants.MEETING_WEATHER_DESC, meeting.getTrackWeather());
+
+        try {
+            db.beginTransaction();
+            db.insertOrThrow(SchemaConstants.MEETINGS_TABLE, null, cv);
+            db.setTransactionSuccessful();
+        } catch (SQLException ex) {
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    /**
      * Utility method to see if rows exist in the given table.
      * @param tableName The table to check.
      * @return True if the row count > 0.
@@ -129,26 +182,6 @@ public class DatabaseOperations {
                 break;
         }
         return  projection;
-    }
-
-    private boolean meetingIdExists(int meetingId) {
-        boolean retVal = false;
-//        Cursor cursor = getSelectionFromTable(SchemaConstants.RACES_TABLE, null,
-//                SchemaConstants.WHERE_FOR_GET_RACE_MEETINGID, new String[] { Integer.toString(meetingId)});
-//        if(cursor.getCount() > 0) {
-//            retVal = true;
-//        }
-        return retVal;
-    }
-
-    private boolean raceIdExists(int raceId) {
-        boolean retVal = false;
-//        Cursor cursor = getSelectionFromTable(SchemaConstants.RACE_DETAILS_TABLE, null,
-//                SchemaConstants.WHERE_FOR_GET_RACE_DETAILS_RACEID, new String[] { Integer.toString(raceId)});
-//        if(cursor.getCount() > 0) {
-//            retVal = true;
-//        }
-        return retVal;
     }
 
     private Context context;

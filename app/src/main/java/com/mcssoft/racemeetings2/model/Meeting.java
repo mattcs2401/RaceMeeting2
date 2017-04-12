@@ -29,7 +29,7 @@ public class Meeting {
         this.meetingCode = meetingCode;
     }
 
-    public String isAbandoned() {
+    public String getAbandoned() {
         return abandoned;
     }
 
@@ -45,16 +45,16 @@ public class Meeting {
         this.venueName = venueName;
     }
 
-    public String getTrackCondition() {
-        return trackCondition;
+    public String getTrackDescription() {
+        return trackDescription;
     }
 
     public String getHiRaceNo() { return hiRaceNo; }
 
     public void setHiRaceNo(String hiRaceNo) { this.hiRaceNo = hiRaceNo; }
 
-    public void setTrackCondition(String trackCondition) {
-        this.trackCondition = trackCondition;
+    public void setTrackDescription(String trackDescription) {
+        this.trackDescription = trackDescription;
     }
 
     public String getTrackRating() {
@@ -81,7 +81,7 @@ public class Meeting {
     private String meetingId;     // e.g. "1228669952"
 
     // From ...racing/YYYY/MM/DD/<meetingCode>.xml (<meeting></meeting> tag).
-    private String trackCondition;// e.g. "Heavy"
+    private String trackDescription;// e.g. "Heavy"
     private String trackRating;      // e.g. 9
     private String trackWeather;  // e.g. "Overcast"
 }

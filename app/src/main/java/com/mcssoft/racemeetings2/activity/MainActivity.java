@@ -24,12 +24,14 @@ import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.fragment.DateSelectFragment;
 import com.mcssoft.racemeetings2.interfaces.IDownloadResult;
 import com.mcssoft.racemeetings2.interfaces.IDateSelect;
-import com.mcssoft.racemeetings2.interfaces.IResult;
+import com.mcssoft.racemeetings2.interfaces.IParseResult;
+import com.mcssoft.racemeetings2.interfaces.IWriteResult;
 import com.mcssoft.racemeetings2.model.Meeting;
 import com.mcssoft.racemeetings2.network.DownloadData;
 import com.mcssoft.racemeetings2.utility.ParseResult;
 import com.mcssoft.racemeetings2.utility.RaceDate;
 import com.mcssoft.racemeetings2.utility.Resources;
+import com.mcssoft.racemeetings2.utility.WriteResult;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -39,7 +41,8 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
                    IDownloadResult,
                    IDateSelect,
-                   IResult {
+                   IParseResult,
+                   IWriteResult {
 
     //<editor-fold defaultstate="collapsed" desc="Region: Interface">
     /**
@@ -75,18 +78,30 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Result from async task ParseResult returns here.
-     * @param resultList Results of the operation (list of Meeting objects).
+     * Results of ParseResult return here.
+     * @param output     What the operation is associated with..
+     * @param resultList A list of parsed objects (from xml feed).
      */
     @Override
-    public void result(String output, List resultList) {
+    public void parseResult(String output, List resultList) {
+        WriteResult wr = null;
         switch(output) {
             case SchemaConstants.MEETINGS_TABLE:
-                checkOrUpdateMeetings(resultList);
+                wr = new WriteResult(this, "write result message meetings",
+                        resultList, SchemaConstants.MEETINGS_TABLE);
                 break;
             case SchemaConstants.RACES_TABLE:
+                wr = new WriteResult(this, "write result message races",
+                        resultList, SchemaConstants.RACES_TABLE);
                 break;
         }
+        wr.writeResult = this;
+        wr.execute();
+    }
+
+    @Override
+    public void writeResult(String output, String result) {
+        String bp = "";
     }
     //</editor-fold>
 
@@ -182,15 +197,6 @@ public class MainActivity extends AppCompatActivity
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Region: Utility">
-    private void checkOrUpdateMeetings(List resultList) {
-        DatabaseOperations dbOper = new DatabaseOperations(this);
-        for(Object meeting : resultList) {
-            // TBA - check if meeting id exists in database else insert meeting. Async task ??
-            String bp = "";
-        }
-
-    }
-
     private void getMeetingsOnDay(@Nullable String[] date) {
         URL url = null;
         String msg = null;
