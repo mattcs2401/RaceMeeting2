@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void writeResult(String output, String result) {
+    public void writeResult(String output, boolean result) {
         String bp = "";
     }
     //</editor-fold>

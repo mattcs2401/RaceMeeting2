@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Utility class to write a list of one or more objects into the respective table.
  */
-public class WriteResult extends AsyncTask<List,Void,String> {
+public class WriteResult extends AsyncTask<List,Void,Boolean> {
     /**
      * Constructor.
      *
@@ -41,15 +41,15 @@ public class WriteResult extends AsyncTask<List,Void,String> {
     }
 
     @Override
-    protected String doInBackground(List... params) {
-        String theResult = null;
+    protected Boolean doInBackground(List... params) {
+        boolean theResult = false;
         try {
             switch (inputType) {
                 case SchemaConstants.MEETINGS_TABLE:
-                    checkOrUpdateMeetings();
+                    theResult = checkOrUpdateMeetings();
                     break;
                 case SchemaConstants.RACES_TABLE:
-                    checkOrUpdateRaces();
+                    theResult = checkOrUpdateRaces();
                     break;
             }
         } catch (Exception ex) {
@@ -62,25 +62,30 @@ public class WriteResult extends AsyncTask<List,Void,String> {
       Runs on UI thread after doInBackground().
     */
     @Override
-    protected void onPostExecute(String theResult) {
+    protected void onPostExecute(Boolean theResult) {
         progressDialog.dismiss();
         writeResult.writeResult(inputType, theResult);
     }
 
-    private void checkOrUpdateMeetings() {
+    private boolean checkOrUpdateMeetings() {
+        boolean recordInserted = false;
         DatabaseOperations dbOper = new DatabaseOperations(context);
         for(Object object : inputList) {
             Meeting meeting = ((Meeting) object);
-            String meetingId = meeting.getMeetingId();
+//            String meetingId = meeting.getMeetingId();
             if(!dbOper.checkRecordExists(SchemaConstants.MEETINGS_TABLE, SchemaConstants.MEETING_ID,
-                    meetingId)) {
+                    meeting.getMeetingId())) {
                 dbOper.insertMeetingRecord(meeting);
+                if(!recordInserted) {
+                    recordInserted = true;}
             }
         }
+        return recordInserted;
     }
 
-    private void checkOrUpdateRaces() {
+    private boolean checkOrUpdateRaces() {
         // TBA
+        return false;
     }
 
 
