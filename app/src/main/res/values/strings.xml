@@ -14,6 +14,8 @@
     <string name="raceday_meetinginfo_dowload_msg">Meeting information successfully retrieved.</string>
     <string name="raceday_meeting_process_msg">Collating meeting information.\r\nThis could take a minute or more.</string>
 
+    <!-- Fragment tags.-->
+    <string name="meetings_fragment_tag">meetings_fragment_tag</string>
     <string name="date_select_fragment_tag">date_search_fragment_tag</string>
 
     <!-- Xml tags. -->

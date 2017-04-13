@@ -19,14 +19,13 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.mcssoft.racemeetings2.R;
-import com.mcssoft.racemeetings2.database.DatabaseOperations;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.fragment.DateSelectFragment;
+import com.mcssoft.racemeetings2.fragment.MeetingsFragment;
 import com.mcssoft.racemeetings2.interfaces.IDownloadResult;
 import com.mcssoft.racemeetings2.interfaces.IDateSelect;
 import com.mcssoft.racemeetings2.interfaces.IParseResult;
 import com.mcssoft.racemeetings2.interfaces.IWriteResult;
-import com.mcssoft.racemeetings2.model.Meeting;
 import com.mcssoft.racemeetings2.network.DownloadData;
 import com.mcssoft.racemeetings2.utility.ParseResult;
 import com.mcssoft.racemeetings2.utility.RaceDate;
@@ -102,7 +101,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void writeResult(String output, boolean result) {
         if(result) {
-            loadMainFragment();
+            loadMeetingsFragment();
         }
     }
     //</editor-fold>
@@ -199,9 +198,13 @@ public class MainActivity extends AppCompatActivity
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Region: Utility">
-    private void loadMainFragment() {
-        // TBA
-    }
+    private void loadMeetingsFragment() {
+        String fragment_tag = Resources.getInstance().getString(R.string.meetings_fragment_tag);
+        MeetingsFragment meetingsFragment = new MeetingsFragment();
+        getFragmentManager().beginTransaction()
+                .replace(R.id.id_content_main, meetingsFragment, fragment_tag)
+                .addToBackStack(fragment_tag)
+                .commit();    }
 
     private void getMeetingsOnDay(@Nullable String[] date) {
         URL url = null;
