@@ -2,7 +2,9 @@ package com.mcssoft.racemeetings2.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
+import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.interfaces.IItemClickListener;
 import com.mcssoft.racemeetings2.interfaces.IItemLongClickListener;
 
@@ -16,14 +18,8 @@ public class MeetingsViewHolder extends RecyclerView.ViewHolder
 
     public MeetingsViewHolder(View view, IItemClickListener listener) { //, IItemLongClickListener longListener) {
         super(view);
-//        tvRaceId = (TextView) view.findViewById(R.id.id_tv_)
-//        tvRaceNo = (TextView) view.findViewById(R.id.id_tv_race_no);
-//        tvRaceName = (TextView) view.findViewById(R.id.id_tv_race_name);
-//        tvRaceTime = (TextView) view.findViewById(R.id.id_tv_race_time);
-//        tvRaceClass = (TextView) view.findViewById(R.id.id_tv_race_class);
-//        tvRaceDistance = (TextView) view.findViewById(R.id.id_tv_race_distance);
-//        tvRaceRating = (TextView) view.findViewById(R.id.id_tv_race_rating);
-//        tvRacePrize = (TextView) view.findViewById(R.id.id_tv_race_prize);
+        tvMeetingCode = (TextView) view.findViewById(R.id.tv_id_meeting_code);
+        tvVenueName = (TextView) view.findViewById(R.id.tv_id_venue_name);
 
         itemClickListener = listener;
         view.setOnClickListener(this);
@@ -38,6 +34,15 @@ public class MeetingsViewHolder extends RecyclerView.ViewHolder
             itemClickListener.onItemClick(view, getAdapterPosition());
         }
     }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Region: Accessors">
+    public TextView getTvMeetingCode() { return tvMeetingCode; }
+    public TextView getTvVenueName() { return tvVenueName; }
+    //</editor-fold>
+
+    private TextView tvMeetingCode;
+    private TextView tvVenueName;
 
     private IItemClickListener itemClickListener;
 //    private IItemLongClickListener itemLongClickListener;

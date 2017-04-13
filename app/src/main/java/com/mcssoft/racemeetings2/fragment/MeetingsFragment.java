@@ -50,6 +50,7 @@ public class MeetingsFragment extends Fragment
     @Override
     public void onItemClick(View view, int position) {
         this.position = position;
+        // TODO - show races for meeting.
 //        PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
 //        popupMenu.inflate(R.menu.meetings_context_menu);
 //        popupMenu.setOnMenuItemClickListener(this);

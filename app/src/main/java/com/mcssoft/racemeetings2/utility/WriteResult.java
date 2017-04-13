@@ -68,7 +68,6 @@ public class WriteResult extends AsyncTask<List,Void,Boolean> {
     }
 
     private boolean checkOrUpdateMeetings() {
-        boolean recordInserted = false;
         DatabaseOperations dbOper = new DatabaseOperations(context);
         for(Object object : inputList) {
             Meeting meeting = ((Meeting) object);
@@ -76,11 +75,9 @@ public class WriteResult extends AsyncTask<List,Void,Boolean> {
             if(!dbOper.checkRecordExists(SchemaConstants.MEETINGS_TABLE, SchemaConstants.MEETING_ID,
                     meeting.getMeetingId())) {
                 dbOper.insertMeetingRecord(meeting);
-                if(!recordInserted) {
-                    recordInserted = true;}
             }
         }
-        return recordInserted;
+        return dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE);
     }
 
     private boolean checkOrUpdateRaces() {

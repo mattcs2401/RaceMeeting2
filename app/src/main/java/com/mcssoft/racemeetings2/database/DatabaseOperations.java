@@ -162,7 +162,7 @@ public class DatabaseOperations {
      * @param tableName The table to check.
      * @return True if the row count > 0.
      */
-    private boolean checkTableRowCount(String tableName) {
+    public boolean checkTableRowCount(String tableName) {
         SQLiteDatabase db = dbHelper.getDatabase();
         db.beginTransaction();
         Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + tableName + ";", null);
