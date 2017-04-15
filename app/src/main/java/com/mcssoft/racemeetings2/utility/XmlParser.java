@@ -54,13 +54,13 @@ public class XmlParser {
         List entries = new ArrayList();
 
         parser.require(XmlPullParser.START_TAG, nameSpace, "RaceDay");
+        String date = parser.getAttributeValue(nameSpace,"RaceDayDate");
         while (parser.next() != XmlPullParser.END_DOCUMENT) { //TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
-            //String name = parser.getName();           // debugging purposes.
             if (parser.getName().equals("Meeting")) {
-                entries.add(readMeeting());
+                entries.add(readMeeting(date));
             } else {
                 skip();
             }
@@ -86,8 +86,9 @@ public class XmlParser {
         return entries;
     }
 
-    private Meeting readMeeting() throws XmlPullParserException, IOException {
+    private Meeting readMeeting(String date) throws XmlPullParserException, IOException {
         Meeting meeting = new Meeting();
+        meeting.setMeetingDate((date.split("T"))[0]); // format "2017-04-16T00:00:00"
         meeting.setAbandoned(parser.getAttributeValue(nameSpace,"Abandoned"));
         meeting.setVenueName(parser.getAttributeValue(nameSpace,"VenueName"));
         meeting.setHiRaceNo(parser.getAttributeValue(nameSpace, "HiRaceNo"));

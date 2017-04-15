@@ -49,9 +49,11 @@ public class Meeting {
         return trackDescription;
     }
 
-    public String getHiRaceNo() { return hiRaceNo; }
+    public String getHiRaceNo() {
+        return hiRaceNo; }
 
-    public void setHiRaceNo(String hiRaceNo) { this.hiRaceNo = hiRaceNo; }
+    public void setHiRaceNo(String hiRaceNo) {
+        this.hiRaceNo = hiRaceNo; }
 
     public void setTrackDescription(String trackDescription) {
         this.trackDescription = trackDescription;
@@ -69,8 +71,17 @@ public class Meeting {
         return trackWeather;
     }
 
-    public void setTrackWeather(String trackWeather) {
+    public void setTrackWeather(String trackWeather)
+    {
         this.trackWeather = trackWeather;
+    }
+
+    public void setMeetingDate(String meetingDate) {
+        this.meetingDate = meetingDate;
+    }
+
+    public String getMeetingDate() {
+        return meetingDate;
     }
 
     // From ...racing/YYYY/MM/DD/RaceDay.xml
@@ -79,11 +90,12 @@ public class Meeting {
     private String hiRaceNo;      // e.g. "7"
     private String meetingCode;   // e.g. "NR"
     private String meetingId;     // e.g. "1228669952"
+    private String meetingDate;   // e.g. "YYYY-M(M)-D(D)"
 
     // From ...racing/YYYY/MM/DD/<meetingCode>.xml (<meeting></meeting> tag).
-    private String trackDescription;// e.g. "Heavy"
+    private String trackDescription; // e.g. "Heavy"
     private String trackRating;      // e.g. 9
-    private String trackWeather;  // e.g. "Overcast"
+    private String trackWeather;     // e.g. "Overcast"
 }
 /*
  Example

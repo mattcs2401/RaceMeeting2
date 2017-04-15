@@ -140,6 +140,7 @@ public class DatabaseOperations {
         ContentValues cv = new ContentValues();
 
         // Note: derived from RaceDay.xml.
+        cv.put(SchemaConstants.MEETING_DATE, meeting.getMeetingDate());
         cv.put(SchemaConstants.MEETING_ABANDONED, meeting.getAbandoned());
         cv.put(SchemaConstants.MEETING_VENUE, meeting.getVenueName());
         cv.put(SchemaConstants.MEETING_HI_RACE, meeting.getHiRaceNo());

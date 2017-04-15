@@ -16,6 +16,8 @@ public class SchemaConstants {
     public static final String MEETING_HI_RACE = "HI_RACE";               // e.g "7"
     public static final String MEETING_CODE = "MEETING_CODE";             // e.g. "NR"
     public static final String MEETING_ID = "MEETING_ID";                 // e.g. "1224999936"
+    // Derived from <RaceDay RaceDayDate=.../>
+    public static final String MEETING_DATE = "MEETING_DATE";             // e.g. "YYYY-M(M)-D(D)"
     // From <meeting_code>.xml
     public static final String MEETING_TRACK_DESC = "TRACK_DESC";         // e.g. "Soft"
     public static final String MEETING_TRACK_RATING = "TRACK_RATING";     // e.g. "5"
@@ -39,6 +41,7 @@ public class SchemaConstants {
             + MEETING_HI_RACE      + " TEXT NOT NULL, "
             + MEETING_CODE         + " TEXT NOT NULL, "
             + MEETING_ID           + " TEXT NOT NULL, "
+            + MEETING_DATE         + " TEXT NOT NULL, "
             + MEETING_TRACK_DESC   + " TEXT, "
             + MEETING_TRACK_RATING + " TEXT, "
             + MEETING_WEATHER_DESC + " TEXT)";

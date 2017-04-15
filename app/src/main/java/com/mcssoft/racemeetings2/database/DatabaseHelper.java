@@ -79,6 +79,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             SchemaConstants.MEETING_HI_RACE,
             SchemaConstants.MEETING_CODE,
             SchemaConstants.MEETING_ID,
+            SchemaConstants.MEETING_DATE,
             SchemaConstants.MEETING_TRACK_DESC,
             SchemaConstants.MEETING_TRACK_RATING,
             SchemaConstants.MEETING_WEATHER_DESC};
