@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="Meetings General">
+
+        <CheckBoxPreference
+            android:key="@string/pref_meetings_show_today_key"
+            android:title="@string/pref_meetings_show_today_title"
+            android:summary="@string/pref_meetings_show_today_summary"
+            android:defaultValue="true"/>
+
+        <CheckBoxPreference
+            android:key="@string/pref_meetings_cache_key"
+            android:title="@string/pref_meetings_cache_title"
+            android:summary="@string/pref_meetings_cache_summary"
+            android:defaultValue="true" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

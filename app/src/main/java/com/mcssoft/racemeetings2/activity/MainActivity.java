@@ -2,6 +2,7 @@ package com.mcssoft.racemeetings2.activity;
 
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -28,6 +29,7 @@ import com.mcssoft.racemeetings2.interfaces.IParseResult;
 import com.mcssoft.racemeetings2.interfaces.IWriteResult;
 import com.mcssoft.racemeetings2.network.DownloadData;
 import com.mcssoft.racemeetings2.utility.ParseResult;
+import com.mcssoft.racemeetings2.utility.Preferences;
 import com.mcssoft.racemeetings2.utility.RaceDate;
 import com.mcssoft.racemeetings2.utility.Resources;
 import com.mcssoft.racemeetings2.utility.WriteResult;
@@ -110,19 +112,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Preferences.getInstance(this); // setup preferenxes access.
         Resources.getInstance(this);   // setup resources access.
-        setContentView(R.layout.content_view_activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        setBaseUI();    // set screen elements.
     }
 
     @Override
@@ -135,6 +129,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Preferences.getInstance().destroy();
         Resources.getInstance().destroy();
     }
     //</editor-fold>
@@ -159,16 +154,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                startActivity(new Intent(this, SettingsActivity.class));
+                return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -257,6 +247,21 @@ public class MainActivity extends AppCompatActivity
                 getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         return (networkInfo != null && networkInfo.isAvailable() && networkInfo.isConnected());
+    }
+
+    private void setBaseUI() {
+        setContentView(R.layout.content_view_activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
     }
     //</editor-fold>
 }
