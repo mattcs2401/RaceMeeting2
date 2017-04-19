@@ -1,3 +1,23 @@
+---------
+Examples:
+---------
 
-"Today's racing"
+Today's racing:
 https://tatts.com/pagedata/racing/2017/3/27/RaceDay.xml
+
+By race code:
+https://tatts.com/pagedata/racing/2017/3/27/BR.xml
+
+------
+TODOs:
+------
+In no particular order.
+
+-> App bar with title for Preferences.
+-> Alert dialog with 'options' for no active network connection.
+-> Data retention:
+   -> only current (today's) ?
+   -> what about future date search ?
+   -> disallow previous date search ?
+   -> as preferences ?
+
