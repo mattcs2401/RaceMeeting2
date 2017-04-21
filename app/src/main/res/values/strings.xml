@@ -23,6 +23,7 @@
     <!-- Fragment tags.-->
     <string name="meetings_fragment_tag">meetings_fragment_tag</string>
     <string name="date_select_fragment_tag">date_search_fragment_tag</string>
+    <string name="delete_dialog_fragment_tag">delete_dialog_fragment_tag</string>
 
     <!-- Xml tags. -->
     <string name="meetings_xml_tag">Meetings</string>
@@ -41,5 +42,7 @@
     <string name="pref_meetings_cache_title">Cache Meetings</string>
     <string name="pref_meetings_cache_summary">Save Meetings previously downloaded.</string>
 
+    <!-- Dialog title. -->
+    <string name="title_dialog_delete">Delete Meetings</string>
 
 </resources>

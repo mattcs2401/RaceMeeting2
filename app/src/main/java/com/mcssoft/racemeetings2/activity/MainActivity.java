@@ -113,9 +113,13 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Result of the delete dialog return here.
+     * @param whichDelete The type of delete action
+     */
     @Override
     public void iDeleteDialog(int whichDelete) {
-
+        // TBA
     }
     //</editor-fold>
 
@@ -281,8 +285,8 @@ public class MainActivity extends AppCompatActivity
     private void showDeleteDialog() {
         DeleteDialog deleteDialog = new DeleteDialog();
         deleteDialog.setShowsDialog(true);
-        deleteDialog.show(getSupportFragmentManager(), "delete_dialog");
-
+        deleteDialog.show(getSupportFragmentManager(),
+                Resources.getInstance().getString(R.string.delete_dialog_fragment_tag));
     }
     //</editor-fold>
 }

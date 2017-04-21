@@ -19,6 +19,7 @@
     <RadioGroup
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/id_rg_delete_dialog"
         android:layout_marginLeft="16dp"
         android:checkedButton="@+id/id_rb_delete_all"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -31,7 +32,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
+            android:tag="rb_delete_all"
             android:text="Delete all meetings"
+            android:textAppearance="@android:style/TextAppearance.Material.Medium"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,7 +44,9 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="32dp"
+            android:tag="rb_delete_prev"
             android:text="Delete previous meetings."
+            android:textAppearance="@android:style/TextAppearance.Material.Medium"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/id_rb_delete_all" />
     </RadioGroup>
