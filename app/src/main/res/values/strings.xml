@@ -1,13 +1,19 @@
 <resources>
     <string name="app_name">RaceMeetings2</string>
 
+    <!-- Nav drawer. -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="action_settings">Settings</string>
+    <!-- Menu options. -->
+    <string name="menu_item_preferences">Preferences</string>
+    <string name="menu_item_delete">Delete Meetings</string>
 
+    <!-- URL info. -->
     <string name="base_path">https://tatts.com/pagedata/racing</string>
     <string name="race_day_listing">RaceDay.xml</string>
+
+    <!-- Messages. -->
     <string name="raceday_download_msg">Retrieving today\'s meetings.</string>
     <string name="raceday_download_withdate_msg">Retrieving meetings for</string>
     <string name="raceday_download_msg_warn">\r\nThis could take a minute or more.</string>

@@ -1,6 +1,8 @@
 package com.mcssoft.racemeetings2.activity;
 
+import android.app.Activity;
 import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -9,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -21,8 +24,10 @@ import android.widget.Toast;
 
 import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
+import com.mcssoft.racemeetings2.dialog.DeleteDialog;
 import com.mcssoft.racemeetings2.fragment.DateSelectFragment;
 import com.mcssoft.racemeetings2.fragment.MeetingsFragment;
+import com.mcssoft.racemeetings2.interfaces.IDeleteDialog;
 import com.mcssoft.racemeetings2.interfaces.IDownloadResult;
 import com.mcssoft.racemeetings2.interfaces.IDateSelect;
 import com.mcssoft.racemeetings2.interfaces.IParseResult;
@@ -43,7 +48,8 @@ public class MainActivity extends AppCompatActivity
                    IDownloadResult,
                    IDateSelect,
                    IParseResult,
-                   IWriteResult {
+                   IWriteResult,
+                   IDeleteDialog {
 
     //<editor-fold defaultstate="collapsed" desc="Region: Interface">
     /**
@@ -106,6 +112,11 @@ public class MainActivity extends AppCompatActivity
             loadMeetingsFragment();
         }
     }
+
+    @Override
+    public void iDeleteDialog(int whichDelete) {
+
+    }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Region: Lifecycle">
@@ -155,9 +166,12 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
+            case R.id.id_menu_preferences:
                 startActivity(new Intent(this, SettingsActivity.class));
-                return true;
+                break;
+            case R.id.id_menu_delete:
+                showDeleteDialog();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -262,6 +276,13 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void showDeleteDialog() {
+        DeleteDialog deleteDialog = new DeleteDialog();
+        deleteDialog.setShowsDialog(true);
+        deleteDialog.show(getSupportFragmentManager(), "delete_dialog");
+
     }
     //</editor-fold>
 }
