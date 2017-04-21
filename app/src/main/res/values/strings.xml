@@ -19,6 +19,7 @@
     <string name="raceday_download_msg_warn">\r\nThis could take a minute or more.</string>
     <string name="raceday_meetinginfo_dowload_msg">Meeting information successfully retrieved.</string>
     <string name="raceday_meeting_process_msg">Collating meeting information.\r\nThis could take a minute or more.</string>
+    <string name="all_meetings_removed">All meetings removed.</string>
 
     <!-- Fragment tags.-->
     <string name="meetings_fragment_tag">meetings_fragment_tag</string>

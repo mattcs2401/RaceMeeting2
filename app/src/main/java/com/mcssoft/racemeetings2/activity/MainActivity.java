@@ -119,7 +119,12 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void iDeleteDialog(int whichDelete) {
-        // TBA
+        String bp = "";
+        if(whichDelete == Resources.getInstance().getInteger(R.integer.rb_delete_all)) {
+            // TBA - if meetings list showing then clear.
+        } else if(whichDelete == Resources.getInstance().getInteger(R.integer.rb_delete_prev)) {
+            // TBA - 
+        }
     }
     //</editor-fold>
 
