@@ -24,6 +24,7 @@ public class DeleteDialog extends DialogFragment
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setIcon(R.drawable.ic_action_warning)
               .setTitle(Resources.getInstance().getString(R.string.title_dialog_delete))
+              .setMessage("These actions cannot be undone.")
               .setView(R.layout.dialog_delete)
               .setPositiveButton(R.string.button_ok_text, this)
               .setNegativeButton(R.string.button_cancel_text, this);

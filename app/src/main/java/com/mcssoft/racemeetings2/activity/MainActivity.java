@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.dialog.DeleteDialog;
+import com.mcssoft.racemeetings2.dialog.NetworkDialog;
 import com.mcssoft.racemeetings2.fragment.DateSelectFragment;
 import com.mcssoft.racemeetings2.fragment.MeetingsFragment;
 import com.mcssoft.racemeetings2.interfaces.IDeleteDialog;
@@ -142,8 +143,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        // TODO - check for network.
-//        DatabaseOperations dbOper = new DatabaseOperations(this);
+        if(!checkForNetwork()) {
+            NetworkDialog nd = new NetworkDialog();
+            nd.setShowsDialog(true);
+            Bundle bundle = new Bundle();
+            bundle.putString(Resources.getInstance().getString(R.string.network_dialog_text),
+                    Resources.getInstance().getString(R.string.network_connection_error));
+            nd.setArguments(bundle);
+            nd.show(getSupportFragmentManager(), null);
+        } else {
+            // TODO - check prefs to load today's meeting information (else display message ?).
+        }
     }
 
     @Override
