@@ -1,17 +1,13 @@
 package com.mcssoft.racemeetings2.activity;
 
-import android.app.Activity;
 import android.app.DialogFragment;
-import android.app.FragmentManager;
-import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -34,6 +30,7 @@ import com.mcssoft.racemeetings2.interfaces.IDateSelect;
 import com.mcssoft.racemeetings2.interfaces.IParseResult;
 import com.mcssoft.racemeetings2.interfaces.IWriteResult;
 import com.mcssoft.racemeetings2.network.DownloadData;
+import com.mcssoft.racemeetings2.network.NetworkReceiver;
 import com.mcssoft.racemeetings2.utility.ParseResult;
 import com.mcssoft.racemeetings2.utility.Preferences;
 import com.mcssoft.racemeetings2.utility.RaceDate;
@@ -133,17 +130,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        registerReceiver();            // register network broadcast receiver.
         Preferences.getInstance(this); // setup preferenxes access.
         Resources.getInstance(this);   // setup resources access.
-
-        setBaseUI();    // set screen elements.
+        setBaseUI();                   // set screen elements.
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if(!checkForNetwork()) {
+        if(!receiver.isConnected()) {
             NetworkDialog nd = new NetworkDialog();
             nd.setShowsDialog(true);
             Bundle bundle = new Bundle();
@@ -159,6 +155,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unRegisterReceiver();
         Preferences.getInstance().destroy();
         Resources.getInstance().destroy();
     }
@@ -275,13 +272,6 @@ public class MainActivity extends AppCompatActivity
         return builder.toString();
     }
 
-    private boolean checkForNetwork() {
-        ConnectivityManager connMgr = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        return (networkInfo != null && networkInfo.isAvailable() && networkInfo.isConnected());
-    }
-
     private void setBaseUI() {
         setContentView(R.layout.content_view_activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -303,5 +293,19 @@ public class MainActivity extends AppCompatActivity
         deleteDialog.show(getSupportFragmentManager(),
                 Resources.getInstance().getString(R.string.delete_dialog_fragment_tag));
     }
+
+    private void registerReceiver() {
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        receiver = new NetworkReceiver();
+        this.registerReceiver(receiver, filter);
+    }
+
+    private void unRegisterReceiver() {
+        if (receiver != null) {
+            this.unregisterReceiver(receiver);
+        }
+    }
     //</editor-fold>
+
+    private NetworkReceiver receiver = new NetworkReceiver();
 }

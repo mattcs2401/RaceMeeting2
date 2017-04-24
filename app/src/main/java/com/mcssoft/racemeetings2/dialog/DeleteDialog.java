@@ -37,7 +37,6 @@ public class DeleteDialog extends DialogFragment
             case Dialog.BUTTON_POSITIVE:
                 doDelete();
                 break;
-
         }
     }
 
