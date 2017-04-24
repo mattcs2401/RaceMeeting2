@@ -24,7 +24,7 @@ public class DeleteDialog extends DialogFragment
         AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
         dialog.setIcon(R.drawable.ic_action_warning)
               .setTitle(Resources.getInstance().getString(R.string.title_dialog_delete))
-              .setMessage("These actions cannot be undone.")
+              .setMessage(Resources.getInstance().getString(R.string.delete_dialog_text))
               .setView(R.layout.dialog_delete)
               .setPositiveButton(R.string.button_ok_text, this)
               .setNegativeButton(R.string.button_cancel_text, this);
@@ -35,20 +35,20 @@ public class DeleteDialog extends DialogFragment
     public void onClick(DialogInterface dialog, int which) {
         switch(which) {
             case Dialog.BUTTON_POSITIVE:
-                View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_delete, null);
-                //RadioGroup rg = (RadioGroup) view.findViewById(R.id.id_rg_delete_dialog);
-                //RadioButton rb = (RadioButton) view.findViewById(rg.getCheckedRadioButtonId());
-                String tag = ((RadioButton) view.findViewById(((RadioGroup)
-                        view.findViewById(R.id.id_rg_delete_dialog)).getCheckedRadioButtonId()))
-                        .getTag().toString();
-                doDelete(tag);
+                doDelete();
                 break;
 
         }
     }
 
-    private void doDelete(String tag) {
+    private void doDelete() {
+        View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_delete, null);
+        String tag = ((RadioButton) view.findViewById(((RadioGroup)
+                view.findViewById(R.id.id_rg_delete_dialog)).getCheckedRadioButtonId()))
+                .getTag().toString();
+
         DatabaseOperations dbOper = new DatabaseOperations(getActivity());
+
         switch (tag) {
             case "rb_delete_all":
                 dbOper.deleteAllFromTable(SchemaConstants.MEETINGS_TABLE);

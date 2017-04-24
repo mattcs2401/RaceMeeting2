@@ -20,8 +20,10 @@
     <string name="raceday_meetinginfo_dowload_msg">Meeting information successfully retrieved.</string>
     <string name="raceday_meeting_process_msg">Collating meeting information.\r\n\r\nThis could take a minute or more.</string>
     <string name="all_meetings_removed">All meetings removed.</string>
-    <string name="network_connection_error">No active network connection exists.\r\n\r\nCheck your device settings.</string>
 
+    <!-- Dialog messages. -->
+    <string name="network_connection_error">No active network connection exists.\r\n\r\nCheck your device settings.</string>
+    <string name="delete_dialog_text">These actions cannot be undone.</string>
     <!-- Keys. -->
     <string name="network_dialog_text">network_dialog_text</string>
 
