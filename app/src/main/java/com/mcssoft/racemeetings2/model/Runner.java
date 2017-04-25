@@ -4,28 +4,121 @@ package com.mcssoft.racemeetings2.model;
  * Class to model a race runner.
  */
 public class Runner {
+
+    public String getRunnerNumber() {
+        return runnerNumber;
+    }
+
+    public void setRunnerNumber(String runnerNumber) {
+        this.runnerNumber = runnerNumber;
+    }
+
+    public String getRunnerName() {
+        return runnerName;
+    }
+
+    public void setRunnerName(String runnerName) {
+        this.runnerName = runnerName;
+    }
+
+    public String getRunnerScratched() {
+        return runnerScratched;
+    }
+
+    public void setRunnerScratched(String runnerScratched) {
+        this.runnerScratched = runnerScratched;
+    }
+
+    public String getRunnerJockeyName() {
+        return runnerJockeyName;
+    }
+
+    public void setRunnerJockeyName(String runnerJockeyName) {
+        this.runnerJockeyName = runnerJockeyName;
+    }
+
+    public String getRunnerBarrier() {
+        return runnerBarrier;
+    }
+
+    public void setRunnerBarrier(String runnerBarrier) {
+        this.runnerBarrier = runnerBarrier;
+    }
+
+    public String getRunnerHandicap() {
+        return runnerHandicap;
+    }
+
+    public void setRunnerHandicap(String runnerHandicap) {
+        this.runnerHandicap = runnerHandicap;
+    }
+
+    public String getRunnerWeight() {
+        return runnerWeight;
+    }
+
+    public void setRunnerWeight(String runnerWeight) {
+        this.runnerWeight = runnerWeight;
+    }
+
+    public String getRunnerForm() {
+        return runnerForm;
+    }
+
+    public void setRunnerForm(String runnerForm) {
+        this.runnerForm = runnerForm;
+    }
+
+    public String getRunnerLastResult() {
+        return runnerLastResult;
+    }
+
+    public void setRunnerLastResult(String runnerLastResult) {
+        this.runnerLastResult = runnerLastResult;
+    }
+
+    public String getRunnerRating() {
+        return runnerRating;
+    }
+
+    public void setRunnerRating(String runnerRating) {
+        this.runnerRating = runnerRating;
+    }
+
+    public String getRaceNumber() {
+        return raceNumber;
+    }
+
+    public void setRaceNumber(String raceNumber) {
+        this.raceNumber = raceNumber;
+    }
+
+    public String getRaceMeetingId() {
+        return raceMeetingId;
+    }
+
+    public void setRaceMeetingId(String raceMeetingId) {
+        this.raceMeetingId = raceMeetingId;
+    }
+
+    private String runnerNumber;       // e.g. "1"
+    private String runnerName;         // e.g. "MY COUSIN JACKIE"
+    private String runnerScratched;    // e.g. "N"
+    private String runnerJockeyName;   // e.g. "J MURPHY(A)"
+    private String runnerBarrier;      // e.g. "3"
+    private String runnerHandicap;     // e.g. "0"
+    private String runnerWeight;       // e.g. "62.0"
+    private String runnerForm;         // e.g. "WC"
+    private String runnerLastResult;   // e.g. "801"
+    private String runnerRating;       // e.g. "95"
+
+    // additional.
+    private String raceNumber;         // FK link to RACES table (no race id value in xml).
+    private String raceMeetingId;      // FK link to MEETINGS table.
 }
-
-/*
- Example
- -------
-
- Using: https://tatts.com/pagedata/racing/2017/3/27/NR.xml
-
- <meeting ...
-   <race ...
-     <Runner RunnerNo="1" RunnerName="MY COUSIN JACKIE" Barrier="3" JockeySilk="57804"/>
-     <Runner RunnerNo="2" RunnerName="FRENCH SONG" Barrier="2" JockeySilk="52395"/>
-     <Runner RunnerNo="3" RunnerName="CANTILLATE" Barrier="1" JockeySilk="6809"/>
-     <Runner RunnerNo="4" RunnerName="FAVULOUS FLOYD" Barrier="5" JockeySilk="9043"/>
-     <Runner RunnerNo="5" RunnerName="SOUND WORLD" Barrier="4" JockeySilk="56405"/>
-     <Runner RunnerNo="7" RunnerName="PREMIERE PLACE" Barrier="6" JockeySilk="9638"/>
-     <Runner RunnerNo="6" RunnerName="GRAND DAZZLER" Barrier="7" Scratched="Y" ScratchStatus="3" JockeySilk="65535"/>
-*/
 /*
  Example:
  --------
-
  Using: https://tatts.com/pagedata/racing/2017/3/27/NR1.xml
 
  <meeting ...

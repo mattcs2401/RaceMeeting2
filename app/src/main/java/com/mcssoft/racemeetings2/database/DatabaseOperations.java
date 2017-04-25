@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.mcssoft.racemeetings2.model.Meeting;
+import com.mcssoft.racemeetings2.model.Race;
+import com.mcssoft.racemeetings2.model.Runner;
 
 /**
  * Utility class to perform database activities / actions.
@@ -127,6 +129,9 @@ public class DatabaseOperations {
             case SchemaConstants.RACES_TABLE:
                 cursor = getSelectionFromTable(tableName, col, SchemaConstants.WHERE_RACE_MEETING_ID, id);
                 break;
+            case SchemaConstants.RUNNERS_TABLE:
+                // TODO - where clause for select on RUNNERS table.
+                break;
         }
         return ((cursor != null) && (cursor.getCount() > 0));
     }
@@ -150,6 +155,48 @@ public class DatabaseOperations {
         try {
             db.beginTransaction();
             db.insertOrThrow(SchemaConstants.MEETINGS_TABLE, null, cv);
+            db.setTransactionSuccessful();
+        } catch (SQLException ex) {
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    /**
+     * Insert a record into the RACES table.
+     * @param race Race object to derive values from.
+     */
+    public void insertRaceRecord(Race race) {
+        SQLiteDatabase db = dbHelper.getDatabase();
+        ContentValues cv = new ContentValues();
+
+        // TODO - ContentValues for insert of RACE record.
+
+        try {
+            db.beginTransaction();
+            db.insertOrThrow(SchemaConstants.RACES_TABLE, null, cv);
+            db.setTransactionSuccessful();
+        } catch (SQLException ex) {
+            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    /**
+     * Insert a record into the RUNNERS table.
+     * @param runner Runner object to derive values from.
+     */
+    private void insertRunnerRecord(Runner runner) {
+        SQLiteDatabase db = dbHelper.getDatabase();
+        ContentValues cv = new ContentValues();
+
+        // TODO - ContentValues for insert of RUNNER record.
+
+        try {
+            db.beginTransaction();
+            db.insertOrThrow(SchemaConstants.RUNNERS_TABLE, null, cv);
             db.setTransactionSuccessful();
         } catch (SQLException ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();

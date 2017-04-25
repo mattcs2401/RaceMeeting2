@@ -20,8 +20,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         try {
             sqLiteDb.execSQL(SchemaConstants.DROP_MEETINGS_TABLE);
             sqLiteDb.execSQL(SchemaConstants.DROP_RACES_TABLE);
+            sqLiteDb.execSQL(SchemaConstants.DROP_RUNNERS_TABLE);
             sqLiteDb.execSQL(SchemaConstants.CREATE_MEETINGS_TABLE);
             sqLiteDb.execSQL(SchemaConstants.CREATE_RACES_TABLE);
+            sqLiteDb.execSQL(SchemaConstants.CREATE_RUNNERS_TABLE);
             sqLiteDb.setTransactionSuccessful();
         } catch(SQLException ex) {
             Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
@@ -34,6 +36,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         this.sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SchemaConstants.DATABASE_NAME + "." + SchemaConstants.MEETINGS_TABLE + ";");
         this.sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SchemaConstants.DATABASE_NAME + "." + SchemaConstants.RACES_TABLE + ";");
+        this.sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + SchemaConstants.DATABASE_NAME + "." + SchemaConstants.RUNNERS_TABLE + ";");
     }
 
     public SQLiteDatabase getDatabase() {
@@ -41,7 +44,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public enum Projection {
-        MeetingSchema, RaceSchema
+        MeetingSchema, RaceSchema, RunnerSchema
     }
 
     public static String [] getProjection(Projection projection) {
@@ -50,6 +53,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 return getMeetingsProjection();
             case RaceSchema:
                 return getRacesProjection();
+            case RunnerSchema:
+                return getRunnersProjection();
         }
         return  null;
     }
@@ -87,12 +92,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static String[] getRacesProjection() {
         return new String[] {
-                SchemaConstants.RACE_ROWID,
-                SchemaConstants.RACE_MEETING_ID,
-                SchemaConstants.RACE_NO,
-                SchemaConstants.RACE_TIME,
-                SchemaConstants.RACE_NAME,
-                SchemaConstants.RACE_DIST};
+            SchemaConstants.RACE_ROWID,
+            SchemaConstants.RACE_MEETING_ID,
+            SchemaConstants.RACE_NO,
+            SchemaConstants.RACE_TIME,
+            SchemaConstants.RACE_NAME,
+            SchemaConstants.RACE_DIST};
+    }
+
+    private static String[] getRunnersProjection() {
+        return new String[] {
+            SchemaConstants.RUNNER_ROWID,
+            SchemaConstants.RUNNER_MEETING_ID,
+            SchemaConstants.RUNNER_RACE_NO,
+            SchemaConstants.RUNNER_NO,
+            SchemaConstants.RUNNER_NAME,
+            SchemaConstants.RUNNER_SCR,
+            SchemaConstants.RUNNER_JOCKEY,
+            SchemaConstants.RUNNER_BARRIER,
+            SchemaConstants.RUNNER_HCAP,
+            SchemaConstants.RUNNER_WEIGHT,
+            SchemaConstants.RUNNER_FORM,
+            SchemaConstants.RUNNER_LRES,
+            SchemaConstants.RUNNER_RATING
+        };
     }
 
     private Context context;
