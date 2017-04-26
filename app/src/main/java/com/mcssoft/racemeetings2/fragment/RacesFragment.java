@@ -12,9 +12,12 @@ import android.view.ViewGroup;
 
 import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.adapter.RacesAdapter;
+import com.mcssoft.racemeetings2.database.DatabaseHelper;
+import com.mcssoft.racemeetings2.database.DatabaseOperations;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.interfaces.IRaceItemClickListener;
 import com.mcssoft.racemeetings2.utility.ListingDivider;
+import com.mcssoft.racemeetings2.utility.Resources;
 
 public class RacesFragment extends Fragment
         implements IRaceItemClickListener {
@@ -28,8 +31,15 @@ public class RacesFragment extends Fragment
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        DatabaseOperations dbOper = new DatabaseOperations(getActivity());
-//        cursor = dbOper.getAllFromTable(SchemaConstants.MEETINGS_TABLE);
+
+        String meetingId = getArguments().getString(Resources.getInstance()
+                .getString(R.string.races_meeting_id_key));
+
+        DatabaseOperations dbOper = new DatabaseOperations(getActivity());
+        cursor = dbOper.getSelectionFromTable(SchemaConstants.RACES_TABLE,
+                DatabaseHelper.getProjection(DatabaseHelper.Projection.RaceSchema),
+                SchemaConstants.WHERE_MEETING_ID,
+                new String[] {meetingId});
 
         setRaceAdapter();
         setRecyclerView(rootView);
@@ -37,8 +47,9 @@ public class RacesFragment extends Fragment
 
     @Override
     public void onItemClick(View view, int position) {
-        this.position = position;
-        int dbRowId = getDbRowId(position);
+        // TODO - show the associated Race runners.
+//        this.position = position;
+//        int dbRowId = getDbRowId(position);
 //        Intent intent = new Intent(getActivity(), RacesActivity.class);
 //        intent.putExtra(Resources.getInstance().getString(R.string.meetings_db_rowid_key),  dbRowId); // getDbRowId(position));
 //        startActivity(intent);
@@ -49,11 +60,11 @@ public class RacesFragment extends Fragment
         racesAdapter.setOnItemClickListener(this);
 //        meetingsAdapter.setOnItemLongClickListener(this);
         racesAdapter.swapCursor(cursor);
-//        if(cursor.getCount() == 0) {
-//            racesAdapter.setEmptyView(true);
-//        } else {
-//            racesAdapter.setEmptyView(false);
-//        }
+        if(cursor != null && cursor.getCount() == 0) {
+            racesAdapter.setEmptyView(true);
+        } else {
+            racesAdapter.setEmptyView(false);
+        }
     }
 
     private void setRecyclerView(View view) {
@@ -74,8 +85,8 @@ public class RacesFragment extends Fragment
         return cursor.getInt(cursor.getColumnIndex(SchemaConstants.RACE_ROWID));
     }
 
-    private Cursor cursor;
     private int position;
+    private Cursor cursor;
     private View rootView;
     private RacesAdapter racesAdapter;
 
