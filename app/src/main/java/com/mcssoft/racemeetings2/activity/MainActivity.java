@@ -61,10 +61,10 @@ public class MainActivity extends AppCompatActivity
         String[] result = results.split(":");
         if((result != null) && (result[0].equals("Exception"))) {
             // TODO - somesort of alert type dialog that has options.
-            Toast.makeText(this, "Error: " + result[1], Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Error: " + result[1], Toast.LENGTH_SHORT).show();
         } else {
             message = Resources.getInstance().getString(R.string.raceday_meetinginfo_dowload_msg);
-            Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
 
             message = Resources.getInstance().getString(R.string.raceday_meeting_process_msg);
             ParseResult parseResult = new ParseResult(this, message, results, output);

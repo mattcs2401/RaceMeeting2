@@ -10,9 +10,15 @@ import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.database.DatabaseOperations;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.fragment.RacesFragment;
+import com.mcssoft.racemeetings2.interfaces.IDownloadResult;
 import com.mcssoft.racemeetings2.utility.Resources;
 
-public class RacesActivity extends AppCompatActivity {
+public class RacesActivity extends AppCompatActivity
+        implements IDownloadResult {
+
+    public void downloadResult(String table, String results) {
+
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
