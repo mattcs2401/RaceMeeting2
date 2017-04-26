@@ -5,8 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mcssoft.racemeetings2.R;
-import com.mcssoft.racemeetings2.interfaces.IItemClickListener;
-import com.mcssoft.racemeetings2.interfaces.IItemLongClickListener;
+import com.mcssoft.racemeetings2.interfaces.IMeetingItemClickListener;
 
 public class MeetingsViewHolder extends RecyclerView.ViewHolder
         implements View.OnClickListener {
@@ -16,7 +15,7 @@ public class MeetingsViewHolder extends RecyclerView.ViewHolder
 //        tvEmptyView = (TextView) view.findViewById(R.id.id_tv_nothingToShow);
     }
 
-    public MeetingsViewHolder(View view, IItemClickListener listener) { //, IItemLongClickListener longListener) {
+    public MeetingsViewHolder(View view, IMeetingItemClickListener listener) { //, IMeetingItemLongClickListener longListener) {
         super(view);
         tvMeetingCode = (TextView) view.findViewById(R.id.tv_id_meeting_code);
         tvVenueName = (TextView) view.findViewById(R.id.tv_id_venue_name);
@@ -44,6 +43,6 @@ public class MeetingsViewHolder extends RecyclerView.ViewHolder
     private TextView tvMeetingCode;
     private TextView tvVenueName;
 
-    private IItemClickListener itemClickListener;
-//    private IItemLongClickListener itemLongClickListener;
+    private IMeetingItemClickListener itemClickListener;
+//    private IMeetingItemLongClickListener itemLongClickListener;
 }

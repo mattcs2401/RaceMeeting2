@@ -224,7 +224,8 @@ public class MainActivity extends AppCompatActivity
         getFragmentManager().beginTransaction()
                 .replace(R.id.id_content_main, meetingsFragment, fragment_tag)
                 .addToBackStack(fragment_tag)
-                .commit();    }
+                .commit();
+    }
 
     private void getMeetingsOnDay(@Nullable String[] date) {
         URL url = null;
@@ -274,7 +275,7 @@ public class MainActivity extends AppCompatActivity
 
     private void setBaseUI() {
         setContentView(R.layout.content_view_activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar_main_toolbar);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

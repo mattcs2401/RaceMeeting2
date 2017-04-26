@@ -24,11 +24,14 @@
     <!-- Dialog messages. -->
     <string name="network_connection_error">No active network connection exists.\r\n\r\nCheck your device settings.</string>
     <string name="delete_dialog_text">These actions cannot be undone.</string>
+
     <!-- Keys. -->
     <string name="network_dialog_text">network_dialog_text</string>
+    <string name="meetings_db_rowid_key">meetings_rowid_key</string>
 
     <!-- Fragment tags.-->
     <string name="meetings_fragment_tag">meetings_fragment_tag</string>
+    <string name="races_fragment_tag">races_fragment_tag</string>
     <string name="date_select_fragment_tag">date_search_fragment_tag</string>
     <string name="delete_dialog_fragment_tag">delete_dialog_fragment_tag</string>
 

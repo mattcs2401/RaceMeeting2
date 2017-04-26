@@ -1,6 +1,7 @@
 package com.mcssoft.racemeetings2.fragment;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -11,14 +12,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mcssoft.racemeetings2.R;
+import com.mcssoft.racemeetings2.activity.RacesActivity;
 import com.mcssoft.racemeetings2.adapter.MeetingsAdapter;
 import com.mcssoft.racemeetings2.database.DatabaseOperations;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
-import com.mcssoft.racemeetings2.interfaces.IItemClickListener;
+import com.mcssoft.racemeetings2.interfaces.IMeetingItemClickListener;
 import com.mcssoft.racemeetings2.utility.ListingDivider;
+import com.mcssoft.racemeetings2.utility.Resources;
 
 public class MeetingsFragment extends Fragment
-        implements IItemClickListener {
+        implements IMeetingItemClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,7 +53,10 @@ public class MeetingsFragment extends Fragment
     @Override
     public void onItemClick(View view, int position) {
         this.position = position;
-        // TODO - show races for meeting.
+        int dbRowId = getDbRowId(position);
+        Intent intent = new Intent(getActivity(), RacesActivity.class);
+        intent.putExtra(Resources.getInstance().getString(R.string.meetings_db_rowid_key),  dbRowId); // getDbRowId(position));
+        startActivity(intent);
 //        PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
 //        popupMenu.inflate(R.menu.meetings_context_menu);
 //        popupMenu.setOnMenuItemClickListener(this);
@@ -79,6 +85,12 @@ public class MeetingsFragment extends Fragment
         } else {
             meetingsAdapter.setEmptyView(false);
         }
+    }
+
+    private int getDbRowId(int position) {
+        meetingsAdapter.getItemId(position);
+        Cursor cursor = meetingsAdapter.getCursor();
+        return cursor.getInt(cursor.getColumnIndex(SchemaConstants.MEETING_ROWID));
     }
 
     private int position;

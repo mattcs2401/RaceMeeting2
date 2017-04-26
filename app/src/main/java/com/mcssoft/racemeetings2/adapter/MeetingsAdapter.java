@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
-import com.mcssoft.racemeetings2.interfaces.IItemClickListener;
+import com.mcssoft.racemeetings2.interfaces.IMeetingItemClickListener;
 
 public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
 
@@ -59,11 +59,11 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
         notifyDataSetChanged();
     }
 
-    public void setOnItemClickListener(IItemClickListener listener) {
+    public void setOnItemClickListener(IMeetingItemClickListener listener) {
         this.itemClickListener = listener;
     }
 
-//    public void setOnItemLongClickListener(IItemLongClickListener listener) {
+//    public void setOnItemLongClickListener(IMeetingItemLongClickListener listener) {
 //        this.itemLongClickListener = listener;
 //    }
 
@@ -88,6 +88,6 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
     private int meetingCodeNdx;
     private int meetingVenueNdx;
 
-    private IItemClickListener itemClickListener;
-//    private IItemLongClickListener itemLongClickListener;
+    private IMeetingItemClickListener itemClickListener;
+//    private IMeetingItemLongClickListener itemLongClickListener;
 }
