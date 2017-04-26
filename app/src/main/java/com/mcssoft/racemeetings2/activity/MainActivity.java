@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity
         if(date == null) {
             try {
                 msg = Resources.getInstance().getString(R.string.raceday_download_msg) +
-                      Resources.getInstance().getString(R.string.raceday_download_msg_warn) ;
+                      Resources.getInstance().getString(R.string.download_msg_warn) ;
                 url = new URL(createRaceDayUrl(null));
             } catch (MalformedURLException ex) {
                 Log.d("", ex.getMessage());
@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity
             try {
                 msg = Resources.getInstance().getString(R.string.raceday_download_withdate_msg) +
                       " " + (date[2] + "/" + date[1] + "/" + date[0]) +
-                      Resources.getInstance().getString(R.string.raceday_download_msg_warn);
+                      Resources.getInstance().getString(R.string.download_msg_warn);
                 url = new URL(createRaceDayUrl(date));
             } catch (MalformedURLException ex) {
                 Log.d("", ex.getMessage());
@@ -261,7 +261,7 @@ public class MainActivity extends AppCompatActivity
     private String createRaceDayUrl(@Nullable String[] date) {
         if(date == null) {
             RaceDate raceDate = new RaceDate();
-            date = raceDate.getDateComponents();
+            date = raceDate.getDateComponents(null);
         }
         Uri.Builder builder = new Uri.Builder();
         builder.encodedPath(Resources.getInstance().getString(R.string.base_path))
