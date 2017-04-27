@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.mcssoft.racemeetings2.R;
+import com.mcssoft.racemeetings2.database.DatabaseOperations;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.dialog.DeleteDialog;
 import com.mcssoft.racemeetings2.dialog.NetworkDialog;
@@ -139,17 +140,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-        if(!receiver.isConnected()) {
-            NetworkDialog nd = new NetworkDialog();
-            nd.setShowsDialog(true);
-            Bundle bundle = new Bundle();
-            bundle.putString(Resources.getInstance().getString(R.string.network_dialog_text),
-                    Resources.getInstance().getString(R.string.network_connection_error));
-            nd.setArguments(bundle);
-            nd.show(getSupportFragmentManager(), null);
-        } else {
+        /*if(!receiver.isConnected()) {
+            showNetworkDialog();
+        } else {*/
+            DatabaseOperations dbOper = new DatabaseOperations(this);
+            if(dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE)) {
+                String bp = "";
+            }
             // TODO - check prefs to load today's meeting information (else display message ?).
-        }
     }
 
     @Override
@@ -293,6 +291,16 @@ public class MainActivity extends AppCompatActivity
         deleteDialog.setShowsDialog(true);
         deleteDialog.show(getSupportFragmentManager(),
                 Resources.getInstance().getString(R.string.delete_dialog_fragment_tag));
+    }
+
+    private void showNetworkDialog() {
+        NetworkDialog nd = new NetworkDialog();
+        nd.setShowsDialog(true);
+        Bundle bundle = new Bundle();
+        bundle.putString(Resources.getInstance().getString(R.string.network_dialog_text),
+                Resources.getInstance().getString(R.string.network_connection_error));
+        nd.setArguments(bundle);
+        nd.show(getSupportFragmentManager(), null);
     }
 
     private void registerReceiver() {

@@ -213,7 +213,7 @@ public class DatabaseOperations {
     public boolean checkTableRowCount(String tableName) {
         SQLiteDatabase db = dbHelper.getDatabase();
         db.beginTransaction();
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + tableName + ";", null);
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + tableName + ";", new String[] {});
         db.endTransaction();
         return (cursor.getCount() > 0);
     }
