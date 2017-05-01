@@ -213,7 +213,9 @@ public class DatabaseOperations {
     public boolean checkTableRowCount(String tableName) {
         SQLiteDatabase db = dbHelper.getDatabase();
         db.beginTransaction();
-        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + tableName + ";", new String[] {});
+        Cursor cursor = getSelectionFromTable(SchemaConstants.MEETINGS_TABLE,
+                new String[] {SchemaConstants.MEETING_ROWID}, null, null);
+//        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + tableName + ";", new String[] {});
         db.endTransaction();
         return (cursor.getCount() > 0);
     }

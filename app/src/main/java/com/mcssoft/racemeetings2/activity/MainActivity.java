@@ -18,6 +18,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.database.DatabaseOperations;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
@@ -31,6 +34,8 @@ import com.mcssoft.racemeetings2.interfaces.IDateSelect;
 import com.mcssoft.racemeetings2.interfaces.IParseResult;
 import com.mcssoft.racemeetings2.interfaces.IWriteResult;
 import com.mcssoft.racemeetings2.network.DownloadData;
+import com.mcssoft.racemeetings2.network.DownloadRequest;
+import com.mcssoft.racemeetings2.network.DownloadRequestQueue;
 import com.mcssoft.racemeetings2.network.NetworkReceiver;
 import com.mcssoft.racemeetings2.utility.ParseResult;
 import com.mcssoft.racemeetings2.utility.Preferences;
@@ -48,7 +53,8 @@ public class MainActivity extends AppCompatActivity
                    IDateSelect,
                    IParseResult,
                    IWriteResult,
-                   IDeleteDialog {
+                   IDeleteDialog,
+                   Response.ErrorListener, Response.Listener {
 
     //<editor-fold defaultstate="collapsed" desc="Region: Interface">
     /**
@@ -120,6 +126,7 @@ public class MainActivity extends AppCompatActivity
     public void iDeleteDialog(int whichDelete) {
         String bp = "";
         if(whichDelete == Resources.getInstance().getInteger(R.integer.rb_delete_all)) {
+            bp = "";
             // TBA - if meetings list showing then clear.
         } else if(whichDelete == Resources.getInstance().getInteger(R.integer.rb_delete_prev)) {
             // TBA - 
@@ -132,6 +139,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         registerReceiver();            // register network broadcast receiver.
+        DownloadRequestQueue.getInstance(this);
         Preferences.getInstance(this); // setup preferenxes access.
         Resources.getInstance(this);   // setup resources access.
         setBaseUI();                   // set screen elements.
@@ -156,6 +164,7 @@ public class MainActivity extends AppCompatActivity
         unRegisterReceiver();
         Preferences.getInstance().destroy();
         Resources.getInstance().destroy();
+        DownloadRequestQueue.getInstance().destroy();
     }
     //</editor-fold>
 
@@ -215,6 +224,17 @@ public class MainActivity extends AppCompatActivity
     }
     //</editor-fold>
 
+
+    @Override
+    public void onResponse(Object response) {
+        String bp = "";
+    }
+
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        String err = error.getMessage();
+    }
+
     //<editor-fold defaultstate="collapsed" desc="Region: Utility">
     private void loadMeetingsFragment() {
         String fragment_tag = Resources.getInstance().getString(R.string.meetings_fragment_tag);
@@ -226,31 +246,33 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void getMeetingsOnDay(@Nullable String[] date) {
-        URL url = null;
-        String msg = null;
-        if(date == null) {
-            try {
-                msg = Resources.getInstance().getString(R.string.raceday_download_msg) +
-                      Resources.getInstance().getString(R.string.download_msg_warn) ;
-                url = new URL(createRaceDayUrl(null));
-            } catch (MalformedURLException ex) {
-                Log.d("", ex.getMessage());
-            }
-        } else {
-            try {
-                msg = Resources.getInstance().getString(R.string.raceday_download_withdate_msg) +
-                      " " + (date[2] + "/" + date[1] + "/" + date[0]) +
-                      Resources.getInstance().getString(R.string.download_msg_warn);
-                url = new URL(createRaceDayUrl(date));
-            } catch (MalformedURLException ex) {
-                Log.d("", ex.getMessage());
-            }
-        }
-        DownloadData dld = new DownloadData(this, url, msg, SchemaConstants.MEETINGS_TABLE);
-        dld.downloadResult = this;
-        dld.execute();
+//        URL url = null;
+//        String msg = null;
+//        if(date == null) {
+//            try {
+//                msg = Resources.getInstance().getString(R.string.raceday_download_msg) +
+//                      Resources.getInstance().getString(R.string.download_msg_warn) ;
+//                url = new URL(createRaceDayUrl(null));
+//            } catch (MalformedURLException ex) {
+//                Log.d("", ex.getMessage());
+//            }
+//        } else {
+//            try {
+//                msg = Resources.getInstance().getString(R.string.raceday_download_withdate_msg) +
+//                      " " + (date[2] + "/" + date[1] + "/" + date[0]) +
+//                      Resources.getInstance().getString(R.string.download_msg_warn);
+//                url = new URL(createRaceDayUrl(date));
+//            } catch (MalformedURLException ex) {
+//                Log.d("", ex.getMessage());
+//            }
+//        }
+        DownloadRequest dlReq = new DownloadRequest(Request.Method.GET, createRaceDayUrl(null), this);
+        DownloadRequestQueue.getInstance().addToRequestQueue(dlReq);
 
-    }
+//        DownloadData dld = new DownloadData(this, url, msg, SchemaConstants.MEETINGS_TABLE);
+//        dld.downloadResult = this;
+//        dld.execute();
+}
 
     private void getRacesOnDay(@Nullable String[] date) {
         // TBA
