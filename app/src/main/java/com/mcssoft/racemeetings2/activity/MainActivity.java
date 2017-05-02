@@ -1,9 +1,11 @@
 package com.mcssoft.racemeetings2.activity;
 
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -172,7 +174,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        Toast.makeText(this, "Volley error: " + error.getMessage(), Toast.LENGTH_LONG).show();
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if(networkInfo == null || (!networkInfo.isAvailable() && !networkInfo.isConnected())) {
+            showNetworkDialog();
+        }
     }
     //</editor-fold>
 
