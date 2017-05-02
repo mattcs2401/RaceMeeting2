@@ -1,19 +1,24 @@
 package com.mcssoft.racemeetings2.activity;
 
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.database.DatabaseOperations;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.fragment.RacesFragment;
-import com.mcssoft.racemeetings2.utility.RaceDate;
+import com.mcssoft.racemeetings2.network.DownloadRequest;
+import com.mcssoft.racemeetings2.network.DownloadRequestQueue;
 import com.mcssoft.racemeetings2.utility.Resources;
+import com.mcssoft.racemeetings2.utility.Url;
 
-public class RacesActivity extends AppCompatActivity {
+public class RacesActivity extends AppCompatActivity
+        implements Response.ErrorListener, Response.Listener {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -26,36 +31,25 @@ public class RacesActivity extends AppCompatActivity {
                 .getString(R.string.meetings_db_rowid_key));
 
         if (!checkRaceExists(dbRowId)) {
-            downloadRawMeetingData(dbRowId);
+            String[] details = getMeetingCodeAndDate(dbRowId);
+            Url url = new Url();
+            String[] dateComp = url.getDateComponents(details[1]);
+            String uri = url.createMeetingUrl(dateComp, details[0]);
+
+            DownloadRequest dlReq = new DownloadRequest(Request.Method.GET, uri, this, this, this,
+                    SchemaConstants.RACES_TABLE);
+            DownloadRequestQueue.getInstance().addToRequestQueue(dlReq);
         }
     }
 
-    private void downloadRawMeetingData(int dbRowId) {
-        String msg = "";
-        String[] details = getMeetingCodeAndDate(dbRowId);
-        RaceDate rd = new RaceDate();
-        String[] dateComp = rd.getDateComponents(details[1]);
-        try {
-            msg = createDownloadMessage(dateComp, details[0]);
-//            URL url = new URL(createMeetingUrl(dateComp, details[0]));
-
-//            DownloadData dld = new DownloadData(this, url, msg, SchemaConstants.RACES_TABLE);
-//            dld.downloadResult = this;
-//            dld.execute();
-        } catch(Exception ex) {
-            // TBA
-        }
+    @Override
+    public void onResponse(Object response) {
+        String bp = "";
     }
 
-    private String createMeetingUrl(String[] date, String code) {
-        Uri.Builder builder = new Uri.Builder();
-        builder.encodedPath(Resources.getInstance().getString(R.string.base_path))
-                .appendPath(date[0])
-                .appendPath(date[1])
-                .appendPath(date[2])
-                .appendPath(code + ".xml");
-        builder.build();
-        return builder.toString();
+    @Override
+    public void onErrorResponse(VolleyError error) {
+
     }
 
     private String[] getMeetingCodeAndDate(int dbRowId) {
@@ -68,12 +62,6 @@ public class RacesActivity extends AppCompatActivity {
         details[0] = cursor.getString(cursor.getColumnIndex(SchemaConstants.MEETING_CODE));
         details[1] = cursor.getString(cursor.getColumnIndex(SchemaConstants.MEETING_DATE));
         return details;
-    }
-
-    private String createDownloadMessage(String[] date, String code) {
-        return Resources.getInstance().getString(R.string.raceday_download_msg) + " "
-               + code + " on " + (date[2] + "/" + date[1] + "/" + date[0])
-               + Resources.getInstance().getString(R.string.download_msg_warn);
     }
 
     private boolean checkRaceExists(int dbRowId) {

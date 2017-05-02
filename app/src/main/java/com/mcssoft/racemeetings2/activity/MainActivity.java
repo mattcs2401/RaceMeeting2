@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
@@ -17,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -35,8 +33,8 @@ import com.mcssoft.racemeetings2.network.DownloadRequest;
 import com.mcssoft.racemeetings2.network.DownloadRequestQueue;
 import com.mcssoft.racemeetings2.network.NetworkReceiver;
 import com.mcssoft.racemeetings2.utility.Preferences;
-import com.mcssoft.racemeetings2.utility.RaceDate;
 import com.mcssoft.racemeetings2.utility.Resources;
+import com.mcssoft.racemeetings2.utility.Url;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -195,34 +193,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void getMeetingsOnDay(@Nullable String[] date) {
-        String url = null;
-        String msg = null;
+        String uri = null;
+        Url url = new Url();
         if(date == null) {
-            url = createRaceDayUrl(null);
+            uri = url.createRaceDayUrl(null);
         } else {
-            url = createRaceDayUrl(date);
+            uri = url.createRaceDayUrl(date);
         }
-        DownloadRequest dlReq = new DownloadRequest(Request.Method.GET, url, this, this, this, SchemaConstants.MEETINGS_TABLE);
+        DownloadRequest dlReq = new DownloadRequest(Request.Method.GET, uri, this, this, this, SchemaConstants.MEETINGS_TABLE);
         DownloadRequestQueue.getInstance().addToRequestQueue(dlReq);
-}
-
-    private void getRacesOnDay(@Nullable String[] date) {
-        // TBA
-    }
-
-    private String createRaceDayUrl(@Nullable String[] date) {
-        if(date == null) {
-            RaceDate raceDate = new RaceDate();
-            date = raceDate.getDateComponents(null);
-        }
-        Uri.Builder builder = new Uri.Builder();
-        builder.encodedPath(Resources.getInstance().getString(R.string.base_path))
-               .appendPath(date[0])
-               .appendPath(date[1])
-               .appendPath(date[2])
-               .appendPath(Resources.getInstance().getString(R.string.race_day_listing));
-        builder.build();
-        return builder.toString();
     }
 
     private void setBaseUI() {

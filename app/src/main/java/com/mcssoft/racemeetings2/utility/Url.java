@@ -1,23 +1,46 @@
 package com.mcssoft.racemeetings2.utility;
 
-
+import android.net.Uri;
 import android.support.annotation.Nullable;
 
-import java.text.DateFormat;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
+import com.mcssoft.racemeetings2.R;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-public class RaceDate {
+/**
+ * Utility class to create download Urls.
+ */
+public class Url {
 
-    public RaceDate() { }
+    public void Url() { }
 
-    /**
-     * Get today's date as YYYY MM DD
-     * @return [0]=YYYY, [1]=M(M), [2]=D(D)
-     */
+    public String createRaceDayUrl(@Nullable String[] date) {
+        if(date == null) {
+            date = getDateComponents(null);
+        }
+        Uri.Builder builder = new Uri.Builder();
+        builder.encodedPath(Resources.getInstance().getString(R.string.base_path))
+                .appendPath(date[0])
+                .appendPath(date[1])
+                .appendPath(date[2])
+                .appendPath(Resources.getInstance().getString(R.string.race_day_listing));
+        builder.build();
+        return builder.toString();
+    }
+
+    public String createMeetingUrl(String[] date, String code) {
+        Uri.Builder builder = new Uri.Builder();
+        builder.encodedPath(Resources.getInstance().getString(R.string.base_path))
+                .appendPath(date[0])
+                .appendPath(date[1])
+                .appendPath(date[2])
+                .appendPath(code + ".xml");
+        builder.build();
+        return builder.toString();
+    }
+
     public String[] getDateComponents(@Nullable String raceDate) {
         String[] date = new String[3];
         if(raceDate == null) {
