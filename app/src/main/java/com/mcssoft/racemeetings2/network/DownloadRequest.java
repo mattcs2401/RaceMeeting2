@@ -11,6 +11,7 @@ import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.database.DatabaseOperations;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.model.Meeting;
+import com.mcssoft.racemeetings2.model.Race;
 import com.mcssoft.racemeetings2.utility.Resources;
 import com.mcssoft.racemeetings2.utility.XmlParser;
 
@@ -37,6 +38,7 @@ public class DownloadRequest<T> extends Request<List> {
     @Override
     protected Response<List> parseNetworkResponse(NetworkResponse response) {
         List theResult = null;
+        List weather = null;                // additional weather info.
         XmlParser parser = new XmlParser();
         InputStream instream = new ByteArrayInputStream(response.data);
 
@@ -48,12 +50,16 @@ public class DownloadRequest<T> extends Request<List> {
                             .getString(R.string.meetings_xml_tag), instream);
                     break;
                 case SchemaConstants.RACES_TABLE:
+                    weather = parser.parse("weather", instream);
                     theResult = parser.parse(Resources.getInstance()
                             .getString(R.string.races_xml_tag), instream);
                     break;
             }
             // Write the results to the database (if don't already exist).
-            checkOrInsert(theResult, output);
+            if (weather != null) {
+                checkOrInsert(weather, SchemaConstants.MEETINGS_TABLE, true);
+            }
+            checkOrInsert(theResult, output, false);
         } catch(Exception ex) {
             Log.d(this.getClass().getCanonicalName(), ex.getMessage());
         } finally {
@@ -73,27 +79,30 @@ public class DownloadRequest<T> extends Request<List> {
         errorListener.onErrorResponse(error);
     }
 
-    private boolean checkOrInsert(List theList, String output) {
+    private boolean checkOrInsert(List theList, String output, boolean hasWeather) {
         DatabaseOperations dbOper = new DatabaseOperations(context);
         switch (output) {
             case SchemaConstants.MEETINGS_TABLE:
                 for(Object object : theList) {
                     Meeting meeting = ((Meeting) object);
-                    if(!dbOper.checkRecordExists(SchemaConstants.MEETINGS_TABLE, SchemaConstants.MEETING_ID,
-                            meeting.getMeetingId())) {
+                    if(!dbOper.checkRecordExists(SchemaConstants.MEETINGS_TABLE,
+                                                 SchemaConstants.MEETING_ID,
+                                                 meeting.getMeetingId())) {
                         dbOper.insertMeetingRecord(meeting);
+                    } else if(hasWeather) {
+                        dbOper.updateMeetingRecordWeather(meeting);
                     }
                 }
                 break;
-//            case SchemaConstants.RACES_TABLE:
-//                for(Object object : theList) {
-//                    Meeting meeting = ((Meeting) object);
-//                    if(!dbOper.checkRecordExists(SchemaConstants.RACES_TABLE, SchemaConstants.RACE_,
-//                            meeting.getMeetingId())) {
-//                        dbOper.insertMeetingRecord(meeting);
-//                    }
-//                }
-//                break;
+            case SchemaConstants.RACES_TABLE:
+                for(Object object : theList) {
+                    Race race = ((Race) object);
+                    if(!dbOper.checkRecordExists(SchemaConstants.RACES_TABLE,
+                            SchemaConstants.RACE_MEETING_ID, race.getMeetingId())) {
+                        dbOper.insertRaceRecord(race);
+                    }
+                }
+                break;
         }
         return dbOper.checkTableRowCount(output);
     }

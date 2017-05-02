@@ -49,7 +49,7 @@ public class RacesActivity extends AppCompatActivity
 
     @Override
     public void onErrorResponse(VolleyError error) {
-
+        String bp = "";
     }
 
     private String[] getMeetingCodeAndDate(int dbRowId) {
@@ -67,13 +67,13 @@ public class RacesActivity extends AppCompatActivity
     private boolean checkRaceExists(int dbRowId) {
         DatabaseOperations dbOper = new DatabaseOperations(this);
         Cursor cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE,
-                new String[] {SchemaConstants.MEETING_ID},
-                SchemaConstants.WHERE_MEETING_ROWID, new String[] {Integer.toString(dbRowId)});
+                new String[] {SchemaConstants.MEETING_ID}, SchemaConstants.WHERE_MEETING_ROWID,
+                new String[] {Integer.toString(dbRowId)});
         cursor.moveToFirst();
         String meetingId = cursor.getString(cursor.getColumnIndex(SchemaConstants.MEETING_ID));
 
         return dbOper.checkRecordExists(SchemaConstants.RACES_TABLE,
-                SchemaConstants.RACE_MEETING_ID, meetingId);
+                                        SchemaConstants.RACE_MEETING_ID, meetingId);
     }
 
     private void setBaseUI() {

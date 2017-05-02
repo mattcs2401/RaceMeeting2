@@ -1,7 +1,16 @@
 package com.mcssoft.racemeetings2.model;
 
 /**
- * Class to model a race.
+ * Class to model a Race (within a Meetying).
+ *
+ * Derived from: https://tatts.com/pagedata/racing/YYYY/M(M)/D(D)/<code>.xml
+ * <RaceDay>
+ *     <Meeting>
+ *         <Race> ... </Race>
+ *         . . .
+ *     </Meeting>
+ *     . . .
+ * </RaceDay>
  */
 public class Race {
 

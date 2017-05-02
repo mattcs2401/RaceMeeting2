@@ -1,5 +1,6 @@
 package com.mcssoft.racemeetings2.utility;
 
+import android.support.annotation.Nullable;
 import android.util.Xml;
 
 import com.mcssoft.racemeetings2.model.Meeting;
@@ -40,7 +41,12 @@ public class XmlParser {
                 case "Meetings":
                     list = parseForMeetings();
                     break;
+                case "weather":
+                    // special case, parse just the meeting id and weather info.
+                    list = parseForMeetingWeather();
+                    break;
                 case "Races":
+                    // parse the race info, uses same input as 'weather'.
                     list = parseForRaces();
                     break;
             }
@@ -51,6 +57,7 @@ public class XmlParser {
     }
 
     private List parseForMeetings() throws XmlPullParserException, IOException {
+        // derived from RaceDay.xml
         List entries = new ArrayList();
 
         parser.require(XmlPullParser.START_TAG, nameSpace, "RaceDay");
@@ -68,7 +75,7 @@ public class XmlParser {
         return entries;
     }
 
-    private List parseForRaces() throws XmlPullParserException, IOException {
+    private List parseForMeetingWeather() throws XmlPullParserException, IOException {
         List entries = new ArrayList();
 
         parser.require(XmlPullParser.START_TAG, nameSpace, "RaceDay");
@@ -76,7 +83,23 @@ public class XmlParser {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
-            //String name = parser.getName();           // debugging purposes.
+            if (parser.getName().equals("Meeting")) {
+                entries.add(readMeeting(null));
+            } else {
+                skip();
+            }
+        }
+        return entries;
+    }
+
+    private List parseForRaces() throws XmlPullParserException, IOException {
+        // derived from <race_code>.xml
+        List entries = new ArrayList();
+        parser.require(XmlPullParser.START_TAG, nameSpace, "RaceDay");
+        while (parser.next() != XmlPullParser.END_DOCUMENT) { //TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
             if (parser.getName().equals("Race")) {
                 entries.add(readRace());
             } else {
@@ -86,20 +109,31 @@ public class XmlParser {
         return entries;
     }
 
-    private Meeting readMeeting(String date) throws XmlPullParserException, IOException {
+    private Meeting readMeeting(@Nullable String date) throws XmlPullParserException, IOException {
         Meeting meeting = new Meeting();
-        meeting.setMeetingDate((date.split("T"))[0]); // format "2017-04-16T00:00:00"
-        meeting.setAbandoned(parser.getAttributeValue(nameSpace,"Abandoned"));
-        meeting.setVenueName(parser.getAttributeValue(nameSpace,"VenueName"));
-        meeting.setHiRaceNo(parser.getAttributeValue(nameSpace, "HiRaceNo"));
-        meeting.setMeetingCode(parser.getAttributeValue(nameSpace,"MeetingCode"));
         meeting.setMeetingId(parser.getAttributeValue(nameSpace, "MtgId"));
+        if(date != null) {
+            // essentially a new Meeting record.
+            meeting.setMeetingDate((date.split("T"))[0]); // format "2017-04-16T00:00:00"
+            meeting.setAbandoned(parser.getAttributeValue(nameSpace, "Abandoned"));
+            meeting.setVenueName(parser.getAttributeValue(nameSpace, "VenueName"));
+            meeting.setHiRaceNo(parser.getAttributeValue(nameSpace, "HiRaceNo"));
+            meeting.setMeetingCode(parser.getAttributeValue(nameSpace, "MeetingCode"));
+        } else {
+            // only weather info.
+            meeting.setTrackDescription(parser.getAttributeValue(nameSpace, "TrackDesc"));
+            meeting.setTrackRating(parser.getAttributeValue(nameSpace, "TrackRating"));
+            meeting.setTrackWeather(parser.getAttributeValue(nameSpace, "WeatherDesc"));
+        }
         return meeting;
     }
 
     private Race readRace() {
         Race race = new Race();
-
+        race.setRaceNumber(parser.getAttributeValue(nameSpace,"RaceNo"));
+        race.setRaceTime((parser.getAttributeValue(nameSpace,"RaceTime")).split("T")[1]);
+        race.setRaceName(parser.getAttributeValue(nameSpace,"RaceName"));
+        race.setRaceDistance(parser.getAttributeValue(nameSpace,"Distance"));
         return race;
     }
 
