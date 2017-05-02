@@ -61,10 +61,7 @@ public class MainActivity extends AppCompatActivity
     public void iDeleteDialog(int whichDelete) {
         if(whichDelete == Resources.getInstance().getInteger(R.integer.rb_delete_all)) {
             // 'Delete all' option selected.
-            isEmptyView = true;
-            Bundle args = new Bundle();
-            args.putBoolean("meetings_empty_view_key", isEmptyView);
-            loadMeetingsFragment(args);
+            loadMeetingsFragment(setEmptyView());
         } else if(whichDelete == Resources.getInstance().getInteger(R.integer.rb_delete_prev)) {
             // TBA - 
         }
@@ -90,7 +87,9 @@ public class MainActivity extends AppCompatActivity
         } else {*/
             DatabaseOperations dbOper = new DatabaseOperations(this);
             if(dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE)) {
-                String bp = "";
+                loadMeetingsFragment(null);
+            } else {
+                loadMeetingsFragment(setEmptyView());
             }
             // TODO - check prefs to load today's meeting information (else display message ?).
     }
@@ -268,6 +267,13 @@ public class MainActivity extends AppCompatActivity
         if (receiver != null) {
             this.unregisterReceiver(receiver);
         }
+    }
+
+    private Bundle setEmptyView() {
+        isEmptyView = true;
+        Bundle args = new Bundle();
+        args.putBoolean("meetings_empty_view_key", isEmptyView);
+        return args;
     }
     //</editor-fold>
 
