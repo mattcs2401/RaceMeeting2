@@ -13,10 +13,8 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -29,57 +27,21 @@ import com.mcssoft.racemeetings2.dialog.NetworkDialog;
 import com.mcssoft.racemeetings2.fragment.DateSelectFragment;
 import com.mcssoft.racemeetings2.fragment.MeetingsFragment;
 import com.mcssoft.racemeetings2.interfaces.IDeleteDialog;
-import com.mcssoft.racemeetings2.interfaces.IDownloadResult;
 import com.mcssoft.racemeetings2.interfaces.IDateSelect;
-import com.mcssoft.racemeetings2.interfaces.IParseResult;
-import com.mcssoft.racemeetings2.interfaces.IWriteResult;
-import com.mcssoft.racemeetings2.network.DownloadData;
 import com.mcssoft.racemeetings2.network.DownloadRequest;
 import com.mcssoft.racemeetings2.network.DownloadRequestQueue;
 import com.mcssoft.racemeetings2.network.NetworkReceiver;
-import com.mcssoft.racemeetings2.utility.ParseResult;
 import com.mcssoft.racemeetings2.utility.Preferences;
 import com.mcssoft.racemeetings2.utility.RaceDate;
 import com.mcssoft.racemeetings2.utility.Resources;
-import com.mcssoft.racemeetings2.utility.WriteResult;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-                   IDownloadResult,
                    IDateSelect,
-                   IParseResult,
-                   IWriteResult,
                    IDeleteDialog,
                    Response.ErrorListener, Response.Listener {
 
     //<editor-fold defaultstate="collapsed" desc="Region: Interface">
-    /**
-     * Result from async task DownloadData returns here.
-     * @param output Indicator of what the results are for.
-     * @param results Results of the operation.
-     */
-    @Override
-    public void downloadResult(String output, String results) {
-        String message;
-        String[] result = results.split(":");
-        if((result != null) && (result[0].equals("Exception"))) {
-            // TODO - somesort of alert type dialog that has options.
-            Toast.makeText(this, "Error: " + result[1], Toast.LENGTH_SHORT).show();
-        } else {
-            message = Resources.getInstance().getString(R.string.raceday_meetinginfo_dowload_msg);
-            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-
-            message = Resources.getInstance().getString(R.string.raceday_meeting_process_msg);
-            ParseResult parseResult = new ParseResult(this, message, results, output);
-            parseResult.iResult = this;
-            parseResult.execute();
-        }
-    }
-
     /**
      * Results of the DateSelectFragment returns here.
      * @param values [0] YYYY, [1] M(M), [2] D(D)
@@ -87,35 +49,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void iDateValues(String[] values) {
         getMeetingsOnDay(values);
-    }
-
-    /**
-     * Results of ParseResult return here.
-     * @param output     What the operation is associated with..
-     * @param resultList A list of parsed objects (from xml feed).
-     */
-    @Override
-    public void parseResult(String output, List resultList) {
-        WriteResult wr = null;
-        switch(output) {
-            case SchemaConstants.MEETINGS_TABLE:
-                wr = new WriteResult(this, "write result message meetings",
-                        resultList, SchemaConstants.MEETINGS_TABLE);
-                break;
-            case SchemaConstants.RACES_TABLE:
-                wr = new WriteResult(this, "write result message races",
-                        resultList, SchemaConstants.RACES_TABLE);
-                break;
-        }
-        wr.writeResult = this;
-        wr.execute();
-    }
-
-    @Override
-    public void writeResult(String output, boolean result) {
-        if(result) {
-            loadMeetingsFragment();
-        }
     }
 
     /**
@@ -224,10 +157,13 @@ public class MainActivity extends AppCompatActivity
     }
     //</editor-fold>
 
-
+    /**
+     *
+     * @param response
+     */
     @Override
     public void onResponse(Object response) {
-        String bp = "";
+        loadMeetingsFragment();
     }
 
     @Override
@@ -246,32 +182,15 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void getMeetingsOnDay(@Nullable String[] date) {
-//        URL url = null;
-//        String msg = null;
-//        if(date == null) {
-//            try {
-//                msg = Resources.getInstance().getString(R.string.raceday_download_msg) +
-//                      Resources.getInstance().getString(R.string.download_msg_warn) ;
-//                url = new URL(createRaceDayUrl(null));
-//            } catch (MalformedURLException ex) {
-//                Log.d("", ex.getMessage());
-//            }
-//        } else {
-//            try {
-//                msg = Resources.getInstance().getString(R.string.raceday_download_withdate_msg) +
-//                      " " + (date[2] + "/" + date[1] + "/" + date[0]) +
-//                      Resources.getInstance().getString(R.string.download_msg_warn);
-//                url = new URL(createRaceDayUrl(date));
-//            } catch (MalformedURLException ex) {
-//                Log.d("", ex.getMessage());
-//            }
-//        }
-        DownloadRequest dlReq = new DownloadRequest(Request.Method.GET, createRaceDayUrl(null), this);
+        String url = null;
+        String msg = null;
+        if(date == null) {
+            url = createRaceDayUrl(null);
+        } else {
+            url = createRaceDayUrl(date);
+        }
+        DownloadRequest dlReq = new DownloadRequest(Request.Method.GET, url, this, this, this, SchemaConstants.MEETINGS_TABLE);
         DownloadRequestQueue.getInstance().addToRequestQueue(dlReq);
-
-//        DownloadData dld = new DownloadData(this, url, msg, SchemaConstants.MEETINGS_TABLE);
-//        dld.downloadResult = this;
-//        dld.execute();
 }
 
     private void getRacesOnDay(@Nullable String[] date) {

@@ -10,21 +10,10 @@ import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.database.DatabaseOperations;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.fragment.RacesFragment;
-import com.mcssoft.racemeetings2.interfaces.IDownloadResult;
-import com.mcssoft.racemeetings2.network.DownloadData;
 import com.mcssoft.racemeetings2.utility.RaceDate;
 import com.mcssoft.racemeetings2.utility.Resources;
 
-import java.net.URL;
-
-public class RacesActivity extends AppCompatActivity
-        implements IDownloadResult {
-
-    public void downloadResult(String table, String results) {
-        // method downloadRawMeetingData returns here.
-        String meetingId = "";
-        
-    }
+public class RacesActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,11 +37,11 @@ public class RacesActivity extends AppCompatActivity
         String[] dateComp = rd.getDateComponents(details[1]);
         try {
             msg = createDownloadMessage(dateComp, details[0]);
-            URL url = new URL(createMeetingUrl(dateComp, details[0]));
+//            URL url = new URL(createMeetingUrl(dateComp, details[0]));
 
-            DownloadData dld = new DownloadData(this, url, msg, SchemaConstants.RACES_TABLE);
-            dld.downloadResult = this;
-            dld.execute();
+//            DownloadData dld = new DownloadData(this, url, msg, SchemaConstants.RACES_TABLE);
+//            dld.downloadResult = this;
+//            dld.execute();
         } catch(Exception ex) {
             // TBA
         }
