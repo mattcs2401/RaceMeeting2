@@ -25,7 +25,15 @@ public class MeetingsFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.meetings_fragment, container, false);
+        Bundle args = getArguments();
+        if(args != null) {
+            isEmptyView = args.getBoolean("meetings_empty_view_key");
+            if(isEmptyView) {
+                rootView = inflater.inflate(R.layout.meetings_fragment_empty, container, false);
+            }
+        } else {
+            rootView = inflater.inflate(R.layout.meetings_fragment, container, false);
+        }
         return rootView;
     }
 
@@ -36,7 +44,10 @@ public class MeetingsFragment extends Fragment
         cursor = dbOper.getAllFromTable(SchemaConstants.MEETINGS_TABLE);
 
         setMeetingAdapter();
-        setRecyclerView(rootView);
+
+        if(!isEmptyView) {
+            setRecyclerView(rootView);
+        }
     }
 
     @Override
@@ -77,13 +88,17 @@ public class MeetingsFragment extends Fragment
 
     private void setMeetingAdapter() {
         meetingsAdapter = new MeetingsAdapter();
-        meetingsAdapter.setOnItemClickListener(this);
-//        meetingsAdapter.setOnItemLongClickListener(this);
-        meetingsAdapter.swapCursor(cursor);
-        if(cursor.getCount() == 0) {
+        if(isEmptyView) {
             meetingsAdapter.setEmptyView(true);
         } else {
-            meetingsAdapter.setEmptyView(false);
+            meetingsAdapter.setOnItemClickListener(this);
+//        meetingsAdapter.setOnItemLongClickListener(this);
+            meetingsAdapter.swapCursor(cursor);
+            if (cursor.getCount() == 0) {
+                meetingsAdapter.setEmptyView(true);
+            } else {
+                meetingsAdapter.setEmptyView(false);
+            }
         }
     }
 
@@ -94,6 +109,7 @@ public class MeetingsFragment extends Fragment
     }
 
     private int position;
+    private boolean isEmptyView;
     private View rootView;
     private Cursor cursor;
     private MeetingsAdapter meetingsAdapter;

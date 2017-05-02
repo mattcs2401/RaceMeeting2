@@ -31,7 +31,7 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
 
     @Override
     public int getItemCount() {
-        if(emptyView) {
+        if(isEmptyView) {
             return  1; // need to do this so the onCreateViewHolder fires.
         } else {
             if(cursor != null) {
@@ -69,8 +69,8 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
 
     public Cursor getCursor() { return cursor; }
 
-    public void setEmptyView(boolean emptyView) {
-        this.emptyView = emptyView;
+    public void setEmptyView(boolean isEmptyView) {
+        this.isEmptyView = isEmptyView;
     }
 
     private void adapaterOnBindViewHolder(MeetingsViewHolder holder, int position) {
@@ -82,7 +82,7 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
 
     private View view;
     private Cursor cursor;
-    private boolean emptyView;
+    private boolean isEmptyView;
 
     private int idColNdx;
     private int meetingCodeNdx;

@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -37,9 +38,8 @@ import com.mcssoft.racemeetings2.utility.Resources;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-                   IDateSelect,
-                   IDeleteDialog,
-                   Response.ErrorListener, Response.Listener {
+                   Response.ErrorListener, Response.Listener,
+                   IDateSelect, IDeleteDialog {
 
     //<editor-fold defaultstate="collapsed" desc="Region: Interface">
     /**
@@ -57,10 +57,12 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void iDeleteDialog(int whichDelete) {
-        String bp = "";
         if(whichDelete == Resources.getInstance().getInteger(R.integer.rb_delete_all)) {
-            bp = "";
-            // TBA - if meetings list showing then clear.
+            // 'Delete all' option selected.
+            isEmptyView = true;
+            Bundle args = new Bundle();
+            args.putBoolean("meetings_empty_view_key", isEmptyView);
+            loadMeetingsFragment(args);
         } else if(whichDelete == Resources.getInstance().getInteger(R.integer.rb_delete_prev)) {
             // TBA - 
         }
@@ -157,24 +159,30 @@ public class MainActivity extends AppCompatActivity
     }
     //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Listeners">
     /**
      *
      * @param response
      */
     @Override
     public void onResponse(Object response) {
-        loadMeetingsFragment();
+        // TODO - what if some Volley error happened?
+        loadMeetingsFragment(null);
     }
 
     @Override
     public void onErrorResponse(VolleyError error) {
-        String err = error.getMessage();
+        Toast.makeText(this, "Volley error: " + error.getMessage(), Toast.LENGTH_LONG).show();
     }
+    //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Region: Utility">
-    private void loadMeetingsFragment() {
+    private void loadMeetingsFragment(@Nullable Bundle args) {
         String fragment_tag = Resources.getInstance().getString(R.string.meetings_fragment_tag);
         MeetingsFragment meetingsFragment = new MeetingsFragment();
+        if(args != null) {
+            meetingsFragment.setArguments(args);
+        }
         getFragmentManager().beginTransaction()
                 .replace(R.id.id_content_main, meetingsFragment, fragment_tag)
                 .addToBackStack(fragment_tag)
@@ -257,5 +265,6 @@ public class MainActivity extends AppCompatActivity
     }
     //</editor-fold>
 
+    private boolean isEmptyView;
     private NetworkReceiver receiver = new NetworkReceiver();
 }
