@@ -52,7 +52,7 @@ public class DownloadRequest<T> extends Request<List> {
                 case SchemaConstants.RACES_TABLE:
                     weather = parser.parse("weather", instream);
                     theResult = parser.parse(Resources.getInstance()
-                            .getString(R.string.races_xml_tag), instream);
+                            .getString(R.string.races_xml_tag), new ByteArrayInputStream(response.data));
                     break;
             }
             // Write the results to the database (if don't already exist).
