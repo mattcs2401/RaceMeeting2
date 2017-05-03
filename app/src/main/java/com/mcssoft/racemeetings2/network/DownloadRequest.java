@@ -58,6 +58,7 @@ public class DownloadRequest<T> extends Request<List> {
             // Write the results to the database (if don't already exist).
             if (weather != null) {
                 checkOrInsert(weather, SchemaConstants.MEETINGS_TABLE, true);
+                theResult = mergeMeetingId(weather, theResult);
             }
             checkOrInsert(theResult, output, false);
         } catch(Exception ex) {
@@ -105,6 +106,15 @@ public class DownloadRequest<T> extends Request<List> {
                 break;
         }
         return dbOper.checkTableRowCount(output);
+    }
+
+    private List mergeMeetingId(List weather, List theResult) {
+        Meeting meeting = (Meeting) weather.get(0);
+        for(Object object : theResult) {
+            Race race = (Race) object;
+            race.setMeetingId(meeting.getMeetingId());
+        }
+        return theResult;
     }
 
     private String output;
