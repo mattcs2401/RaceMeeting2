@@ -9,7 +9,6 @@ import com.mcssoft.racemeetings2.model.Race;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -19,48 +18,36 @@ import java.util.List;
 
 public class XmlParser {
 
-    public XmlParser() {
+    public XmlParser(InputStream inputStream) throws XmlPullParserException, IOException {
         nameSpace = null;
         parser = Xml.newPullParser();
+        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+        parser.setInput(inputStream, null);
+        parser.nextTag();
     }
 
     /**
      * Parse the feed xml into a list of objects that represent the feed elements.
      * @param feed The feed to read (e.g. Meeting or Race).
-     * @param in The input stream associated with the feed.
      * @return A list of objects representing the feed elements.
      * @throws XmlPullParserException
      * @throws IOException
      */
-    public List parse(String feed, InputStream in) throws XmlPullParserException, IOException {
+    public List parse(String feed) throws XmlPullParserException, IOException {
         List list = null;
-        try {
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-//            parser.setInput(in, null);
-//            parser.nextTag();
-            switch(feed) {
-                case "Meetings":
-                    list = parseForMeetings(in);
-                    break;
-                case "weather":
-                    // special case, parse just the meeting id and weather info.
-                    list = parseForMeetingWeather(in);
-                    break;
-                case "Races":
-                    // parse the race info, uses same input as 'weather'.
-                    list = parseForRaces(in);
-                    break;
-            }
-            return list;
-        } finally {
-            in.close();
+        switch(feed) {
+            case "Meetings":
+                list = parseForMeetings(parser);
+                break;
+            case "Races":
+                list = parseForRaces(parser);
+                break;
         }
+        return list;
     }
 
-    private List parseForMeetings(InputStream in) throws XmlPullParserException, IOException {
+    private List parseForMeetings(XmlPullParser parser) throws XmlPullParserException, IOException {
         // derived from RaceDay.xml
-        parser.setInput(in, null);
-        parser.nextTag();
         List entries = new ArrayList();
 
         parser.require(XmlPullParser.START_TAG, nameSpace, "RaceDay");
@@ -78,58 +65,116 @@ public class XmlParser {
         return entries;
     }
 
-    private List parseForMeetingWeather(InputStream in) throws XmlPullParserException, IOException {
-        parser.setInput(in, null);
-        parser.nextTag();
-        List entries = new ArrayList();
+//    private List parseForMeetingWeather(InputStream in) throws XmlPullParserException, IOException {
+//        parser.setInput(in, null);
+//        parser.nextTag();
+//        List entries = new ArrayList();
+//
+//        parser.require(XmlPullParser.START_TAG, nameSpace, "RaceDay");
+//        while (parser.next() != XmlPullParser.END_DOCUMENT) { //TAG) {
+//            if (parser.getEventType() != XmlPullParser.START_TAG) {
+//                continue;
+//            }
+//            if (parser.getName().equals("Meeting")) {
+//                entries.add(readMeeting(null));
+//            } else {
+//                skip();
+//            }
+//        }
+//        return entries;
+//    }
+
+    private List parseForRaces(XmlPullParser parser) throws XmlPullParserException, IOException {
+        List meetings = new ArrayList();
+        List races = new ArrayList();
+        List theList = new ArrayList();
 
         parser.require(XmlPullParser.START_TAG, nameSpace, "RaceDay");
-        while (parser.next() != XmlPullParser.END_DOCUMENT) { //TAG) {
+        while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
-            if (parser.getName().equals("Meeting")) {
-                entries.add(readMeeting(null));
+            String name = parser.getName();
+            // Starts by looking for the Meeting tag
+            if (name.equals("Meeting")) {
+                meetings.add(readMeeting(parser), null);
+            } else if (name.equals("Pool")) {
+                // Note: this doesn;t seem to work, i.e. skipp all pool entries.
+                skip(parser);
+            } else if(name.equals("Race")) {
+                races.add(readRace(parser));
+                skip(parser);
+            } else if (name.equals("Tipster")) {
+                // nothig we want after this.
+                break;
             } else {
-                skip();
+                skip(parser);
             }
         }
-        return entries;
+        theList.add(meetings);
+        theList.add(races);
+        return theList;
+//        // TODO - seems to work but lot of redundant processing.
+//        // derived from <race_code>.xml
+//        List entries = new ArrayList();
+//        parser.require(XmlPullParser.START_TAG, nameSpace, "RaceDay");
+//        while (parser.next() != XmlPullParser.END_DOCUMENT) { //TAG) {
+//            if (parser.getEventType() != XmlPullParser.START_TAG) {
+//                continue;
+//            }
+//            parser.require(XmlPullParser.START_TAG, nameSpace, "Meeting");
+//            while (parser.next() != XmlPullParser.END_DOCUMENT) {
+//                if(parser.getEventType() != XmlPullParser.START_TAG) {
+//                    continue;
+//                }
+//
+//                String name = parser.getName();
+//                if(parser.getName().equals("Race")) {
+//                    entries.add(readRace());
+//                    skip();
+//                } else {
+//                    skip();
+//                }
+//            }
+//        }
+//        return entries;
     }
+/*
+    private List readListing(XmlPullParser parser) throws XmlPullParserException, IOException {
+        List meetings = new ArrayList();
+        List races = new ArrayList();
+        List theList = new ArrayList();
 
-    private List parseForRaces(InputStream in) throws XmlPullParserException, IOException {
-        // TODO - seems to work but lot of redundant processing.
-        parser.setInput(in, null);
-        parser.nextTag();
-        // derived from <race_code>.xml
-        List entries = new ArrayList();
-        parser.require(XmlPullParser.START_TAG, nameSpace, "RaceDay");
-        while (parser.next() != XmlPullParser.END_DOCUMENT) { //TAG) {
+        parser.require(XmlPullParser.START_TAG, ns, "RaceDay");
+        while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
-            parser.require(XmlPullParser.START_TAG, nameSpace, "Meeting");
-            while (parser.next() != XmlPullParser.END_DOCUMENT) {
-                if(parser.getEventType() != XmlPullParser.START_TAG) {
-                    continue;
-                }
-
-                String name = parser.getName();
-                if(parser.getName().equals("Race")) {
-                    entries.add(readRace());
-                    skip();
-                } else {
-                    skip();
-                }
-//                if(parser.getEventType() == XmlPullParser.END_TAG) {
-//                    break;
-//                }
+            String name = parser.getName();
+            // Starts by looking for the Meeting tag
+            if (name.equals("Meeting")) {
+                meetings.add(readMeeting(parser));
+            } else if (name.equals("Pool")) {
+                // Note: this doesn;t seem to work, i.e. skipp all pool entries.
+                skip(parser);
+            } else if(name.equals("Race")) {
+                races.add(readRace(parser));
+                skip(parser);
+            } else if (name.equals("Tipster")) {
+                // nothig we want after this.
+                break;
+            } else {
+                skip(parser);
             }
         }
-        return entries;
+        theList.add(meetings);
+        theList.add(races);
+        return theList;
     }
+ */
 
-    private Meeting readMeeting(@Nullable String date) throws XmlPullParserException, IOException {
+
+    private Meeting readMeeting(XmlPullParser parser, @Nullable String date) throws XmlPullParserException, IOException {
         Meeting meeting = new Meeting();
         meeting.setMeetingId(parser.getAttributeValue(nameSpace, "MtgId"));
         if(date != null) {
@@ -148,7 +193,7 @@ public class XmlParser {
         return meeting;
     }
 
-    private Race readRace() {
+    private Race readRace(XmlPullParser parser) {
         Race race = new Race();
         race.setRaceNumber(parser.getAttributeValue(nameSpace,"RaceNo"));
         race.setRaceTime((parser.getAttributeValue(nameSpace,"RaceTime")).split("T")[1]);
@@ -157,12 +202,14 @@ public class XmlParser {
         return race;
     }
 
-    private void skip() throws XmlPullParserException, IOException {
+    private void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
         if (parser.getEventType() != XmlPullParser.START_TAG) {
             throw new IllegalStateException();
         }
         int depth = 1;
+        String name;
         while (depth != 0) {
+//            name  = parser.getName(); // testing
             switch (parser.next()) {
                 case XmlPullParser.END_TAG:
                     depth--;

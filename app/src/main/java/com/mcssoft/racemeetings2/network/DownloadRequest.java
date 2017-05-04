@@ -4,8 +4,8 @@ import android.content.Context;
 import android.util.Log;
 
 import com.android.volley.NetworkResponse;
-import com.android.volley.Response;
 import com.android.volley.Request;
+import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.database.DatabaseOperations;
@@ -39,20 +39,26 @@ public class DownloadRequest<T> extends Request<List> {
     protected Response<List> parseNetworkResponse(NetworkResponse response) {
         List theResult = null;
         List weather = null;                // additional weather info.
-        XmlParser parser = new XmlParser();
         InputStream instream = new ByteArrayInputStream(response.data);
+        XmlParser parser = null;
+
+        try {
+            parser = new XmlParser(instream);
+        } catch(Exception ex) {
+            Log.d(this.getClass().getCanonicalName(), ex.getMessage());
+        }
 
         try {
             // Parse the response into 'Meeting' or 'Race' objects.
             switch(output) {
                 case SchemaConstants.MEETINGS_TABLE:
                     theResult = parser.parse(Resources.getInstance()
-                            .getString(R.string.meetings_xml_tag), instream);
+                            .getString(R.string.meetings_xml_tag));
                     break;
                 case SchemaConstants.RACES_TABLE:
-                    weather = parser.parse("weather", instream);
+//                    weather = parser.parse("weather", instream);
                     theResult = parser.parse(Resources.getInstance()
-                            .getString(R.string.races_xml_tag), new ByteArrayInputStream(response.data));
+                            .getString(R.string.races_xml_tag)); //, new ByteArrayInputStream(response.data));
                     break;
             }
             // Write the results to the database (if don't already exist).

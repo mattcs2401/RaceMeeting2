@@ -200,6 +200,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             uri = url.createRaceDayUrl(date);
         }
+//        DownloadRequest dlReq = new DownloadRequest(Request.Method.GET, uri, this, this, this, SchemaConstants.MEETINGS_TABLE);
         DownloadRequest dlReq = new DownloadRequest(Request.Method.GET, uri, this, this, this, SchemaConstants.MEETINGS_TABLE);
         DownloadRequestQueue.getInstance().addToRequestQueue(dlReq);
     }
