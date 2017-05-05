@@ -38,7 +38,7 @@ public class DownloadRequest<T> extends Request<List> {
     @Override
     protected Response<List> parseNetworkResponse(NetworkResponse response) {
         List theResult = null;
-        List weather = null;                // additional weather info.
+        List meetingWeather = null;                // additional weather info.
         InputStream instream = new ByteArrayInputStream(response.data);
         XmlParser parser = null;
 
@@ -56,17 +56,23 @@ public class DownloadRequest<T> extends Request<List> {
                             .getString(R.string.meetings_xml_tag));
                     break;
                 case SchemaConstants.RACES_TABLE:
-//                    weather = parser.parse("weather", instream);
                     theResult = parser.parse(Resources.getInstance()
-                            .getString(R.string.races_xml_tag)); //, new ByteArrayInputStream(response.data));
+                            .getString(R.string.races_xml_tag));
+                    // Meeting weather info is 1st element, 2nd element contains Race objects.
+                    meetingWeather = (List) theResult.get(0);
+                    // Only want Race objects.
+                    theResult = theResult.subList(1, theResult.size());
                     break;
             }
             // Write the results to the database (if don't already exist).
-            if (weather != null) {
-                checkOrInsert(weather, SchemaConstants.MEETINGS_TABLE, true);
-                theResult = mergeMeetingId(weather, theResult);
+            if (meetingWeather != null) {
+                // put weather info into the Meeting record.
+                checkOrInsert(meetingWeather, SchemaConstants.MEETINGS_TABLE, true);
+                // put meeting id into Race records (meeting id is part of weather info).
+                theResult = mergeMeetingId((String) meetingWeather.get(0), theResult);
             }
             checkOrInsert(theResult, output, false);
+
         } catch(Exception ex) {
             Log.d(this.getClass().getCanonicalName(), ex.getMessage());
         } finally {
@@ -90,15 +96,20 @@ public class DownloadRequest<T> extends Request<List> {
         DatabaseOperations dbOper = new DatabaseOperations(context);
         switch (output) {
             case SchemaConstants.MEETINGS_TABLE:
-                for(Object object : theList) {
-                    Meeting meeting = ((Meeting) object);
-                    if(!dbOper.checkRecordExists(SchemaConstants.MEETINGS_TABLE,
-                                                 SchemaConstants.MEETING_ID,
-                                                 meeting.getMeetingId())) {
-                        dbOper.insertMeetingRecord(meeting);
-                    } else if(hasWeather) {
-                        dbOper.updateMeetingRecordWeather(meeting);
+                Meeting meeting = null;
+                if(!hasWeather) {
+                    for(Object object : theList) {
+                        // this is a new Meeting record.
+                        meeting = ((Meeting) object);
+                        if (!dbOper.checkRecordExists(SchemaConstants.MEETINGS_TABLE,
+                                SchemaConstants.MEETING_ID, meeting.getMeetingId())) {
+                            dbOper.insertMeetingRecord(meeting);
+                        }
                     }
+                } else {
+                    // Update existing Meeting record with weather info.
+                    meeting = createMeetingWeather(theList);
+                    dbOper.updateMeetingRecordWeather(meeting);
                 }
                 break;
             case SchemaConstants.RACES_TABLE:
@@ -114,13 +125,22 @@ public class DownloadRequest<T> extends Request<List> {
         return dbOper.checkTableRowCount(output);
     }
 
-    private List mergeMeetingId(List weather, List theResult) {
-        Meeting meeting = (Meeting) weather.get(0);
+    private List mergeMeetingId(String meetingId, List theResult) {
         for(Object object : theResult) {
             Race race = (Race) object;
-            race.setMeetingId(meeting.getMeetingId());
+            race.setMeetingId(meetingId);
         }
         return theResult;
+    }
+
+    private Meeting createMeetingWeather(List theList) {
+        Meeting meeting = new Meeting();
+        //[0]-meeting id, [1]-track desc, [2]-track rating, [3]-weather desc.
+        meeting.setMeetingId((String) theList.get(0));
+        meeting.setTrackDescription((String) theList.get(1));
+        meeting.setTrackRating((String) theList.get(2));
+        meeting.setTrackWeather((String) theList.get(3));
+        return meeting;
     }
 
     private String output;
