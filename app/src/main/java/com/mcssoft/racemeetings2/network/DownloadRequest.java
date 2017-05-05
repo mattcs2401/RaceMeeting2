@@ -12,6 +12,7 @@ import com.mcssoft.racemeetings2.database.DatabaseOperations;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.model.Meeting;
 import com.mcssoft.racemeetings2.model.Race;
+import com.mcssoft.racemeetings2.model.Runner;
 import com.mcssoft.racemeetings2.utility.Resources;
 import com.mcssoft.racemeetings2.utility.XmlParser;
 
@@ -26,10 +27,10 @@ import java.util.List;
 public class DownloadRequest<T> extends Request<List> {
 
     public DownloadRequest(int method, String url, Context context, Response.Listener listener,
-                           Response.ErrorListener errorListener, String output) {
+                           Response.ErrorListener errorListener, String tableName) {
         super(method, url, errorListener);
         this.context = context;
-        this.output = output;
+        this.tableName = tableName;
         this.listener = listener;
         this.errorListener = errorListener;
     }
@@ -49,8 +50,8 @@ public class DownloadRequest<T> extends Request<List> {
         }
 
         try {
-            // Parse the response into 'Meeting' or 'Race' objects.
-            switch(output) {
+            // Parse the response into Meeting, Race or Runner objects.
+            switch(tableName) {
                 case SchemaConstants.MEETINGS_TABLE:
                     theResult = parser.parse(Resources.getInstance()
                             .getString(R.string.meetings_xml_tag));
@@ -63,6 +64,10 @@ public class DownloadRequest<T> extends Request<List> {
                     // Only want Race objects.
                     theResult = theResult.subList(1, theResult.size());
                     break;
+                case SchemaConstants.RUNNERS_TABLE:
+                    theResult = parser.parse(Resources.getInstance()
+                            .getString(R.string.runners_xml_tag));
+                    break;
             }
             // Write the results to the database (if don't already exist).
             if (meetingWeather != null) {
@@ -71,7 +76,7 @@ public class DownloadRequest<T> extends Request<List> {
                 // put meeting id into Race records (meeting id is part of weather info).
                 theResult = mergeMeetingId((String) meetingWeather.get(0), theResult);
             }
-            checkOrInsert(theResult, output, false);
+            checkOrInsert(theResult, tableName, false);
 
         } catch(Exception ex) {
             Log.d(this.getClass().getCanonicalName(), ex.getMessage());
@@ -83,7 +88,8 @@ public class DownloadRequest<T> extends Request<List> {
     @Override
     protected void deliverResponse(List response) {
         // TODO - if the response is already written to the database, do we need the whole list?.
-        // This just a callback, so maybe just use the list to indicate job done.
+        // This just a callback, so maybe just use the list to indicate job done,
+        // some sort of message ?.
         listener.onResponse(response);
     }
 
@@ -92,39 +98,88 @@ public class DownloadRequest<T> extends Request<List> {
         errorListener.onErrorResponse(error);
     }
 
-    private boolean checkOrInsert(List theList, String output, boolean hasWeather) {
+    //<editor-fold defaultstate="collapsed" desc="Region: Utility">
+    /**
+     * Insert objects into the database (if don't already exist).
+     * @param theList The list of objects (Meeting or Race or Runner).
+     * @param output An indicator as to what table to write to.
+     * @param hasWeather An indicator that only updating one Meeting's weather related info.
+     */
+    private void checkOrInsert(List theList, String output, boolean hasWeather) {
         DatabaseOperations dbOper = new DatabaseOperations(context);
         switch (output) {
             case SchemaConstants.MEETINGS_TABLE:
-                Meeting meeting = null;
                 if(!hasWeather) {
-                    for(Object object : theList) {
-                        // this is a new Meeting record.
-                        meeting = ((Meeting) object);
-                        if (!dbOper.checkRecordExists(SchemaConstants.MEETINGS_TABLE,
-                                SchemaConstants.MEETING_ID, meeting.getMeetingId())) {
-                            dbOper.insertMeetingRecord(meeting);
-                        }
-                    }
+                    checkOrInsertMeetings(theList); //Meeting objects (less weather info).
                 } else {
                     // Update existing Meeting record with weather info.
-                    meeting = createMeetingWeather(theList);
-                    dbOper.updateMeetingRecordWeather(meeting);
+                    dbOper.updateMeetingRecordWeather(createMeetingWeather(theList));
                 }
                 break;
             case SchemaConstants.RACES_TABLE:
-                for(Object object : theList) {
-                    Race race = ((Race) object);
-                    if(!dbOper.checkRecordExists(SchemaConstants.RACES_TABLE,
-                            SchemaConstants.RACE_MEETING_ID, race.getMeetingId())) {
-                        dbOper.insertRaceRecord(race);
-                    }
-                }
+                checkOrInsertRaces(theList);
+                break;
+            case SchemaConstants.RUNNERS_TABLE:
+                checkOrInsertRunners(theList);
                 break;
         }
-        return dbOper.checkTableRowCount(output);
     }
 
+    /**
+     * Insert Meeting objects into the database (if don't already exist).
+     * @param list The list of Meeting objects.
+     */
+    private void checkOrInsertMeetings(List list) {
+        Meeting meeting = null;
+        DatabaseOperations dbOper = new DatabaseOperations(context);
+
+        for(Object object : list) {
+            // this is a new Meeting record.
+            meeting = ((Meeting) object);
+            if (!dbOper.checkRecordExists(SchemaConstants.MEETINGS_TABLE,
+                    SchemaConstants.MEETING_ID, meeting.getMeetingId())) {
+                dbOper.insertMeetingRecord(meeting);
+            }
+        }
+    }
+
+    /**
+     * Insert Race objects into the database (if don't already exist).
+     * @param list The list of Race objects.
+     */
+    private void checkOrInsertRaces(List list) {
+        DatabaseOperations dbOper = new DatabaseOperations(context);
+        for(Object object : list) {
+            Race race = ((Race) object);
+            if(!dbOper.checkRecordExists(SchemaConstants.RACES_TABLE,
+                    SchemaConstants.RACE_MEETING_ID, race.getMeetingId())) {
+                dbOper.insertRaceRecord(race);
+            }
+        }
+    }
+
+    /**
+     * Insert Runner objects into the database (if don't already exist).
+     * @param list The list of Runner objects.
+     */
+    private void checkOrInsertRunners(List list) {
+        DatabaseOperations dbOper = new DatabaseOperations(context);
+        for(Object object : list) {
+            Runner runner = ((Runner) object);
+            // TODO - insert Runner objects.
+//            if(!dbOper.checkRecordExists(SchemaConstants.RUNNERS_TABLE,
+//                    SchemaConstants.RACE_MEETING_ID, race.getMeetingId())) {
+//                dbOper.insertRaceRecord(race);
+//            }
+        }
+    }
+
+    /**
+     * Write Meeting identifier into Race objects.
+     * @param meetingId The Meeting identifier.
+     * @param theResult The list of Race objects.
+     * @return The updated list of Race objects.
+     */
     private List mergeMeetingId(String meetingId, List theResult) {
         for(Object object : theResult) {
             Race race = (Race) object;
@@ -133,6 +188,11 @@ public class DownloadRequest<T> extends Request<List> {
         return theResult;
     }
 
+    /**
+     * Create a Meeting object that only contains weather info.
+     * @param theList A list of the info to use.
+     * @return A Meeting object.
+     */
     private Meeting createMeetingWeather(List theList) {
         Meeting meeting = new Meeting();
         //[0]-meeting id, [1]-track desc, [2]-track rating, [3]-weather desc.
@@ -142,9 +202,10 @@ public class DownloadRequest<T> extends Request<List> {
         meeting.setTrackWeather((String) theList.get(3));
         return meeting;
     }
+    //</editor-fold>
 
-    private String output;
-    private Context context;
-    private Response.Listener<List> listener;
-    private Response.ErrorListener errorListener;
+    private String tableName;                         // the affected table.
+    private Context context;                          // context for database operations.
+    private Response.Listener<List> listener;         // non-error listener callback.
+    private Response.ErrorListener errorListener;     // error listener callback.
 }

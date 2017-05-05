@@ -40,6 +40,7 @@
     <!-- Xml tags. -->
     <string name="meetings_xml_tag">Meetings</string>
     <string name="races_xml_tag">Races</string>
+    <string name="runners_xml_tag">Runners</string>
 
     <!-- Button texts. -->
     <string name="button_cancel_text">Cancel</string>
