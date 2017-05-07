@@ -4,6 +4,7 @@ import android.util.Xml;
 
 import com.mcssoft.racemeetings2.model.Meeting;
 import com.mcssoft.racemeetings2.model.Race;
+import com.mcssoft.racemeetings2.model.Runner;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -46,6 +47,7 @@ public class XmlParser {
         return list;
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Meetings">
     /**
      * Parse the Xml for Meeting information.
      * Note: Based on https://tatts.com/pagedata/racing/YYYY/M(M)/D(D)/RaceDay.xml
@@ -69,47 +71,6 @@ public class XmlParser {
             }
         }
         return entries;
-    }
-
-    /**
-     * Parse the Xml for Race information.
-     * Note: Based on https://tatts.com/pagedata/racing/YYYY/M(M)/D(D)/<racecode>.xml
-     * @return A list (primarily) of Race objects. [0]-weather (as Meeting), [1]-nn Race objects.
-     * @throws XmlPullParserException
-     * @throws IOException
-     */
-    private List parseForRaces() throws XmlPullParserException, IOException {
-        List theList = new ArrayList();
-
-        parser.require(XmlPullParser.START_TAG, nameSpace, "RaceDay");
-        while (parser.next() != XmlPullParser.END_TAG) {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                continue;
-            }
-            String name = parser.getName();
-            if (name.equals("Meeting")) {
-                // in this case we're only after weather information.
-                theList.add(readMeetingWeather());
-//            } else if (name.equals("Pool")) {
-//                // Note: this doesn;t seem to work, i.e. skipp all pool entries.
-//                skip();
-            } else if(name.equals("Race")) {
-                theList.add(readRace());
-                skip();
-            } else if (name.equals("Tipster")) {
-                // nothig we want after this (ATT).
-                break;
-            } else {
-                skip();
-            }
-        }
-        return theList;
-    }
-
-    private List parseForRunners() throws XmlPullParserException, IOException {
-        List runners = new ArrayList();
-        // TODO - parse for Runners
-        return runners;
     }
 
     /**
@@ -145,6 +106,43 @@ public class XmlParser {
         list.add(parser.getAttributeValue(nameSpace, "WeatherDesc"));
         return list;
     }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Region: Races">
+    /**
+     * Parse the Xml for Race information.
+     * Note: Based on https://tatts.com/pagedata/racing/YYYY/M(M)/D(D)/<racecode>.xml
+     * @return A list (primarily) of Race objects. [0]-weather (as Meeting), [1]-nn Race objects.
+     * @throws XmlPullParserException
+     * @throws IOException
+     */
+    private List parseForRaces() throws XmlPullParserException, IOException {
+        List theList = new ArrayList();
+
+        parser.require(XmlPullParser.START_TAG, nameSpace, "RaceDay");
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String name = parser.getName();
+            if (name.equals("Meeting")) {
+                // in this case we're only after weather information.
+                theList.add(readMeetingWeather());
+//            } else if (name.equals("Pool")) {
+//                // Note: this doesn;t seem to work, i.e. skipp all pool entries.
+//                skip();
+            } else if(name.equals("Race")) {
+                theList.add(readRace());
+                skip();
+            } else if (name.equals("Tipster")) {
+                // nothig we want after this (ATT).
+                break;
+            } else {
+                skip();
+            }
+        }
+        return theList;
+    }
 
     /**
      * Read Race info from the Xml.
@@ -159,6 +157,32 @@ public class XmlParser {
         race.setRaceDistance(parser.getAttributeValue(nameSpace,"Distance"));
         return race;
     }
+    ///</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Region: Runners">
+    /**
+     * Parse the Xml for Runner information.
+     * Note: Based on https://tatts.com/pagedata/racing/YYYY/M(M)/D(D)/<racecode><racenum>.xml
+     * @return A list of Runner objects.
+     * @throws XmlPullParserException
+     * @throws IOException
+     */
+    private List parseForRunners() throws XmlPullParserException, IOException {
+        List runners = new ArrayList();
+        // TODO - parse for Runners
+        return runners;
+    }
+
+    /**
+     * Read Runner info from the Xml.
+     * @return A Runner object.
+     */
+    private Runner readRunner() {
+        Runner runner = new Runner();
+        // TODO - read Runner.
+        return runner;
+    }
+    //</editor-fold>
 
     /**
      * Ignore what we don't want.
