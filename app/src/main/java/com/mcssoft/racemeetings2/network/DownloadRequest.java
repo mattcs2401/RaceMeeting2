@@ -38,18 +38,14 @@ public class DownloadRequest<T> extends Request<List> {
     // From the doco, runs on a background worker thread.
     @Override
     protected Response<List> parseNetworkResponse(NetworkResponse response) {
-        List theResult = null;
-        List meetingWeather = null;                // additional weather info.
-        InputStream instream = new ByteArrayInputStream(response.data);
+        List theResult = null;         // main list of result objects from parsing the Xml.
         XmlParser parser = null;
+        List meetingWeather = null;    // additional weather info.
+
+        InputStream instream = new ByteArrayInputStream(response.data);
 
         try {
             parser = new XmlParser(instream);
-        } catch(Exception ex) {
-            Log.d(this.getClass().getCanonicalName(), ex.getMessage());
-        }
-
-        try {
             // Parse the response into Meeting, Race or Runner objects.
             switch(tableName) {
                 case SchemaConstants.MEETINGS_TABLE:
@@ -59,7 +55,7 @@ public class DownloadRequest<T> extends Request<List> {
                 case SchemaConstants.RACES_TABLE:
                     theResult = parser.parse(Resources.getInstance()
                             .getString(R.string.races_xml_tag));
-                    // Meeting weather info is 1st element, 2nd element contains Race objects.
+                    // Meeting weather info is 1st element in list.
                     meetingWeather = (List) theResult.get(0);
                     // Only want Race objects.
                     theResult = theResult.subList(1, theResult.size());

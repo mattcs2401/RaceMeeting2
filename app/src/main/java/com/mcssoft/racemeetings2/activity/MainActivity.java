@@ -95,10 +95,19 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        // De-register the network state broadcast receiver.
         unRegisterReceiver();
+
+        // Close off static references.
         Preferences.getInstance().destroy();
         Resources.getInstance().destroy();
         DownloadRequestQueue.getInstance().destroy();
+
+        // Basically just ensure database is closed.
+        DatabaseOperations dbOper = new DatabaseOperations(this);
+        if(dbOper.getDbHelper() != null) {
+            dbOper.getDbHelper().onDestroy();
+        }
     }
     //</editor-fold>
 
@@ -165,7 +174,7 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onResponse(Object response) {
-        // TODO - what if some Volley error happened?
+        // TODO - what if some Volley error happened ? Generic error dialog with option to retry ?
         loadMeetingsFragment(null);
     }
 

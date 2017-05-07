@@ -25,6 +25,7 @@ public class RacesActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setBaseUI();
+        dbOper = new DatabaseOperations(this);
 
         Bundle bundle = getIntent().getExtras();
         int dbRowId = bundle.getInt(Resources.getInstance()
@@ -39,21 +40,25 @@ public class RacesActivity extends AppCompatActivity
             DownloadRequest dlReq = new DownloadRequest(Request.Method.GET, uri, this, this, this,
                     SchemaConstants.RACES_TABLE);
             DownloadRequestQueue.getInstance().addToRequestQueue(dlReq);
+        } else {
+            // Race info for thr selected meeting does exist.
+
         }
     }
 
     @Override
     public void onResponse(Object response) {
+        // Will only return here if a download wasn't required, i.e. records already existed.
         String bp = "";
     }
 
     @Override
     public void onErrorResponse(VolleyError error) {
+        // TODO - some sort of generic error dialog ? with option to try again ?
         String bp = "";
     }
 
     private String[] getMeetingCodeAndDate(int dbRowId) {
-        DatabaseOperations dbOper = new DatabaseOperations(this);
         Cursor cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE,
                 new String[] {SchemaConstants.MEETING_DATE, SchemaConstants.MEETING_CODE},
                 SchemaConstants.WHERE_MEETING_ROWID, new String[] {Integer.toString(dbRowId)});
@@ -65,15 +70,17 @@ public class RacesActivity extends AppCompatActivity
     }
 
     private boolean checkRaceExists(int dbRowId) {
-        DatabaseOperations dbOper = new DatabaseOperations(this);
+        String meetingId = getMeetingId(dbRowId);
+        return dbOper.checkRecordExists(SchemaConstants.RACES_TABLE,
+                                        SchemaConstants.RACE_MEETING_ID, meetingId);
+    }
+
+    private String getMeetingId(int dbRowId) {
         Cursor cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE,
                 new String[] {SchemaConstants.MEETING_ID}, SchemaConstants.WHERE_MEETING_ROWID,
                 new String[] {Integer.toString(dbRowId)});
         cursor.moveToFirst();
-        String meetingId = cursor.getString(cursor.getColumnIndex(SchemaConstants.MEETING_ID));
-
-        return dbOper.checkRecordExists(SchemaConstants.RACES_TABLE,
-                                        SchemaConstants.RACE_MEETING_ID, meetingId);
+        return cursor.getString(cursor.getColumnIndex(SchemaConstants.MEETING_ID));
     }
 
     private void setBaseUI() {
@@ -96,6 +103,6 @@ public class RacesActivity extends AppCompatActivity
                 .commit();
     }
 
-
+    private DatabaseOperations dbOper;
 
 }

@@ -47,6 +47,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         MeetingSchema, RaceSchema, RunnerSchema
     }
 
+    /**
+     * Return the projection (column lis) associated with the parameter.
+      * @param projection The table's schema name.
+     * @return The projection for the table.
+     */
     public static String [] getProjection(Projection projection) {
         switch (projection) {
             case MeetingSchema:
@@ -59,14 +64,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return  null;
     }
 
-    // TBA
-    public void onStart() {
-        if(sqLiteDatabase == null) {
-            sqLiteDatabase = this.getWritableDatabase();
-        }
-    }
-
-    // TBA
+    /**
+     * Housekeeping activities.
+     */
     public void onDestroy() {
         if(sqLiteDatabase.isOpen()) {
             sqLiteDatabase.close();

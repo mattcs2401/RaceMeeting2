@@ -210,10 +210,24 @@ public class DatabaseOperations {
     }
 
     /**
+     * Utility method to see if rows exist in the given table.
+     * @param tableName The table to check.
+     * @return True if the row count > 0.
+     */
+    public boolean checkTableRowCount(String tableName) {
+        SQLiteDatabase db = dbHelper.getDatabase();
+        db.beginTransaction();
+        Cursor cursor = getSelectionFromTable(SchemaConstants.MEETINGS_TABLE,
+                new String[] {SchemaConstants.MEETING_ROWID}, null, null);
+        db.endTransaction();
+        return (cursor.getCount() > 0);
+    }
+
+    /**
      * Insert a record into the RUNNERS table.
      * @param runner Runner object to derive values from.
      */
-    private void insertRunnerRecord(Runner runner) {
+    public void insertRunnerRecord(Runner runner) {
         SQLiteDatabase db = dbHelper.getDatabase();
         ContentValues cv = new ContentValues();
 
@@ -231,18 +245,11 @@ public class DatabaseOperations {
     }
 
     /**
-     * Utility method to see if rows exist in the given table.
-     * @param tableName The table to check.
-     * @return True if the row count > 0.
+     * Get the associated DatabseHelper object.
+     * @return The DatabaseHelper.
      */
-    public boolean checkTableRowCount(String tableName) {
-        SQLiteDatabase db = dbHelper.getDatabase();
-        db.beginTransaction();
-        Cursor cursor = getSelectionFromTable(SchemaConstants.MEETINGS_TABLE,
-                new String[] {SchemaConstants.MEETING_ROWID}, null, null);
-//        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + tableName + ";", new String[] {});
-        db.endTransaction();
-        return (cursor.getCount() > 0);
+    public DatabaseHelper getDbHelper() {
+        return dbHelper;
     }
 
     private String[] getProjection(String tableName) {
