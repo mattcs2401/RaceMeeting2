@@ -148,8 +148,9 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.id_nav_menu_races_today) {
-            getMeetingsOnDay(null);
-
+//            if(checkMeetingsOnDay(null)) {
+//                getMeetingsOnDay(null);
+//            }
         } else if (id == R.id.id_nav_menu_races_select) {
             DialogFragment dateSelectFragment = new DateSelectFragment();
             dateSelectFragment.show(getFragmentManager(),
@@ -201,6 +202,18 @@ public class MainActivity extends AppCompatActivity
                 .commit();
     }
 
+//    private boolean checkMeetingsOnDay(@Nullable String[] date) {
+//        String uri = null;
+//        Url url = new Url();
+//        if(date == null) {
+//            uri = url.createRaceDayUrl(null);
+//        } else {
+//            uri = url.createRaceDayUrl(date);
+//        }
+//        DatabaseOperations dbOper = new DatabaseOperations(this);
+//        return dbOper.checkRecordsExist(SchemaConstants.MEETINGS_TABLE,SchemaConstants.MEETING_DATE, date);
+//    }
+
     private void getMeetingsOnDay(@Nullable String[] date) {
         String uri = null;
         Url url = new Url();
@@ -209,7 +222,6 @@ public class MainActivity extends AppCompatActivity
         } else {
             uri = url.createRaceDayUrl(date);
         }
-//        DownloadRequest dlReq = new DownloadRequest(Request.Method.GET, uri, this, this, this, SchemaConstants.MEETINGS_TABLE);
         DownloadRequest dlReq = new DownloadRequest(Request.Method.GET, uri, this, this, this, SchemaConstants.MEETINGS_TABLE);
         DownloadRequestQueue.getInstance().addToRequestQueue(dlReq);
     }

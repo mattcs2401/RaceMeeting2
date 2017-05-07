@@ -118,7 +118,7 @@ public class DatabaseOperations {
      * @param identifier The identifier in the column.
      * @return True if record exists.
      */
-    public boolean checkRecordExists(String tableName, String columnName, String identifier) {
+    public boolean checkRecordsExist(String tableName, String columnName, String identifier) {
         Cursor cursor = null;
         String[] col = new String[] {columnName};
         String[] id = new String[] {identifier};

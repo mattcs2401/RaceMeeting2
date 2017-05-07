@@ -132,7 +132,7 @@ public class DownloadRequest<T> extends Request<List> {
         for(Object object : list) {
             // this is a new Meeting record.
             meeting = ((Meeting) object);
-            if (!dbOper.checkRecordExists(SchemaConstants.MEETINGS_TABLE,
+            if (!dbOper.checkRecordsExist(SchemaConstants.MEETINGS_TABLE,
                     SchemaConstants.MEETING_ID, meeting.getMeetingId())) {
                 dbOper.insertMeetingRecord(meeting);
             }
@@ -147,7 +147,7 @@ public class DownloadRequest<T> extends Request<List> {
         DatabaseOperations dbOper = new DatabaseOperations(context);
         for(Object object : list) {
             Race race = ((Race) object);
-            if(!dbOper.checkRecordExists(SchemaConstants.RACES_TABLE,
+            if(!dbOper.checkRecordsExist(SchemaConstants.RACES_TABLE,
                     SchemaConstants.RACE_MEETING_ID, race.getMeetingId())) {
                 dbOper.insertRaceRecord(race);
             }
@@ -163,7 +163,7 @@ public class DownloadRequest<T> extends Request<List> {
         for(Object object : list) {
             Runner runner = ((Runner) object);
             // TODO - insert Runner objects.
-//            if(!dbOper.checkRecordExists(SchemaConstants.RUNNERS_TABLE,
+//            if(!dbOper.checkRecordsExist(SchemaConstants.RUNNERS_TABLE,
 //                    SchemaConstants.RACE_MEETING_ID, race.getMeetingId())) {
 //                dbOper.insertRaceRecord(race);
 //            }

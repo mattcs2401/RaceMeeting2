@@ -77,7 +77,7 @@ public class RacesActivity extends AppCompatActivity
 
     private boolean checkRaceExists(int dbRowId) {
         String meetingId = getMeetingId(dbRowId);
-        return dbOper.checkRecordExists(SchemaConstants.RACES_TABLE,
+        return dbOper.checkRecordsExist(SchemaConstants.RACES_TABLE,
                                         SchemaConstants.RACE_MEETING_ID, meetingId);
     }
 
