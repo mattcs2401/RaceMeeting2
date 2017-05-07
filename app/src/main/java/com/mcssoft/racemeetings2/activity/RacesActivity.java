@@ -58,6 +58,12 @@ public class RacesActivity extends AppCompatActivity
         String bp = "";
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dbOper = null;
+    }
+
     private String[] getMeetingCodeAndDate(int dbRowId) {
         Cursor cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE,
                 new String[] {SchemaConstants.MEETING_DATE, SchemaConstants.MEETING_CODE},
@@ -104,5 +110,4 @@ public class RacesActivity extends AppCompatActivity
     }
 
     private DatabaseOperations dbOper;
-
 }
