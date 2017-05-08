@@ -151,8 +151,7 @@ public class XmlParser {
     private Race readRace() {
         Race race = new Race();
         race.setRaceNumber(parser.getAttributeValue(nameSpace,"RaceNo"));
-        // race time in "YYYY-MM-DDTHH:MM:SS" format (only want time).
-        race.setRaceTime((parser.getAttributeValue(nameSpace,"RaceTime")).split("T")[1]);
+        race.setRaceTime(getTimeComponent(parser.getAttributeValue(nameSpace,"RaceTime")));
         race.setRaceName(parser.getAttributeValue(nameSpace,"RaceName"));
         race.setRaceDistance(parser.getAttributeValue(nameSpace,"Distance"));
         return race;
@@ -184,6 +183,7 @@ public class XmlParser {
     }
     //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Utility">
     /**
      * Ignore what we don't want.
      * @throws XmlPullParserException
@@ -206,6 +206,17 @@ public class XmlParser {
             }
         }
     }
+
+    /**
+     * Extract the time from the Xml time value.
+     * @param time formatted as "YYYY-MM-DDTHH:MM:SS" (from Xml).
+     * @return time as HH:MM format.
+     */
+    private String getTimeComponent(String time) {
+        String[] array = (time.split("T")[1]).split(":");
+        return (array[0] + ":" + array[1]);
+    }
+    //</editor-fold>
 
     private String nameSpace;
     private XmlPullParser parser;

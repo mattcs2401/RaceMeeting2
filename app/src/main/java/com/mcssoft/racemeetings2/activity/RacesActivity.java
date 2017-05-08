@@ -12,14 +12,18 @@ import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.database.DatabaseOperations;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.fragment.RacesFragment;
+import com.mcssoft.racemeetings2.model.Race;
 import com.mcssoft.racemeetings2.network.DownloadRequest;
 import com.mcssoft.racemeetings2.network.DownloadRequestQueue;
 import com.mcssoft.racemeetings2.utility.Resources;
 import com.mcssoft.racemeetings2.utility.Url;
 
+import java.util.List;
+
 public class RacesActivity extends AppCompatActivity
         implements Response.ErrorListener, Response.Listener {
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Lifecycle">
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,24 +43,18 @@ public class RacesActivity extends AppCompatActivity
 
             DownloadRequest dlReq = new DownloadRequest(Request.Method.GET, uri, this, this, this,
                     SchemaConstants.RACES_TABLE);
+            dlReq.setTag("races_tag");
             DownloadRequestQueue.getInstance().addToRequestQueue(dlReq);
         } else {
-            // Race info for thr selected meeting does exist.
+            // Race info for thr selected meeting already exists.
             loadFragment(getMeetingId(dbRowId));
-
         }
     }
 
     @Override
-    public void onResponse(Object response) {
-        // Will only return here if a download wasn't required, i.e. records already existed.
-        String bp = "";
-    }
-
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        // TODO - some sort of generic error dialog ? with option to try again ?
-        String bp = "";
+    protected void onStop() {
+        super.onStop();
+        DownloadRequestQueue.getInstance().destroy();
     }
 
     @Override
@@ -64,7 +62,38 @@ public class RacesActivity extends AppCompatActivity
         super.onDestroy();
         dbOper = null;
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Volley return">
+    /**
+     * Volley download will return here.
+     * @param response A list of Race objects.
+     */
+    @Override
+    public void onResponse(Object response) {
+        // TODO - is there a chance response will be null ?
+        // Get the meeting id from the first object (will be the same for all).
+        String meetingId = ((Race) ((List) response).get(0)).getMeetingId();
+        loadFragment(meetingId);
+    }
+
+    /**
+     * A Volley error condition will return here.
+     * @param error The Volley error object.
+     */
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        // TODO - some sort of generic error dialog ? with option to try again ?
+        String bp = "";
+    }
+    //</editor-fold>
+
+    //<editor-fold defaultstate="collapsed" desc="Region: Utility">
+    /**
+     * Get a Meeting's code and date values.
+     * @param dbRowId The Meeting table's row id.
+     * @return [0]-meeting code, [1]-meeting date (as YYYY/MM/DD).
+     */
     private String[] getMeetingCodeAndDate(int dbRowId) {
         Cursor cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE,
                 new String[] {SchemaConstants.MEETING_DATE, SchemaConstants.MEETING_CODE},
@@ -76,12 +105,21 @@ public class RacesActivity extends AppCompatActivity
         return details;
     }
 
+    /**
+     * Check if a Race with the given meeting id exists.
+     * @param dbRowId The Meeting table's row id.
+     * @return True if exists.
+     */
     private boolean checkRaceExists(int dbRowId) {
-        String meetingId = getMeetingId(dbRowId);
         return dbOper.checkRecordsExist(SchemaConstants.RACES_TABLE,
-                                        SchemaConstants.RACE_MEETING_ID, meetingId);
+                                        SchemaConstants.RACE_MEETING_ID, getMeetingId(dbRowId));
     }
 
+    /**
+     * Get the Meeting's id.
+     * @param dbRowId The Meeting table's row id.
+     * @return The Meeting id.
+     */
     private String getMeetingId(int dbRowId) {
         Cursor cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE,
                 new String[] {SchemaConstants.MEETING_ID}, SchemaConstants.WHERE_MEETING_ROWID,
@@ -96,6 +134,10 @@ public class RacesActivity extends AppCompatActivity
 //        setSupportActionBar(toolbar);
     }
 
+    /**
+     * Load the Race fragment.
+     * @param meetingId The associated Meeting id (as argument to fragment).
+     */
     private void loadFragment(String meetingId) {
         String fragment_tag = Resources.getInstance().getString(R.string.races_fragment_tag);
         Bundle bundle = new Bundle();
@@ -109,6 +151,7 @@ public class RacesActivity extends AppCompatActivity
                 .addToBackStack(fragment_tag)
                 .commit();
     }
+    //</editor-fold>
 
     private DatabaseOperations dbOper;
 }
