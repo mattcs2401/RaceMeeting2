@@ -123,13 +123,13 @@ public class DownloadRequest<T> extends Request<List> {
 
     /**
      * Insert Meeting objects into the database (if don't already exist).
-     * @param list The list of Meeting objects.
+     * @param meetingList The list of Meeting objects.
      */
-    private void checkOrInsertMeetings(List list) {
+    private void checkOrInsertMeetings(List meetingList) {
         Meeting meeting = null;
         DatabaseOperations dbOper = new DatabaseOperations(context);
 
-        for(Object object : list) {
+        for(Object object : meetingList) {
             // this is a new Meeting record.
             meeting = ((Meeting) object);
             if (!dbOper.checkRecordsExist(SchemaConstants.MEETINGS_TABLE,
@@ -141,14 +141,16 @@ public class DownloadRequest<T> extends Request<List> {
 
     /**
      * Insert Race objects into the database (if don't already exist).
-     * @param list The list of Race objects.
+     * @param raceList The list of Race objects.
      */
-    private void checkOrInsertRaces(List list) {
+    private void checkOrInsertRaces(List raceList) {
         DatabaseOperations dbOper = new DatabaseOperations(context);
-        for(Object object : list) {
-            Race race = ((Race) object);
-            if(!dbOper.checkRecordsExist(SchemaConstants.RACES_TABLE,
-                    SchemaConstants.RACE_MEETING_ID, race.getMeetingId())) {
+
+        if(!dbOper.checkRecordsExist(SchemaConstants.RACES_TABLE, SchemaConstants.RACE_MEETING_ID,
+                ((Race) raceList.get(0)).getMeetingId())) {
+
+            for(Object object : raceList) {
+                Race race = ((Race) object);
                 dbOper.insertRaceRecord(race);
             }
         }
