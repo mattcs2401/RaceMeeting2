@@ -148,9 +148,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.id_nav_menu_races_today) {
-//            if(checkMeetingsOnDay(null)) {
-//                getMeetingsOnDay(null);
-//            }
+            getMeetingsOnDay(null);
+
         } else if (id == R.id.id_nav_menu_races_select) {
             DialogFragment dateSelectFragment = new DateSelectFragment();
             dateSelectFragment.show(getFragmentManager(),
@@ -201,18 +200,6 @@ public class MainActivity extends AppCompatActivity
                 .addToBackStack(fragment_tag)
                 .commit();
     }
-
-//    private boolean checkMeetingsOnDay(@Nullable String[] date) {
-//        String uri = null;
-//        Url url = new Url();
-//        if(date == null) {
-//            uri = url.createRaceDayUrl(null);
-//        } else {
-//            uri = url.createRaceDayUrl(date);
-//        }
-//        DatabaseOperations dbOper = new DatabaseOperations(this);
-//        return dbOper.checkRecordsExist(SchemaConstants.MEETINGS_TABLE,SchemaConstants.MEETING_DATE, date);
-//    }
 
     private void getMeetingsOnDay(@Nullable String[] date) {
         String uri = null;

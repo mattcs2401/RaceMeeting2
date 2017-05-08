@@ -42,6 +42,7 @@ public class RacesActivity extends AppCompatActivity
             DownloadRequestQueue.getInstance().addToRequestQueue(dlReq);
         } else {
             // Race info for thr selected meeting does exist.
+            loadFragment(getMeetingId(dbRowId));
 
         }
     }
