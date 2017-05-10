@@ -1,6 +1,7 @@
 package com.mcssoft.racemeetings2.activity;
 
 import android.app.DialogFragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -169,15 +170,20 @@ public class MainActivity extends AppCompatActivity
 
     //<editor-fold defaultstate="collapsed" desc="Region: Listeners">
     /**
-     *
-     * @param response
+     * The Volley download will return here.
+     * @param response The response object (list of Meetings).
      */
     @Override
     public void onResponse(Object response) {
         // TODO - what if some Volley error happened ? Generic error dialog with option to retry ?
+        startProgressDialog(false);
         loadMeetingsFragment(null);
     }
 
+    /**
+     * A Volley error will return here.
+     * @param error The Volley error.
+     */
     @Override
     public void onErrorResponse(VolleyError error) {
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -209,6 +215,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             uri = url.createRaceDayUrl(date);
         }
+        startProgressDialog(true);
         DownloadRequest dlReq = new DownloadRequest(Request.Method.GET, uri, this, this, this, SchemaConstants.MEETINGS_TABLE);
         DownloadRequestQueue.getInstance().addToRequestQueue(dlReq);
     }
@@ -263,8 +270,22 @@ public class MainActivity extends AppCompatActivity
         args.putBoolean("meetings_empty_view_key", isEmptyView);
         return args;
     }
+
+    private void startProgressDialog(boolean doProgress) {
+        if(doProgress) {
+            progressDialog = new ProgressDialog(this, ProgressDialog.STYLE_SPINNER);
+            progressDialog.setCancelable(false);
+            progressDialog.setMessage("Getting Meetings information.");
+            progressDialog.show();
+        } else {
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+            }
+        }
+    }
     //</editor-fold>
 
     private boolean isEmptyView;
+    private ProgressDialog progressDialog;
     private NetworkReceiver receiver = new NetworkReceiver();
 }
