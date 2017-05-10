@@ -4,6 +4,4 @@
     android:id="@+id/id_content_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <!--<include layout="@layout/appbar_toolbar_layout" />-->
 </FrameLayout>

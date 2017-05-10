@@ -10,8 +10,7 @@
         android:id="@+id/id_rv_races_summary_listing"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_marginTop="64dp"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <include layout="@layout/race_row" />
 
