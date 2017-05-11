@@ -42,12 +42,12 @@ public class Preferences {
         return getDefaultSharedPreferences().getBoolean(getMeetingsShowTodayKey(), false);
     }
 
-    public String getCacheMeetingsKey() {
+    public String getSaveMeetingsKey() {
         return Resources.getInstance().getString(R.string.pref_meetings_save_key);
     }
 
-    public boolean getCacheMeetings() {
-        return getDefaultSharedPreferences().getBoolean(getCacheMeetingsKey(), false);
+    public boolean getSaveMeetings() {
+        return getDefaultSharedPreferences().getBoolean(getSaveMeetingsKey(), false);
     }
     //</editor-fold>
 

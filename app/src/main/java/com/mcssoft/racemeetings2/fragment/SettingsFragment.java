@@ -41,23 +41,5 @@ public class SettingsFragment extends PreferenceFragment
     }
     //</editor-fold>
 
-    /**
-     * Get the shared preference associated with showing today's Meetings on app start.
-     * @return The preference value.
-     */
-    public boolean getShowToday() {
-        return sharedPreferences.getBoolean(Resources.getInstance()
-                .getString(R.string.pref_meetings_show_today_key), true);
-    }
-
-    /**
-     * Get the shared preference associated with saving downloaded Meetings.
-     * @return The preference value.
-     */
-    public boolean getSaveMeetings() {
-        return sharedPreferences.getBoolean(Resources.getInstance()
-                .getString(R.string.pref_meetings_save_key), true);
-    }
-
     private SharedPreferences sharedPreferences;
 }
