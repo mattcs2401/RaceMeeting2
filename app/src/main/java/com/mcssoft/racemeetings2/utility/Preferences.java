@@ -43,7 +43,7 @@ public class Preferences {
     }
 
     public String getCacheMeetingsKey() {
-        return Resources.getInstance().getString(R.string.pref_meetings_cache_key);
+        return Resources.getInstance().getString(R.string.pref_meetings_save_key);
     }
 
     public boolean getCacheMeetings() {

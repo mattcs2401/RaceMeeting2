@@ -51,9 +51,9 @@
     <string name="pref_meetings_show_today_title">Show Meetings For Today</string>
     <string name="pref_meetings_show_today_summary">Show today\'s meetings on application start.</string>
 
-    <string name="pref_meetings_cache_key">pref_meetings_cache_key</string>
-    <string name="pref_meetings_cache_title">Cache Meetings</string>
-    <string name="pref_meetings_cache_summary">Save Meetings previously downloaded.</string>
+    <string name="pref_meetings_save_key">pref_meetings_cache_key</string>
+    <string name="pref_meetings_save_title">Save Meetings</string>
+    <string name="pref_meetings_save_summary">Save Meetings previously downloaded.</string>
 
     <!-- Dialog title. -->
     <string name="title_dialog_delete">Delete Meetings</string>

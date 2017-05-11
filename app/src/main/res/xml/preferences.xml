@@ -3,7 +3,6 @@
 
     <PreferenceCategory
         android:title="Meetings General">
-
         <CheckBoxPreference
             android:key="@string/pref_meetings_show_today_key"
             android:title="@string/pref_meetings_show_today_title"
@@ -11,11 +10,10 @@
             android:defaultValue="true"/>
 
         <CheckBoxPreference
-            android:key="@string/pref_meetings_cache_key"
-            android:title="@string/pref_meetings_cache_title"
-            android:summary="@string/pref_meetings_cache_summary"
+            android:key="@string/pref_meetings_save_key"
+            android:title="@string/pref_meetings_save_title"
+            android:summary="@string/pref_meetings_save_summary"
             android:defaultValue="true" />
-
     </PreferenceCategory>
 
 </PreferenceScreen>
