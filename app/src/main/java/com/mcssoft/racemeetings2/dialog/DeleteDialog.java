@@ -8,7 +8,6 @@ import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.database.DatabaseOperations;
@@ -48,14 +47,13 @@ public class DeleteDialog extends DialogFragment
 
         DatabaseOperations dbOper = new DatabaseOperations(getActivity());
 
+        int retVal = -1;
         switch (tag) {
             case "rb_delete_all":
                 dbOper.deleteAllFromTable(SchemaConstants.MEETINGS_TABLE);
                 dbOper.deleteAllFromTable(SchemaConstants.RACES_TABLE);
-                Toast.makeText(getActivity(), Resources.getInstance()
-                        .getString(R.string.all_meetings_removed), Toast.LENGTH_SHORT).show();
-                ((IDeleteDialog) getActivity()).iDeleteDialog(Resources.getInstance()
-                        .getInteger(R.integer.rb_delete_all));
+                retVal = Resources.getInstance().getInteger(R.integer.rb_delete_all);
+                ((IDeleteDialog) getActivity()).iDeleteDialog(retVal);
                 break;
             case "rb_delete_prev":
                 // TBA

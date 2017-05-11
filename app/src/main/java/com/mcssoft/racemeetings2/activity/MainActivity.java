@@ -10,6 +10,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -59,6 +60,8 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void iDeleteDialog(int whichDelete) {
+        Snackbar.make(findViewById(R.id.id_app_bar_main), Resources.getInstance()
+                        .getString(R.string.all_meetings_removed), Snackbar.LENGTH_SHORT).show();
         if(whichDelete == Resources.getInstance().getInteger(R.integer.rb_delete_all)) {
             // 'Delete all' option selected.
             loadMeetingsFragment(setEmptyView());

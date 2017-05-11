@@ -1,6 +1,6 @@
 package com.mcssoft.racemeetings2.database;
 
-import android.widget.Toast;
+import android.util.Log;
 import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -26,7 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             sqLiteDb.execSQL(SchemaConstants.CREATE_RUNNERS_TABLE);
             sqLiteDb.setTransactionSuccessful();
         } catch(SQLException ex) {
-            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
+            Log.d(context.getClass().getCanonicalName(), ex.getMessage());
         } finally {
             sqLiteDb.endTransaction();
         }

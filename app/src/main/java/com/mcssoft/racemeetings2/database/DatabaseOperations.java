@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.mcssoft.racemeetings2.model.Meeting;
 import com.mcssoft.racemeetings2.model.Race;
@@ -157,7 +157,7 @@ public class DatabaseOperations {
             db.insertOrThrow(SchemaConstants.MEETINGS_TABLE, null, cv);
             db.setTransactionSuccessful();
         } catch (SQLException ex) {
-            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
+            Log.d(context.getClass().getCanonicalName(), ex.getMessage());
         } finally {
             db.endTransaction();
         }
@@ -178,7 +178,7 @@ public class DatabaseOperations {
                     new String[] {meetingId});
             db.setTransactionSuccessful();
         } catch (SQLException ex) {
-            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
+            Log.d(context.getClass().getCanonicalName(), ex.getMessage());
         } finally {
             db.endTransaction();
         }
@@ -203,7 +203,7 @@ public class DatabaseOperations {
             db.insertOrThrow(SchemaConstants.RACES_TABLE, null, cv);
             db.setTransactionSuccessful();
         } catch (SQLException ex) {
-            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
+            Log.d(context.getClass().getCanonicalName(), ex.getMessage());
         } finally {
             db.endTransaction();
         }
@@ -238,7 +238,7 @@ public class DatabaseOperations {
             db.insertOrThrow(SchemaConstants.RUNNERS_TABLE, null, cv);
             db.setTransactionSuccessful();
         } catch (SQLException ex) {
-            Toast.makeText(context, ex.getMessage(), Toast.LENGTH_LONG).show();
+            Log.d(context.getClass().getCanonicalName(), ex.getMessage());
         } finally {
             db.endTransaction();
         }
