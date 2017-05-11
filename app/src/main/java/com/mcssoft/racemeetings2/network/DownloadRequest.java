@@ -83,9 +83,6 @@ public class DownloadRequest<T> extends Request<List> {
 
     @Override
     protected void deliverResponse(List response) {
-        // TODO - if the response is already written to the database, do we need the whole list?.
-        // This just a callback, so maybe just use the list to indicate job done,
-        // some sort of message ?.
         listener.onResponse(response);
     }
 
@@ -202,8 +199,10 @@ public class DownloadRequest<T> extends Request<List> {
     }
     //</editor-fold>
 
-    private String tableName;                         // the affected table.
+    //<editor-fold defaultstate="collapsed" desc="Region: Private vars">
     private Context context;                          // context for database operations.
+    private String tableName;                         // the affected table.
     private Response.Listener<List> listener;         // non-error listener callback.
     private Response.ErrorListener errorListener;     // error listener callback.
+    //</editor-fold>
 }

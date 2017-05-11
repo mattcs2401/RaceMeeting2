@@ -40,9 +40,11 @@ import com.mcssoft.racemeetings2.utility.Resources;
 import com.mcssoft.racemeetings2.utility.Url;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener,
-                   Response.ErrorListener, Response.Listener,
-                   IDateSelect, IDeleteDialog {
+        implements IDateSelect,
+                   IDeleteDialog,
+                   Response.Listener,
+                   Response.ErrorListener,
+                   NavigationView.OnNavigationItemSelectedListener {
 
     //<editor-fold defaultstate="collapsed" desc="Region: Interface">
     /**
@@ -69,7 +71,37 @@ public class MainActivity extends AppCompatActivity
             // TBA - 
         }
     }
-    //</editor-fold>
+
+    /**
+     * The Volley download will return here.
+     * @param response The response object (list of Meetings).
+     */
+    @Override
+    public void onResponse(Object response) {
+        startProgressDialog(false);
+        loadMeetingsFragment(null);
+    }
+
+    /**
+     * A Volley error will return here.
+     * @param error The Volley error.
+     */
+    @Override
+    public void onErrorResponse(VolleyError error) {
+        if(progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        if(error.networkResponse == null) {
+            ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+            if (networkInfo == null || (!networkInfo.isAvailable() && !networkInfo.isConnected())) {
+                showNetworkDialog();
+            }
+        } else {
+            // TODO - some generic error dialog ?
+        }
+    }
+    //</editor-fold>//</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Region: Lifecycle">
     @Override
@@ -172,33 +204,6 @@ public class MainActivity extends AppCompatActivity
     }
     //</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="Region: Volley Response">
-    /**
-     * The Volley download will return here.
-     * @param response The response object (list of Meetings).
-     */
-    @Override
-    public void onResponse(Object response) {
-        // TODO - what if some Volley error happened ? Generic error dialog with option to retry ?
-        startProgressDialog(false);
-        loadMeetingsFragment(null);
-    }
-
-    /**
-     * A Volley error will return here.
-     * @param error The Volley error.
-     */
-    @Override
-    public void onErrorResponse(VolleyError error) {
-        progressDialog.dismiss();
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if(networkInfo == null || (!networkInfo.isAvailable() && !networkInfo.isConnected())) {
-            showNetworkDialog();
-        }
-    }
-    //</editor-fold>
-
     //<editor-fold defaultstate="collapsed" desc="Region: Utility">
     public Toolbar getToolbar() {
         return this.toolbar;
@@ -298,8 +303,10 @@ public class MainActivity extends AppCompatActivity
     }
     //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Private vars">
     private Toolbar toolbar;                // to get access to the toolbar.
     private boolean isEmptyView;            // flag there is nothing to show.
     private NetworkReceiver receiver;       // for network availability check.
     private ProgressDialog progressDialog;  // used by Volley download to show something happening.
+    //</editor-fold>
 }
