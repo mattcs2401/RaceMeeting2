@@ -6,11 +6,14 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
+/**
+ * Static wrapper for a Volley RequestQueue.
+ */
 public class DownloadRequestQueue {
 
     private DownloadRequestQueue(Context context) {
         this.context = context;
-        requestQueue = getRequestQueue();
+        requestQueue = Volley.newRequestQueue(context.getApplicationContext());
     }
 
     public static synchronized DownloadRequestQueue getInstance(Context context) {
@@ -24,15 +27,7 @@ public class DownloadRequestQueue {
         return instance;
     }
 
-    public RequestQueue getRequestQueue() {
-        if (requestQueue == null) {
-            requestQueue = Volley.newRequestQueue(context.getApplicationContext());
-        }
-        return requestQueue;
-    }
-
     public <T> void addToRequestQueue(Request<T> request) {
-        //getRequestQueue().add(req);
         requestQueue.add(request);
     }
 
@@ -41,7 +36,7 @@ public class DownloadRequestQueue {
         context = null;
     }
 
-    private static Context context;
+    private Context context;
     private RequestQueue requestQueue;
     private static DownloadRequestQueue instance = null;
 
