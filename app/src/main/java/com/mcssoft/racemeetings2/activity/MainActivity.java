@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -168,7 +169,7 @@ public class MainActivity extends AppCompatActivity
     }
     //</editor-fold>
 
-    //<editor-fold defaultstate="collapsed" desc="Region: Listeners">
+    //<editor-fold defaultstate="collapsed" desc="Region: Volley Response">
     /**
      * The Volley download will return here.
      * @param response The response object (list of Meetings).
@@ -186,6 +187,7 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onErrorResponse(VolleyError error) {
+        progressDialog.dismiss();
         ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if(networkInfo == null || (!networkInfo.isAvailable() && !networkInfo.isConnected())) {
@@ -195,6 +197,10 @@ public class MainActivity extends AppCompatActivity
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Region: Utility">
+    public Toolbar getToolbar() {
+        return this.toolbar;
+    }
+
     private void loadMeetingsFragment(@Nullable Bundle args) {
         String fragment_tag = Resources.getInstance().getString(R.string.meetings_fragment_tag);
         MeetingsFragment meetingsFragment = new MeetingsFragment();
@@ -222,7 +228,11 @@ public class MainActivity extends AppCompatActivity
 
     private void setBaseUI() {
         setContentView(R.layout.content_view_activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar_main_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.app_bar_main_toolbar);
+        //toolbar.setSubtitle("Today's Meetings"); // testing
+        //ActionBar actionBar = getSupportActionBar();
+        //actionBar.setCustomView(R.layout.actionbar_view);
+        //actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
         setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -286,6 +296,7 @@ public class MainActivity extends AppCompatActivity
     //</editor-fold>
 
     private boolean isEmptyView;
+    private Toolbar toolbar;
     private ProgressDialog progressDialog;
-    private NetworkReceiver receiver = new NetworkReceiver();
+    private NetworkReceiver receiver;
 }
