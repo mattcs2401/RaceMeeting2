@@ -60,10 +60,10 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void iDeleteDialog(int whichDelete) {
-        Snackbar.make(findViewById(R.id.id_app_bar_main), Resources.getInstance()
-                        .getString(R.string.all_meetings_removed), Snackbar.LENGTH_SHORT).show();
         if(whichDelete == Resources.getInstance().getInteger(R.integer.rb_delete_all)) {
             // 'Delete all' option selected.
+            Snackbar.make(findViewById(R.id.id_app_bar_main), Resources.getInstance()
+                    .getString(R.string.all_meetings_removed), Snackbar.LENGTH_SHORT).show();
             loadMeetingsFragment(setEmptyView());
         } else if(whichDelete == Resources.getInstance().getInteger(R.integer.rb_delete_prev)) {
             // TBA - 
@@ -298,8 +298,8 @@ public class MainActivity extends AppCompatActivity
     }
     //</editor-fold>
 
-    private boolean isEmptyView;
-    private Toolbar toolbar;
-    private ProgressDialog progressDialog;
-    private NetworkReceiver receiver;
+    private Toolbar toolbar;                // to get access to the toolbar.
+    private boolean isEmptyView;            // flag there is nothing to show.
+    private NetworkReceiver receiver;       // for network availability check.
+    private ProgressDialog progressDialog;  // used by Volley download to show something happening.
 }
