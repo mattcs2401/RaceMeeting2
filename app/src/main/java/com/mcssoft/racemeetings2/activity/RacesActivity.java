@@ -15,6 +15,7 @@ import com.mcssoft.racemeetings2.fragment.RacesFragment;
 import com.mcssoft.racemeetings2.model.Race;
 import com.mcssoft.racemeetings2.network.DownloadRequest;
 import com.mcssoft.racemeetings2.network.DownloadRequestQueue;
+import com.mcssoft.racemeetings2.utility.DateTime;
 import com.mcssoft.racemeetings2.utility.Resources;
 import com.mcssoft.racemeetings2.utility.Url;
 
@@ -37,8 +38,9 @@ public class RacesActivity extends AppCompatActivity
 
         if (!checkRaceExists(dbRowId)) {
             String[] details = getMeetingCodeAndDate(dbRowId);
+            DateTime dateTime = new DateTime();
+            String[] dateComp = dateTime.getDateComponents(details[1]);
             Url url = new Url();
-            String[] dateComp = url.getDateComponents(details[1]);
             String uri = url.createMeetingUrl(dateComp, details[0]);
 
             DownloadRequest dlReq = new DownloadRequest(Request.Method.GET, uri, this, this, this,
