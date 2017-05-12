@@ -42,6 +42,16 @@ public class DateTime {
         return date;
     }
 
+    /**
+     * Extract the time from the Xml time value.
+     * @param time formatted as "YYYY-MM-DDTHH:MM:SS" (from Xml).
+     * @return time as HH:MM format.
+     */
+    public String getTimeComponent(String time) {
+        String[] array = (time.split("T")[1]).split(":");
+        return (array[0] + ":" + array[1]);
+    }
+
     private long getTimeInMillis() {
         return Calendar.getInstance(Locale.getDefault()).getTimeInMillis();
     }
