@@ -13,7 +13,6 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -64,7 +63,7 @@ public class MainActivity extends AppCompatActivity
     public void iDeleteDialog(int whichDelete) {
         if(whichDelete == Resources.getInstance().getInteger(R.integer.rb_delete_all)) {
             // 'Delete all' option selected.
-            Snackbar.make(findViewById(R.id.id_app_bar_main), Resources.getInstance()
+            Snackbar.make(findViewById(R.id.id_content_main), Resources.getInstance()
                     .getString(R.string.all_meetings_removed), Snackbar.LENGTH_SHORT).show();
             loadMeetingsFragment(setEmptyView());
         } else if(whichDelete == Resources.getInstance().getInteger(R.integer.rb_delete_prev)) {
@@ -235,8 +234,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setBaseUI() {
-        setContentView(R.layout.content_view_activity_main);
-        toolbar = (Toolbar) findViewById(R.id.app_bar_main_toolbar);
+        setContentView(R.layout.content_view_main);
+        toolbar = (Toolbar) findViewById(R.id.app_bar_base_toolbar);
         //toolbar.setSubtitle("Today's Meetings"); // testing
         //ActionBar actionBar = getSupportActionBar();
         //actionBar.setCustomView(R.layout.actionbar_view);

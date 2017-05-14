@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -131,9 +132,9 @@ public class RacesActivity extends AppCompatActivity
     }
 
     private void setBaseUI() {
-        setContentView(R.layout.content_view_activity_races);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+        setContentView(R.layout.content_view_races);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar_base_toolbar);
+        setSupportActionBar(toolbar);
     }
 
     /**
