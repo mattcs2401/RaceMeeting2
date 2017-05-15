@@ -55,15 +55,10 @@ public class RacesActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
-        DownloadRequestQueue.getInstance().destroy();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         dbOper = null;
+        DownloadRequestQueue.getInstance().destroy();
     }
 
     @Override
