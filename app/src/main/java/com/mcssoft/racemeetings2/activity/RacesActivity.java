@@ -65,6 +65,18 @@ public class RacesActivity extends AppCompatActivity
         super.onDestroy();
         dbOper = null;
     }
+
+    @Override
+    public void onBackPressed() {
+        int backStackEntryCount = getFragmentManager().getBackStackEntryCount();
+        if (backStackEntryCount == 1) {
+            finish();
+        } else if (backStackEntryCount > 1) {
+                getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
+    }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Region: Volley return">
