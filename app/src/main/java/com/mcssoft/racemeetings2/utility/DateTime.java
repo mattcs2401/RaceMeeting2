@@ -12,12 +12,16 @@ public class DateTime {
     public DateTime() { }
 
     /**
-     * Get the current date as YYYY-M(M)-D(D)
+     * Get the current date.
+     * @param dayFirst Flag to indicate format: true==DD-MM-YYYY, false==YYYY-MM-DD
      * @return The current date.
      */
-    public String getCurrentDate() {
+    public String getCurrentDate(boolean dayFirst) {
         String[] sa = getCurrentDateComponents();
-        return (sa[2] + "-" + sa[1] + "-" + sa[0]);
+        if(dayFirst) {
+            return (sa[2] + "-" + sa[1] + "-" + sa[0]);
+        } else {
+            return (sa[0] + "-" + sa[1] + "-" + sa[2]);        }
     }
 
     /**

@@ -120,36 +120,36 @@ public class MainActivity extends AppCompatActivity
         /*if(!receiver.isConnected()) {
             showNetworkDialog();
         } else {*/
-        boolean meetingsExists;
+        boolean meetingsExist;
         Bundle bundle = new Bundle();
         DatabaseOperations dbOper = new DatabaseOperations(this);
 
         if(Preferences.getInstance().getMeetingsShowToday()) {
             // Preference to show today's meetings is set.
             DateTime dt = new DateTime();
-            String today = dt.getCurrentDate();
-            meetingsExists = dbOper.checkMeetingDate(today);
+            String today = dt.getCurrentDate(false);
+            meetingsExist = dbOper.checkMeetingDate(today);
 
-            if(meetingsExists) {
+            if(meetingsExist) {
                 // Meetings for today exist in the database.
                 bundle.putString("meetings_show_today_key", today);
+                loadMeetingsFragment(bundle);
             } else {
                 // Meetings for today will need to be downloaded.
                 bundle.putString("meetings_show_today_key", today);
-//                bundle.putString("meetings_show_today_download_key", today);
                 this.bundle = bundle;
                 getMeetingsOnDay(today.split("-"));
             }
         } else { //if (!Preferences.getInstance().getMeetingsShowToday()) {
             // Preference to show today's meetings is not set (show all if exists).
-            meetingsExists = dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE);
-            if(meetingsExists) {
+            meetingsExist = dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE);
+            if(meetingsExist) {
                 bundle.putString("meetings_show_all_key", null);
+                loadMeetingsFragment(bundle);
             } else {
                 loadMeetingsFragment(setEmptyView());
             }
         }
-        loadMeetingsFragment(bundle);
     }
 
     @Override
