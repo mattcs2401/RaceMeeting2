@@ -31,6 +31,7 @@ public class MeetingsFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         setKeyAction();   // establish local variables for what we are going to show.
 
         if(isEmptyView) {
@@ -47,10 +48,17 @@ public class MeetingsFragment extends Fragment
         if(!isEmptyView) {
             DatabaseOperations dbOper = new DatabaseOperations(getActivity());
 
-            if(showAll) {
-                cursor = dbOper.getAllFromTable(SchemaConstants.MEETINGS_TABLE);
+            if(showToday) {
+                if(dbOper.checkMeetingDate(date)) {
+                    cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE, null,
+                            SchemaConstants.WHERE_MEETING_DATE, new String[] {date});
+                }
             }
-
+            else if(showAll) {
+                if(dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE)) {
+                    cursor = dbOper.getAllFromTable(SchemaConstants.MEETINGS_TABLE);
+                }
+            }
 
             setMeetingAdapter();
             setRecyclerView(rootView);
@@ -98,13 +106,17 @@ public class MeetingsFragment extends Fragment
         if(isEmptyView) {
             meetingsAdapter.setEmptyView(true);
         } else {
-            meetingsAdapter.setOnItemClickListener(this);
-//        meetingsAdapter.setOnItemLongClickListener(this);
-            meetingsAdapter.swapCursor(cursor);
-            if (cursor.getCount() == 0) {
-                meetingsAdapter.setEmptyView(true);
+            if(cursor != null) {
+                meetingsAdapter.swapCursor(cursor);
+                meetingsAdapter.setOnItemClickListener(this);
+
+                if (cursor.getCount() == 0) {
+                    meetingsAdapter.setEmptyView(true);
+                } else {
+                    meetingsAdapter.setEmptyView(false);
+                }
             } else {
-                meetingsAdapter.setEmptyView(false);
+                meetingsAdapter.setEmptyView(true);
             }
         }
     }
@@ -115,54 +127,42 @@ public class MeetingsFragment extends Fragment
         return cursor.getInt(cursor.getColumnIndex(SchemaConstants.MEETING_ROWID));
     }
 
-    private void doKeyAction() {
-
-    }
-
+    /**
+     * Get the key from the arguments and set variables as to what "action" to perform.
+     */
     private void setKeyAction() {
         Bundle args = getArguments();
-        this.args = args;
-        Set<String> keySet = args.keySet();
-        for(String key : keySet) {
-            // should only be one key., thought this was simpler than using if/else if etc.
-            switch (key) {
-                case "meetings_show_today_key":
-                    // Meetings for today exist in the database.
-                    showToday = true;
-                    date = args.getString(key);
-                    break;
-//                case "meetings_show_today_download_key":
-//                    // Meetings for today will need to be downloaded.
-//                    downloadToday = true;
-//                    date = args.getString(key);
-//                    break;
-                case "meetings_show_all_key":
-                    // show all Meetings regardless.
-                    showAll = true;
-                    break;
-                case "meetings_show_empty_key":
-                    isEmptyView = true;
-                    break;
+        if(args != null) {
+            if(args.containsKey("meetings_show_today_key")) {
+                showToday = true;
+                date = (String) args.get("meetings_show_today_key");
+
+            } else if(args.containsKey("meetings_show_all_key")) {
+                showAll = true;
+
+            } else if (args.containsKey("meetings_show_empty_key")) {
+                isEmptyView = true;
             }
+        } else {
+            isEmptyView = true;
         }
     }
 
     private void initialise() {
-        date = "";
+        date = null;
         cursor = null;
         rootView = null;
         meetingsAdapter = null;
-        showAll = showToday = downloadToday = isEmptyView = false;
+        showAll = showToday = isEmptyView = false;
     }
 
-    private Bundle args;
-    private String date;
-//    private int position;
+    private String date;          // show Meetings for this date (may not be used).
     private View rootView;
-    private Cursor cursor;
-    private boolean showToday;
-    private boolean showAll;
-    private boolean downloadToday;
-    private boolean isEmptyView;
+    private Cursor cursor;        // the current result set from the database to populate adapter.
+
+    private boolean showToday;    // flag, show only today's Meetings.
+    private boolean showAll;      // flag, show all Meetings.
+    private boolean isEmptyView;  // flag, nothing to show.
+
     private MeetingsAdapter meetingsAdapter;
 }

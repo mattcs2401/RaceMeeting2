@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity
         if(Preferences.getInstance().getMeetingsShowToday()) {
             // Preference to show today's meetings is set.
             DateTime dt = new DateTime();
-            String today = dt.getCurrentDate(false);
+            String today = dt.getCurrentDateYearFirst();
             meetingsExist = dbOper.checkMeetingDate(today);
 
             if(meetingsExist) {
@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.id_nav_menu_races_today) {
             // TODO - check if meetings already downloaded.
-//            getMeetingsOnDay(null);
+            getMeetingsOnDay(null);
 
         } else if (id == R.id.id_nav_menu_races_select) {
             DialogFragment dateSelectFragment = new DateSelectFragment();

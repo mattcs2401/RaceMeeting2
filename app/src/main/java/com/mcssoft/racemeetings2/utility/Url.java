@@ -25,10 +25,21 @@ public class Url {
         }
         Uri.Builder builder = new Uri.Builder();
         builder.encodedPath(Resources.getInstance().getString(R.string.base_path))
-                .appendPath(raceDate[0])
-                .appendPath(raceDate[1])
-                .appendPath(raceDate[2])
-                .appendPath(Resources.getInstance().getString(R.string.race_day_listing));
+               .appendPath(raceDate[0]);
+
+        // Remove leading zeros if exist.
+        if(raceDate[1].charAt(0) == '0') {
+            builder.appendPath(raceDate[1].substring(1));
+        } else {
+            builder.appendPath(raceDate[1]);
+        }
+        if(raceDate[2].charAt(0) == '0') {
+            builder.appendPath(raceDate[2].substring(1));
+        } else {
+            builder.appendPath(raceDate[2]);
+        }
+
+        builder.appendPath(Resources.getInstance().getString(R.string.race_day_listing));
         builder.build();
         return builder.toString();
     }
@@ -43,10 +54,21 @@ public class Url {
     public String createMeetingUrl(String[] meetingDate, String meetingCode) {
         Uri.Builder builder = new Uri.Builder();
         builder.encodedPath(Resources.getInstance().getString(R.string.base_path))
-                .appendPath(meetingDate[0])
-                .appendPath(meetingDate[1])
-                .appendPath(meetingDate[2])
-                .appendPath(meetingCode + ".xml");
+               .appendPath(meetingDate[0]);
+
+        // Remove leading zeros if exist..
+        if(meetingDate[1].charAt(0) == '0') {
+            builder.appendPath(meetingDate[1].substring(1));
+        } else {
+            builder.appendPath(meetingDate[1]);
+        }
+        if(meetingDate[2].charAt(0) == '0') {
+            builder.appendPath(meetingDate[2].substring(1));
+        } else {
+            builder.appendPath(meetingDate[2]);
+        }
+
+        builder.appendPath(meetingCode + ".xml");
         builder.build();
         return builder.toString();
     }

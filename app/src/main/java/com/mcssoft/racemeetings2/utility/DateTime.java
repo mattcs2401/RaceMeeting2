@@ -12,16 +12,39 @@ public class DateTime {
     public DateTime() { }
 
     /**
-     * Get the current date.
-     * @param dayFirst Flag to indicate format: true==DD-MM-YYYY, false==YYYY-MM-DD
-     * @return The current date.
+     * Get the current date formatted as YYYY-MM-DD..
+     * @return The formatted date.
      */
-    public String getCurrentDate(boolean dayFirst) {
+    public String getCurrentDateYearFirst() {
         String[] sa = getCurrentDateComponents();
-        if(dayFirst) {
-            return (sa[2] + "-" + sa[1] + "-" + sa[0]);
-        } else {
-            return (sa[0] + "-" + sa[1] + "-" + sa[2]);        }
+
+        // Add in leading zero.
+        if(sa[1].length() < 2) {
+            sa[1] = "0" + sa[1];
+        }
+        if(sa[2].length() < 2) {
+            sa[2] = "0" + sa[2];
+        }
+
+        return (sa[0] + "-" + sa[1] + "-" + sa[2]);
+    }
+
+    /**
+     * Get the current date formatted as: DD-MM-YYYY.
+     * @return The formatted date.
+     */
+    public String getCurrentDateDayFirst() {
+        String[] sa = getCurrentDateComponents();
+
+        // Add in leading zero.
+        if(sa[1].length() < 2) {
+            sa[1] = "0" + sa[1];
+        }
+        if(sa[2].length() < 2) {
+            sa[2] = "0" + sa[2];
+        }
+
+        return (sa[2] + "-" + sa[1] + "-" + sa[0]);
     }
 
     /**
