@@ -215,10 +215,25 @@ public class DatabaseOperations {
      * @return True if the row count > 0.
      */
     public boolean checkTableRowCount(String tableName) {
+        String rowId = getRowIdName(tableName);
+        SQLiteDatabase db = dbHelper.getDatabase();
+        db.beginTransaction();
+        Cursor cursor = getSelectionFromTable(tableName, new String[] {rowId}, null, null);
+        db.endTransaction();
+        return (cursor.getCount() > 0);
+    }
+
+    /**
+     * Utility method to check if rows exist in the Meetings table for the given date.
+     * @param date The date to check (formatted YYYY-M(M)-D(D)).
+     * @return True if records exist.
+     */
+    public boolean checkMeetingDate(String date) {
         SQLiteDatabase db = dbHelper.getDatabase();
         db.beginTransaction();
         Cursor cursor = getSelectionFromTable(SchemaConstants.MEETINGS_TABLE,
-                new String[] {SchemaConstants.MEETING_ROWID}, null, null);
+                new String[] {SchemaConstants.MEETING_ROWID}, SchemaConstants.WHERE_MEETING_DATE,
+                new String[] {date});
         db.endTransaction();
         return (cursor.getCount() > 0);
     }
@@ -263,6 +278,27 @@ public class DatabaseOperations {
                 break;
         }
         return  projection;
+    }
+
+    /**
+     * get the name of the applicable row id column.
+     * @param tableName The table name.
+     * @return The row id column name.
+     */
+    private String getRowIdName(String tableName) {
+        String rowId = "";
+        switch(tableName) {
+            case SchemaConstants.MEETINGS_TABLE:
+                rowId = SchemaConstants.MEETING_ROWID;
+                break;
+            case SchemaConstants.RACES_TABLE:
+                rowId = SchemaConstants.RACE_ROWID;
+                break;
+            case SchemaConstants.RUNNERS_TABLE:
+                rowId = SchemaConstants.RUNNER_ROWID;
+                break;
+        }
+        return rowId;
     }
 
     private Context context;

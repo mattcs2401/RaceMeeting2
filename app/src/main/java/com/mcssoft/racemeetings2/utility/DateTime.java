@@ -12,6 +12,15 @@ public class DateTime {
     public DateTime() { }
 
     /**
+     * Get the current date as YYYY-M(M)-D(D)
+     * @return The current date.
+     */
+    public String getCurrentDate() {
+        String[] sa = getCurrentDateComponents();
+        return (sa[2] + "-" + sa[1] + "-" + sa[0]);
+    }
+
+    /**
      * Generate the YYYY, MM, DD elements of a meeting date based on the current date.
      * @return The date as: [0]-YYYY, [1]-M(M), [2]-D(D)
      */

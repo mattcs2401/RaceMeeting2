@@ -97,5 +97,6 @@ public class SchemaConstants {
     public static final String WHERE_MEETING_ROWID = MEETING_ROWID + "=?";
     public static final String WHERE_MEETING_ID = MEETING_ID + "=?";
     public static final String WHERE_RACE_MEETING_ID = RACE_MEETING_ID + "=?";
+    public static final String WHERE_MEETING_DATE = MEETING_DATE + "=?";
 
 }

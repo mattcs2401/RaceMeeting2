@@ -34,6 +34,7 @@ import com.mcssoft.racemeetings2.interfaces.IDateSelect;
 import com.mcssoft.racemeetings2.network.DownloadRequest;
 import com.mcssoft.racemeetings2.network.DownloadRequestQueue;
 import com.mcssoft.racemeetings2.network.NetworkReceiver;
+import com.mcssoft.racemeetings2.utility.DateTime;
 import com.mcssoft.racemeetings2.utility.Preferences;
 import com.mcssoft.racemeetings2.utility.Resources;
 import com.mcssoft.racemeetings2.utility.Url;
@@ -77,8 +78,8 @@ public class MainActivity extends AppCompatActivity
      */
     @Override
     public void onResponse(Object response) {
-        startProgressDialog(false);
-        loadMeetingsFragment(null);
+        doProgressDialog(false);
+        loadMeetingsFragment(this.bundle);
     }
 
     /**
@@ -119,13 +120,36 @@ public class MainActivity extends AppCompatActivity
         /*if(!receiver.isConnected()) {
             showNetworkDialog();
         } else {*/
-            DatabaseOperations dbOper = new DatabaseOperations(this);
-            if(dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE)) {
-                loadMeetingsFragment(null);
+        boolean meetingsExists;
+        Bundle bundle = new Bundle();
+        DatabaseOperations dbOper = new DatabaseOperations(this);
+
+        if(Preferences.getInstance().getMeetingsShowToday()) {
+            // Preference to show today's meetings is set.
+            DateTime dt = new DateTime();
+            String today = dt.getCurrentDate();
+            meetingsExists = dbOper.checkMeetingDate(today);
+
+            if(meetingsExists) {
+                // Meetings for today exist in the database.
+                bundle.putString("meetings_show_today_key", today);
+            } else {
+                // Meetings for today will need to be downloaded.
+                bundle.putString("meetings_show_today_key", today);
+//                bundle.putString("meetings_show_today_download_key", today);
+                this.bundle = bundle;
+                getMeetingsOnDay(today.split("-"));
+            }
+        } else { //if (!Preferences.getInstance().getMeetingsShowToday()) {
+            // Preference to show today's meetings is not set (show all if exists).
+            meetingsExists = dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE);
+            if(meetingsExists) {
+                bundle.putString("meetings_show_all_key", null);
             } else {
                 loadMeetingsFragment(setEmptyView());
             }
-            // TODO - check prefs to load today's meeting information (else display message ?).
+        }
+        loadMeetingsFragment(bundle);
     }
 
     @Override
@@ -184,7 +208,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.id_nav_menu_races_today) {
-            getMeetingsOnDay(null);
+            // TODO - check if meetings already downloaded.
+//            getMeetingsOnDay(null);
 
         } else if (id == R.id.id_nav_menu_races_select) {
             DialogFragment dateSelectFragment = new DateSelectFragment();
@@ -228,7 +253,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             uri = url.createRaceDayUrl(date);
         }
-        startProgressDialog(true);
+        doProgressDialog(true);
         DownloadRequest dlReq = new DownloadRequest(Request.Method.GET, uri, this, this, this, SchemaConstants.MEETINGS_TABLE);
         DownloadRequestQueue.getInstance().addToRequestQueue(dlReq);
     }
@@ -282,13 +307,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     private Bundle setEmptyView() {
-        isEmptyView = true;
         Bundle args = new Bundle();
-        args.putBoolean("meetings_empty_view_key", isEmptyView);
+        args.putString("meetings_show_empty_key", null);
         return args;
     }
 
-    private void startProgressDialog(boolean doProgress) {
+    private void doProgressDialog(boolean doProgress) {
         if(doProgress) {
             progressDialog = new ProgressDialog(this, ProgressDialog.STYLE_SPINNER);
             progressDialog.setCancelable(false);
@@ -303,8 +327,8 @@ public class MainActivity extends AppCompatActivity
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Region: Private vars">
+    private Bundle bundle;                  // contains meeting action key, used by fragment.
     private Toolbar toolbar;                // to get access to the toolbar.
-    private boolean isEmptyView;            // flag there is nothing to show.
     private NetworkReceiver receiver;       // for network availability check.
     private ProgressDialog progressDialog;  // used by Volley download to show something happening.
     //</editor-fold>
