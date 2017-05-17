@@ -153,8 +153,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onStop() {
+        super.onStop();
 
         DatabaseOperations dbOper = new DatabaseOperations(this);
 
@@ -217,8 +217,21 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.id_nav_menu_races_today) {
-            // TODO - check if meetings already downloaded.
-            getMeetingsOnDay(null);
+            // Get today's date and set bundle args.
+            DateTime dt = new DateTime();
+            String today = dt.getCurrentDateYearFirst();
+            Bundle bundle = new Bundle();
+            bundle.putString("meetings_show_today_key", today);
+
+            // Check if Meetings already exist for today.
+            DatabaseOperations dbOper = new DatabaseOperations(this);
+            if(dbOper.checkMeetingDate(today)) {
+                loadMeetingsFragment(bundle);
+            } else {
+                // download today's Meetings.
+                this.bundle = bundle;
+                getMeetingsOnDay(today.split("-"));
+            }
 
         } else if (id == R.id.id_nav_menu_races_select) {
             DialogFragment dateSelectFragment = new DateSelectFragment();
