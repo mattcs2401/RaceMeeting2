@@ -155,6 +155,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
+        DatabaseOperations dbOper = new DatabaseOperations(this);
+
+        // Check cache preference.
+        if(!Preferences.getInstance().getSaveMeetings()) {
+            dbOper.deleteAllFromTable(SchemaConstants.RUNNERS_TABLE);
+            dbOper.deleteAllFromTable(SchemaConstants.RACES_TABLE);
+            dbOper.deleteAllFromTable(SchemaConstants.MEETINGS_TABLE);
+        }
+
         // De-register the network state broadcast receiver.
         unRegisterReceiver();
 
@@ -164,7 +174,6 @@ public class MainActivity extends AppCompatActivity
         DownloadRequestQueue.getInstance().destroy();
 
         // Basically just ensure database is closed.
-        DatabaseOperations dbOper = new DatabaseOperations(this);
         if(dbOper.getDbHelper() != null) {
             dbOper.getDbHelper().onDestroy();
         }
