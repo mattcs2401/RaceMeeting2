@@ -47,14 +47,16 @@ public class DateSelectFragment extends DialogFragment
             case AlertDialog.BUTTON_POSITIVE:
                 dateVals = new String[3];
                 dateVals[0] = String.valueOf(datePicker.getYear());
+
                 dateVals[1] = String.valueOf((datePicker.getMonth() + 1)); // months indexed at 0 ??
-//                if(dateVals[1].length() == 1) {
-//                    dateVals[1] = "0" + dateVals[1];
-//                }
+                if(dateVals[1].length() == 1) {
+                    dateVals[1] = "0" + dateVals[1];
+                }
+
                 dateVals[2] = String.valueOf(datePicker.getDayOfMonth());
-//                if(dateVals[2].length() == 1) {
-//                    dateVals[2] = "0" + dateVals[2];
-//                }
+                if(dateVals[2].length() == 1) {
+                    dateVals[2] = "0" + dateVals[2];
+                }
                 break;
         }
         if(dateVals != null) {

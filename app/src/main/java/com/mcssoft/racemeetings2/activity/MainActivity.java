@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -39,6 +40,8 @@ import com.mcssoft.racemeetings2.utility.Preferences;
 import com.mcssoft.racemeetings2.utility.Resources;
 import com.mcssoft.racemeetings2.utility.Url;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity
         implements IDateSelect,
                    IDeleteDialog,
@@ -49,11 +52,15 @@ public class MainActivity extends AppCompatActivity
     //<editor-fold defaultstate="collapsed" desc="Region: Interface">
     /**
      * Results of the DateSelectFragment returns here.
-     * @param values [0] YYYY, [1] M(M), [2] D(D)
+     * @param dateVals [0] YYYY, [1] M(M), [2] D(D)
      */
     @Override
-    public void iDateValues(String[] values) {
-        getMeetingsOnDay(values);
+    public void iDateValues(String[] dateVals) {
+        Bundle bundle = new Bundle();
+        String date = dateVals[0] + "-" + dateVals[1] + "-" + dateVals[2];
+        bundle.putString("meetings_show_day_key", date);
+        this.bundle = bundle;
+        getMeetingsOnDay(dateVals);
     }
 
     /**
@@ -79,6 +86,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onResponse(Object response) {
         doProgressDialog(false);
+        if(((ArrayList) response).size() == 0) {
+            this.bundle.clear();
+            this.bundle.putString("meetings_show_empty_key", null);
+        }
         loadMeetingsFragment(this.bundle);
     }
 
@@ -91,13 +102,19 @@ public class MainActivity extends AppCompatActivity
         if(progressDialog != null && progressDialog.isShowing()) {
             progressDialog.dismiss();
         }
-        if(error.networkResponse == null) {
+        NetworkResponse networkResponse = error.networkResponse;
+        if(networkResponse == null) {
             ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
             if (networkInfo == null || (!networkInfo.isAvailable() && !networkInfo.isConnected())) {
                 showNetworkDialog();
             }
         } else {
+            // Some sort of network error, e.g. 404 page not found etc.
+//            Map<String,String> headers = networkResponse.headers;
+            this.bundle.clear();
+            this.bundle.putString("meetings_show_empty_key", null);
+            loadMeetingsFragment(this.bundle);
             // TODO - some generic error dialog ?
         }
     }
@@ -107,22 +124,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        registerReceiver();            // register network broadcast receiver.
-        DownloadRequestQueue.getInstance(this);
-        Preferences.getInstance(this); // setup preferenxes access.
-        Resources.getInstance(this);   // setup resources access.
-        setBaseUI();                   // set screen elements.
+
+        setBaseUI();    // set screen elements.
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        /*if(!receiver.isConnected()) {
-            showNetworkDialog();
-        } else {*/
-        boolean meetingsExist;
+
+        initialise();
         Bundle bundle = new Bundle();
-        DatabaseOperations dbOper = new DatabaseOperations(this);
 
         if(Preferences.getInstance().getMeetingsShowToday()) {
             // Preference to show today's meetings is set.
@@ -131,12 +142,12 @@ public class MainActivity extends AppCompatActivity
             meetingsExist = dbOper.checkMeetingDate(today);
 
             if(meetingsExist) {
-                // Meetings for today exist in the database.
-                bundle.putString("meetings_show_today_key", today);
+                // Meetings for day exist in the database.
+                bundle.putString("meetings_show_day_key", today);
                 loadMeetingsFragment(bundle);
             } else {
-                // Meetings for today will need to be downloaded.
-                bundle.putString("meetings_show_today_key", today);
+                // Meetings for day will need to be downloaded.
+                bundle.putString("meetings_show_day_key", today);
                 this.bundle = bundle;
                 getMeetingsOnDay(today.split("-"));
             }
@@ -155,28 +166,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onStop() {
         super.onStop();
-
-        DatabaseOperations dbOper = new DatabaseOperations(this);
-
-        // Check cache preference.
-        if(!Preferences.getInstance().getSaveMeetings()) {
-            dbOper.deleteAllFromTable(SchemaConstants.RUNNERS_TABLE);
-            dbOper.deleteAllFromTable(SchemaConstants.RACES_TABLE);
-            dbOper.deleteAllFromTable(SchemaConstants.MEETINGS_TABLE);
-        }
-
-        // De-register the network state broadcast receiver.
-        unRegisterReceiver();
-
-        // Close off static references.
-        Preferences.getInstance().destroy();
-        Resources.getInstance().destroy();
-        DownloadRequestQueue.getInstance().destroy();
-
-        // Basically just ensure database is closed.
-        if(dbOper.getDbHelper() != null) {
-            dbOper.getDbHelper().onDestroy();
-        }
+        finalise();
     }
     //</editor-fold>
 
@@ -216,12 +206,17 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.id_nav_menu_races_today) {
+        if(id == R.id.id_nav_menu_show_all) {
+            Bundle bundle = new Bundle();
+            bundle.putString("meetings_show_all_key", null);
+            loadMeetingsFragment(bundle);
+        }
+        else if (id == R.id.id_nav_menu_races_today) {
             // Get today's date and set bundle args.
             DateTime dt = new DateTime();
             String today = dt.getCurrentDateYearFirst();
             Bundle bundle = new Bundle();
-            bundle.putString("meetings_show_today_key", today);
+            bundle.putString("meetings_show_day_key", today);
 
             // Check if Meetings already exist for today.
             DatabaseOperations dbOper = new DatabaseOperations(this);
@@ -237,10 +232,6 @@ public class MainActivity extends AppCompatActivity
             DialogFragment dateSelectFragment = new DateSelectFragment();
             dateSelectFragment.show(getFragmentManager(),
                     Resources.getInstance().getString(R.string.date_select_fragment_tag));
-
-        } else if (id == R.id.id_nav_menu_3) {
-
-        } else if (id == R.id.nav_manage) {
 
         }
 
@@ -346,12 +337,46 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
+    private void initialise() {
+        registerReceiver();            // register network broadcast receiver.
+        DownloadRequestQueue.getInstance(this);
+        Preferences.getInstance(this); // setup preferenxes access.
+        Resources.getInstance(this);   // setup resources access.
+        dbOper = new DatabaseOperations(this);
+    }
+
+    private void finalise() {
+
+        // Check cache preference.
+        if(!Preferences.getInstance().getSaveMeetings()) {
+            dbOper.deleteAllFromTable(SchemaConstants.RUNNERS_TABLE);
+            dbOper.deleteAllFromTable(SchemaConstants.RACES_TABLE);
+            dbOper.deleteAllFromTable(SchemaConstants.MEETINGS_TABLE);
+        }
+
+        // De-register the network state broadcast receiver.
+        unRegisterReceiver();
+
+        // Close off static references.
+        Preferences.getInstance().destroy();
+        Resources.getInstance().destroy();
+        DownloadRequestQueue.getInstance().destroy();
+
+        // Basically just ensure database is closed.
+        if(dbOper.getDbHelper() != null) {
+            dbOper.getDbHelper().onDestroy();
+        }
+        dbOper = null;
+    }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Region: Private vars">
     private Bundle bundle;                  // contains meeting action key, used by fragment.
     private Toolbar toolbar;                // to get access to the toolbar.
+    private boolean meetingsExist;          // flag meetings exist in database.
     private NetworkReceiver receiver;       // for network availability check.
+    private DatabaseOperations dbOper;      // database related methods.
     private ProgressDialog progressDialog;  // used by Volley download to show something happening.
     //</editor-fold>
 }

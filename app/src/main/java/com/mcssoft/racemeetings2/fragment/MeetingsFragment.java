@@ -48,13 +48,12 @@ public class MeetingsFragment extends Fragment
         if(!isEmptyView) {
             DatabaseOperations dbOper = new DatabaseOperations(getActivity());
 
-            if(showToday) {
+            if(showDay) {
                 if(dbOper.checkMeetingDate(date)) {
                     cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE, null,
                             SchemaConstants.WHERE_MEETING_DATE, new String[] {date});
                 }
-            }
-            else if(showAll) {
+            } else if(showAll) {
                 if(dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE)) {
                     cursor = dbOper.getAllFromTable(SchemaConstants.MEETINGS_TABLE);
                 }
@@ -71,8 +70,8 @@ public class MeetingsFragment extends Fragment
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onStop() {
+        super.onStop();
         cursor = null;
     }
 
@@ -132,19 +131,18 @@ public class MeetingsFragment extends Fragment
      */
     private void setKeyAction() {
         Bundle args = getArguments();
-        if(args != null) {
-            if(args.containsKey("meetings_show_today_key")) {
-                showToday = true;
-                date = (String) args.get("meetings_show_today_key");
-
-            } else if(args.containsKey("meetings_show_all_key")) {
+        String key = (String) args.keySet().toArray()[0];  // should only be one key at a time.
+        switch(key) {
+            case "meetings_show_day_key":
+                showDay = true;
+                date = (String) args.get(key);
+                break;
+            case "meetings_show_all_key":
                 showAll = true;
-
-            } else if (args.containsKey("meetings_show_empty_key")) {
+                break;
+            case "meetings_show_empty_key":
                 isEmptyView = true;
-            }
-        } else {
-            isEmptyView = true;
+            default: isEmptyView = true;
         }
     }
 
@@ -153,14 +151,14 @@ public class MeetingsFragment extends Fragment
         cursor = null;
         rootView = null;
         meetingsAdapter = null;
-        showAll = showToday = isEmptyView = false;
+        showAll = showDay = isEmptyView = false;
     }
 
     private String date;          // show Meetings for this date (may not be used).
     private View rootView;
     private Cursor cursor;        // the current result set from the database to populate adapter.
 
-    private boolean showToday;    // flag, show only today's Meetings.
+    private boolean showDay;
     private boolean showAll;      // flag, show all Meetings.
     private boolean isEmptyView;  // flag, nothing to show.
 
