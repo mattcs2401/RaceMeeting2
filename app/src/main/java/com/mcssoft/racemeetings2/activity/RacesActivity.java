@@ -3,7 +3,6 @@ package com.mcssoft.racemeetings2.activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -141,7 +140,7 @@ public class RacesActivity extends AppCompatActivity
 
     private void setBaseUI() {
         setContentView(R.layout.content_view_races);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar_base_toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.id_races_toolbar);
     }
 
     /**

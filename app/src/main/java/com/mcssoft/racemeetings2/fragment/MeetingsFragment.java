@@ -1,17 +1,21 @@
 package com.mcssoft.racemeetings2.fragment;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.mcssoft.racemeetings2.R;
+import com.mcssoft.racemeetings2.activity.MainActivity;
 import com.mcssoft.racemeetings2.activity.RacesActivity;
 import com.mcssoft.racemeetings2.adapter.MeetingsAdapter;
 import com.mcssoft.racemeetings2.database.DatabaseOperations;
@@ -36,6 +40,7 @@ public class MeetingsFragment extends Fragment
 
         if(isEmptyView) {
             rootView = inflater.inflate(R.layout.meetings_fragment_empty, container, false);
+            showTitle(null);
         } else {
             rootView = inflater.inflate(R.layout.meetings_fragment, container, false);
         }
@@ -52,10 +57,14 @@ public class MeetingsFragment extends Fragment
                 if(dbOper.checkMeetingDate(date)) {
                     cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE, null,
                             SchemaConstants.WHERE_MEETING_DATE, new String[] {date});
+
+                    showTitle("Meetings for " + date);
                 }
             } else if(showAll) {
                 if(dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE)) {
                     cursor = dbOper.getAllFromTable(SchemaConstants.MEETINGS_TABLE);
+
+                    showTitle("All Meetings");
                 }
             }
 
@@ -152,6 +161,13 @@ public class MeetingsFragment extends Fragment
         rootView = null;
         meetingsAdapter = null;
         showAll = showDay = isEmptyView = false;
+    }
+
+    private void showTitle(String title) {
+        if(title != null) {
+            ((TextView) ((MainActivity) getActivity()).getToolbar()
+                    .findViewById(R.id.id_tv_meetings_toolbar)).setText(title);
+        }
     }
 
     private String date;          // show Meetings for this date (may not be used).

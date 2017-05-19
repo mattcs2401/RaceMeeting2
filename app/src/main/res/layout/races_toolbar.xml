@@ -17,7 +17,7 @@
             <!--app:layout_scrollFlags="scroll|exitUntilCollapsed">-->
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/app_bar_races_toolbar"
+                android:id="@+id/id_races_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
@@ -25,15 +25,15 @@
                 app:layout_collapseMode="pin">
 
                 <ImageView
-                    android:id="@+id/imageView2"
+                    android:id="@+id/id_iV_races_toolbar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:srcCompat="?attr/homeAsUpIndicator" />
                 <TextView
-                    android:id="@+id/toolbar_title"
+                    android:id="@+id/id_tv_races_toolbar"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Toolbar Title"
+                    android:text="Races Toolbar"
                     android:textColor="@android:color/white"
                     style="@style/TextAppearance.AppCompat.Widget.ActionBar.Title"
                     android:layout_gravity="center" />
