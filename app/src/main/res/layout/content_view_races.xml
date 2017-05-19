@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include layout="@layout/app_bar" />
+    <include layout="@layout/races_toolbar" />
 
     <include layout="@layout/content_races" />
 

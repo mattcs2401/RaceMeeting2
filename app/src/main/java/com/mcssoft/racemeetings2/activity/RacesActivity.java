@@ -142,9 +142,6 @@ public class RacesActivity extends AppCompatActivity
     private void setBaseUI() {
         setContentView(R.layout.content_view_races);
         Toolbar toolbar = (Toolbar) findViewById(R.id.app_bar_base_toolbar);
-        setSupportActionBar(toolbar);
-        // back nav in the toolbar.
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /**
