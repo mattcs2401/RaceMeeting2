@@ -18,6 +18,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -42,7 +44,7 @@ import com.mcssoft.racemeetings2.utility.Url;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity
+public class MeetingsActivity extends AppCompatActivity
         implements IDateSelect,
                    IDeleteDialog,
                    Response.Listener,
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity
     public void iDeleteDialog(int whichDelete) {
         if(whichDelete == Resources.getInstance().getInteger(R.integer.rb_delete_all)) {
             // 'Delete all' option selected.
-            Snackbar.make(findViewById(R.id.id_content_main), Resources.getInstance()
+            Snackbar.make(findViewById(R.id.id_container), Resources.getInstance()
                     .getString(R.string.all_meetings_removed), Snackbar.LENGTH_SHORT).show();
             loadMeetingsFragment(setEmptyView());
         } else if(whichDelete == Resources.getInstance().getInteger(R.integer.rb_delete_prev)) {
@@ -253,7 +255,7 @@ public class MainActivity extends AppCompatActivity
             meetingsFragment.setArguments(args);
         }
         getFragmentManager().beginTransaction()
-                .replace(R.id.id_content_main, meetingsFragment, fragment_tag)
+                .replace(R.id.id_container, meetingsFragment, fragment_tag)
                 .addToBackStack(fragment_tag)
                 .commit();
     }
@@ -272,8 +274,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setBaseUI() {
+        setTheme(R.style.AppThemeGreen);
         setContentView(R.layout.content_view_main);
-        toolbar = (Toolbar) findViewById(R.id.id_meetings_toolbar);
+
+        initialiseToolbar();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.id_drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -283,6 +287,18 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.id_nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    private void initialiseToolbar() {
+        toolbar = (Toolbar) findViewById(R.id.id_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        // set title (fragment will change this depending).
+        TextView textView = (TextView) toolbar.findViewById(R.id.id_tv_toolbar);
+        textView.setText("Racemeeting2");
+        ImageView imageView = (ImageView) toolbar.findViewById(R.id.id_iv_toolbar);
+        imageView.setVisibility(ImageView.INVISIBLE);
     }
 
     private void showDeleteDialog() {

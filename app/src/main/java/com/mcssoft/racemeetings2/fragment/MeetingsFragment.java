@@ -1,22 +1,19 @@
 package com.mcssoft.racemeetings2.fragment;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mcssoft.racemeetings2.R;
-import com.mcssoft.racemeetings2.activity.MainActivity;
+import com.mcssoft.racemeetings2.activity.MeetingsActivity;
 import com.mcssoft.racemeetings2.activity.RacesActivity;
 import com.mcssoft.racemeetings2.adapter.MeetingsAdapter;
 import com.mcssoft.racemeetings2.database.DatabaseOperations;
@@ -24,8 +21,6 @@ import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.interfaces.IMeetingItemClickListener;
 import com.mcssoft.racemeetings2.utility.ListingDivider;
 import com.mcssoft.racemeetings2.utility.Resources;
-
-import java.util.Set;
 
 public class MeetingsFragment extends Fragment
         implements IMeetingItemClickListener {
@@ -100,12 +95,12 @@ public class MeetingsFragment extends Fragment
 
     private void setRecyclerView(View view) {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.id_rv_meetings_summary_listing);
-        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-        llm.setOrientation(LinearLayoutManager.VERTICAL);
-        llm.scrollToPosition(0);
-        recyclerView.setLayoutManager(llm);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new ListingDivider(getActivity(), LinearLayoutManager.VERTICAL));
+//        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+//        llm.setOrientation(LinearLayoutManager.VERTICAL);
+//        llm.scrollToPosition(0);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        recyclerView.setHasFixedSize(true);
+//        recyclerView.addItemDecoration(new ListingDivider(getActivity(), LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(meetingsAdapter);
     }
@@ -165,9 +160,13 @@ public class MeetingsFragment extends Fragment
     }
 
     private void showTitle(String title) {
+//        MeetingsActivity activity = ((MeetingsActivity) getActivity());
+        TextView textView =  ((TextView)(((MeetingsActivity) getActivity()).getToolbar())
+                .findViewById(R.id.id_tv_toolbar));
         if(title != null) {
-            ((TextView) ((MainActivity) getActivity()).getToolbar()
-                    .findViewById(R.id.id_tv_meetings_toolbar)).setText(title);
+            textView.setText(title);
+        } else {
+            textView.setText("");
         }
     }
 
