@@ -4,12 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/id_races_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-    <!--<include layout="@layout/races_toolbar" />-->
     <include layout="@layout/toolbar" />
 
-    <include layout="@layout/content_races" />
+    <include layout="@layout/content_common"/>
 
 </android.support.design.widget.CoordinatorLayout>
 

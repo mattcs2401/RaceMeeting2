@@ -275,7 +275,7 @@ public class MeetingsActivity extends AppCompatActivity
 
     private void setBaseUI() {
         setTheme(R.style.AppThemeGreen);
-        setContentView(R.layout.content_view_main);
+        setContentView(R.layout.content_view_meetings);
 
         initialiseToolbar();
 

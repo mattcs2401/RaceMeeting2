@@ -32,7 +32,9 @@ public class DownloadRequestQueue {
     }
 
     public void destroy() {
-        requestQueue.cancelAll(null);
+        if(requestQueue != null) {
+            requestQueue.cancelAll(null);
+        }
         context = null;
     }
 

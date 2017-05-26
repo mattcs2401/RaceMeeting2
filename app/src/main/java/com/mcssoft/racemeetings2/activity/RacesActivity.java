@@ -5,6 +5,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -23,11 +26,14 @@ import com.mcssoft.racemeetings2.utility.Url;
 import java.util.List;
 
 public class RacesActivity extends AppCompatActivity
-        implements Response.ErrorListener, Response.Listener {
+        implements Response.Listener,
+                   Response.ErrorListener,
+                   ImageView.OnClickListener {
 
     //<editor-fold defaultstate="collapsed" desc="Region: Lifecycle">
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
+        setTheme(R.style.AppThemeBlue);
         super.onCreate(savedInstanceState);
 
         setBaseUI();
@@ -73,6 +79,12 @@ public class RacesActivity extends AppCompatActivity
         }
     }
     //</editor-fold>
+
+
+    @Override
+    public void onClick(View view) {
+        onBackPressed();
+    }
 
     //<editor-fold defaultstate="collapsed" desc="Region: Volley return">
     /**
@@ -140,7 +152,16 @@ public class RacesActivity extends AppCompatActivity
 
     private void setBaseUI() {
         setContentView(R.layout.content_view_races);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.id_races_toolbar);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.id_toolbar); //races_toolbar);
+        TextView textView = (TextView) toolbar.findViewById(R.id.id_tv_toolbar);
+        textView.setText("Races for ...");
+        ImageView imageView = (ImageView) toolbar.findViewById(R.id.id_iv_toolbar);
+        imageView.setImageResource(R.drawable.ic_arrow_back);
+        imageView.setOnClickListener(this);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
     }
 
     /**
@@ -156,7 +177,7 @@ public class RacesActivity extends AppCompatActivity
         racesFragment.setArguments(bundle);
 
         getFragmentManager().beginTransaction()
-                .replace(R.id.id_content_races, racesFragment, fragment_tag)
+                .replace(R.id.id_container, racesFragment, fragment_tag)
                 .addToBackStack(fragment_tag)
                 .commit();
     }

@@ -21,14 +21,11 @@ import com.mcssoft.racemeetings2.utility.ListingDivider;
 import com.mcssoft.racemeetings2.utility.Resources;
 
 public class RacesFragment extends Fragment
-        implements IRaceItemClickListener,
-                   ImageView.OnClickListener {
+        implements IRaceItemClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.races_fragment, container, false);
-        backView = getActivity().findViewById(R.id.id_iV_races_toolbar);
-        backView.setOnClickListener(this);
         return rootView;
     }
 
@@ -57,11 +54,6 @@ public class RacesFragment extends Fragment
 //        Intent intent = new Intent(getActivity(), RacesActivity.class);
 //        intent.putExtra(Resources.getInstance().getString(R.string.meetings_db_rowid_key),  dbRowId); // getDbRowId(position));
 //        startActivity(intent);
-    }
-
-    @Override
-    public void onClick(View view) {
-        getActivity().onBackPressed();
     }
 
     private void setRaceAdapter() {
@@ -97,7 +89,6 @@ public class RacesFragment extends Fragment
     private int position;
     private Cursor cursor;
     private View rootView;
-    private View backView;        // the image view back button in toolbar
     private RacesAdapter racesAdapter;
 
 }
