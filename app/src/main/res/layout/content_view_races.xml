@@ -9,6 +9,7 @@
 
     <include layout="@layout/toolbar" />
 
+    <!-- Fragment container. -->
     <include layout="@layout/content_common"/>
 
 </android.support.design.widget.CoordinatorLayout>

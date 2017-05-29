@@ -1,5 +1,6 @@
 package com.mcssoft.racemeetings2.activity;
 
+import android.app.Fragment;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -79,7 +80,6 @@ public class RacesActivity extends AppCompatActivity
         }
     }
     //</editor-fold>
-
 
     @Override
     public void onClick(View view) {

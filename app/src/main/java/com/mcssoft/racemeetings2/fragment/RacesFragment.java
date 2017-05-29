@@ -25,7 +25,7 @@ public class RacesFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.races_fragment, container, false);
+        rootView = inflater.inflate(R.layout.fragment_common, container, false);
         return rootView;
     }
 
@@ -58,24 +58,27 @@ public class RacesFragment extends Fragment
 
     private void setRaceAdapter() {
         racesAdapter = new RacesAdapter();
-        racesAdapter.setOnItemClickListener(this);
-//        meetingsAdapter.setOnItemLongClickListener(this);
-        racesAdapter.swapCursor(cursor);
-        if(cursor != null && cursor.getCount() == 0) {
-            racesAdapter.setEmptyView(true);
-        } else {
-            racesAdapter.setEmptyView(false);
+
+        if(cursor != null) {
+            racesAdapter.setOnItemClickListener(this);
+            racesAdapter.swapCursor(cursor);
+
+            if(cursor.getCount() == 0) {
+                racesAdapter.setEmptyView(true);
+            } else {
+                racesAdapter.setEmptyView(false);
+            }
         }
     }
 
     private void setRecyclerView(View view) {
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.id_rv_races_summary_listing);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.id_rv_listing);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         llm.scrollToPosition(0);
         recyclerView.setLayoutManager(llm);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new ListingDivider(getActivity(), LinearLayoutManager.VERTICAL));
+//        recyclerView.setHasFixedSize(true);
+//        recyclerView.addItemDecoration(new ListingDivider(getActivity(), LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(racesAdapter);
     }

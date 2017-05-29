@@ -16,8 +16,6 @@ public class RacesAdapter extends RecyclerView.Adapter<RacesViewHolder> {
     public RacesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if ( parent instanceof RecyclerView ) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.race_row, parent, false);
-            view.setFocusable(true);
-            // don't need to keep a local copy, framework now supplies.
             return new RacesViewHolder(view, itemClickListener); //, itemLongClickListener);
         } else {
             throw new RuntimeException("Not bound to RecyclerView");

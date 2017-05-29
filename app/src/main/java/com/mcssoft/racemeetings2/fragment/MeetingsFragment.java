@@ -35,10 +35,10 @@ public class MeetingsFragment extends Fragment
         setKeyAction();   // establish local variables for what we are going to show.
 
         if(isEmptyView) {
-            rootView = inflater.inflate(R.layout.meetings_fragment_empty, container, false);
+            rootView = inflater.inflate(R.layout.fragment_meetings_empty, container, false);
             showTitle(null);
         } else {
-            rootView = inflater.inflate(R.layout.meetings_fragment, container, false);
+            rootView = inflater.inflate(R.layout.fragment_common, container, false);
         }
         return rootView;
     }
@@ -94,14 +94,14 @@ public class MeetingsFragment extends Fragment
     }
 
     private void setRecyclerView(View view) {
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.id_rv_meetings_summary_listing);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.id_rv_listing);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         llm.scrollToPosition(0);
         recyclerView.setLayoutManager(llm);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.addItemDecoration(new ListingDivider(getActivity(), LinearLayoutManager.VERTICAL));
-//        recyclerView.setItemAnimator(new DefaultItemAnimator());
+//        recyclerView.setHasFixedSize(true);
+//        recyclerView.addItemDecoration(new ListingDivider(getActivity(), LinearLayoutManager.VERTICAL));
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(meetingsAdapter);
     }
 
