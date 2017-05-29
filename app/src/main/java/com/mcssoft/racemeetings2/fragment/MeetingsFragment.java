@@ -19,7 +19,6 @@ import com.mcssoft.racemeetings2.adapter.MeetingsAdapter;
 import com.mcssoft.racemeetings2.database.DatabaseOperations;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.interfaces.IMeetingItemClickListener;
-import com.mcssoft.racemeetings2.utility.ListingDivider;
 import com.mcssoft.racemeetings2.utility.Resources;
 
 public class MeetingsFragment extends Fragment
@@ -38,7 +37,7 @@ public class MeetingsFragment extends Fragment
             rootView = inflater.inflate(R.layout.fragment_meetings_empty, container, false);
             showTitle(null);
         } else {
-            rootView = inflater.inflate(R.layout.fragment_common, container, false);
+            rootView = inflater.inflate(R.layout.fragment_meetings, container, false);
         }
         return rootView;
     }
@@ -94,7 +93,7 @@ public class MeetingsFragment extends Fragment
     }
 
     private void setRecyclerView(View view) {
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.id_rv_listing);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.id_rv_meetings_listing);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         llm.scrollToPosition(0);

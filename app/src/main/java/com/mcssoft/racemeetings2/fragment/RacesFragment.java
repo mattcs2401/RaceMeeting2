@@ -9,7 +9,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.adapter.RacesAdapter;
@@ -17,7 +16,6 @@ import com.mcssoft.racemeetings2.database.DatabaseHelper;
 import com.mcssoft.racemeetings2.database.DatabaseOperations;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.interfaces.IRaceItemClickListener;
-import com.mcssoft.racemeetings2.utility.ListingDivider;
 import com.mcssoft.racemeetings2.utility.Resources;
 
 public class RacesFragment extends Fragment
@@ -25,7 +23,7 @@ public class RacesFragment extends Fragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.fragment_common, container, false);
+        rootView = inflater.inflate(R.layout.fragment_races, container, false);
         return rootView;
     }
 
@@ -72,7 +70,7 @@ public class RacesFragment extends Fragment
     }
 
     private void setRecyclerView(View view) {
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.id_rv_listing);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.id_rv_races_listing);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         llm.scrollToPosition(0);

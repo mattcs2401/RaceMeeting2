@@ -12,7 +12,11 @@
     <include layout="@layout/toolbar" />
 
     <!-- Fragment container. -->
-    <include layout="@layout/content_common" />
+    <FrameLayout
+        android:id="@+id/id_meetings_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="?actionBarSize" />
 
     <!-- Note: this must be last to be able to select a menu item. -->
     <android.support.design.widget.NavigationView

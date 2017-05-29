@@ -73,7 +73,7 @@ public class MeetingsActivity extends AppCompatActivity
     public void iDeleteDialog(int whichDelete) {
         if(whichDelete == Resources.getInstance().getInteger(R.integer.rb_delete_all)) {
             // 'Delete all' option selected.
-            Snackbar.make(findViewById(R.id.id_container), Resources.getInstance()
+            Snackbar.make(findViewById(R.id.id_meetings_container), Resources.getInstance()
                     .getString(R.string.all_meetings_removed), Snackbar.LENGTH_SHORT).show();
             loadMeetingsFragment(setEmptyView());
         } else if(whichDelete == Resources.getInstance().getInteger(R.integer.rb_delete_prev)) {
@@ -255,7 +255,7 @@ public class MeetingsActivity extends AppCompatActivity
             meetingsFragment.setArguments(args);
         }
         getFragmentManager().beginTransaction()
-                .replace(R.id.id_container, meetingsFragment, fragment_tag)
+                .replace(R.id.id_meetings_container, meetingsFragment, fragment_tag)
                 .addToBackStack(fragment_tag)
                 .commit();
     }

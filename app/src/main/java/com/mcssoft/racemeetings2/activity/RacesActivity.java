@@ -177,7 +177,7 @@ public class RacesActivity extends AppCompatActivity
         racesFragment.setArguments(bundle);
 
         getFragmentManager().beginTransaction()
-                .replace(R.id.id_container, racesFragment, fragment_tag)
+                .replace(R.id.id_races_container, racesFragment, fragment_tag)
                 .addToBackStack(fragment_tag)
                 .commit();
     }
