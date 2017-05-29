@@ -9,9 +9,7 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/id_rv_meetings_summary_listing"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-
-    <include layout="@layout/meeting_row" />
 
 </android.support.design.widget.CoordinatorLayout>

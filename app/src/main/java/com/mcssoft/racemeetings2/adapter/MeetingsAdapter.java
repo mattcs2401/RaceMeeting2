@@ -16,8 +16,6 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
     public MeetingsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if ( parent instanceof RecyclerView ) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.meeting_row, parent, false);
-            view.setFocusable(true);
-            // don't need to keep a local copy, framework now supplies.
             return new MeetingsViewHolder(view, itemClickListener); //, itemLongClickListener);
         } else {
             throw new RuntimeException("Not bound to RecyclerView");

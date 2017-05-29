@@ -95,13 +95,13 @@ public class MeetingsFragment extends Fragment
 
     private void setRecyclerView(View view) {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.id_rv_meetings_summary_listing);
-//        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
-//        llm.setOrientation(LinearLayoutManager.VERTICAL);
-//        llm.scrollToPosition(0);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-//        recyclerView.setHasFixedSize(true);
-//        recyclerView.addItemDecoration(new ListingDivider(getActivity(), LinearLayoutManager.VERTICAL));
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        LinearLayoutManager llm = new LinearLayoutManager(getActivity());
+        llm.setOrientation(LinearLayoutManager.VERTICAL);
+        llm.scrollToPosition(0);
+        recyclerView.setLayoutManager(llm);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.addItemDecoration(new ListingDivider(getActivity(), LinearLayoutManager.VERTICAL));
+//        recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(meetingsAdapter);
     }
 
@@ -147,6 +147,7 @@ public class MeetingsFragment extends Fragment
                 break;
             case "meetings_show_empty_key":
                 isEmptyView = true;
+                break;
             default: isEmptyView = true;
         }
     }
