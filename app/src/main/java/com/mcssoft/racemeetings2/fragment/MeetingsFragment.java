@@ -28,6 +28,7 @@ public class MeetingsFragment extends Fragment
         initialise();
     }
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Lifecycle">
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -78,7 +79,9 @@ public class MeetingsFragment extends Fragment
         super.onStop();
         cursor = null;
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Listeners">
     @Override
     public void onItemClick(View view, int position) {
 //        this.position = position;
@@ -91,7 +94,9 @@ public class MeetingsFragment extends Fragment
 //        popupMenu.setOnMenuItemClickListener(this);
 //        popupMenu.show();
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Utility">
     private void setRecyclerView(View view) {
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.id_rv_meetings_listing);
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
@@ -127,7 +132,8 @@ public class MeetingsFragment extends Fragment
     private int getDbRowId(int position) {
         meetingsAdapter.getItemId(position);
         Cursor cursor = meetingsAdapter.getCursor();
-        return cursor.getInt(cursor.getColumnIndex(SchemaConstants.MEETING_ROWID));
+        int dbRowId = cursor.getInt(cursor.getColumnIndex(SchemaConstants.MEETING_ROWID));
+        return dbRowId;
     }
 
     /**
@@ -169,7 +175,9 @@ public class MeetingsFragment extends Fragment
             textView.setText("");
         }
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Private vars">
     private String date;          // show Meetings for this date (may not be used).
     private View rootView;
     private Cursor cursor;        // the current result set from the database to populate adapter.
@@ -179,4 +187,5 @@ public class MeetingsFragment extends Fragment
     private boolean isEmptyView;  // flag, nothing to show.
 
     private MeetingsAdapter meetingsAdapter;
+    //</editor-fold>
 }

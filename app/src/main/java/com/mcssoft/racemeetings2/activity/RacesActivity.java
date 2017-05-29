@@ -1,6 +1,5 @@
 package com.mcssoft.racemeetings2.activity;
 
-import android.app.Fragment;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -37,19 +36,18 @@ public class RacesActivity extends AppCompatActivity
         setTheme(R.style.AppThemeBlue);
         super.onCreate(savedInstanceState);
 
-        setBaseUI();
-        dbOper = new DatabaseOperations(this);
-
         Bundle bundle = getIntent().getExtras();
-        int dbRowId = bundle.getInt(Resources.getInstance()
-                .getString(R.string.meetings_db_rowid_key));
+        int dbRowId = bundle.getInt(Resources.getInstance().getString(R.string.meetings_db_rowid_key));
+        dbOper = new DatabaseOperations(this);
+        meetingDetails = getMeetingCodeAndDate(dbRowId);
+
+        setBaseUI();
 
         if (!checkRaceExists(dbRowId)) {
-            String[] details = getMeetingCodeAndDate(dbRowId);
             DateTime dateTime = new DateTime();
-            String[] dateComp = dateTime.getDateComponents(details[1]);
+            String[] dateComp = dateTime.getDateComponents(meetingDetails[1]);
             Url url = new Url();
-            String uri = url.createMeetingUrl(dateComp, details[0]);
+            String uri = url.createMeetingUrl(dateComp, meetingDetails[0]);
 
             DownloadRequest dlReq = new DownloadRequest(Request.Method.GET, uri, this, this, this,
                     SchemaConstants.RACES_TABLE);
@@ -81,10 +79,12 @@ public class RacesActivity extends AppCompatActivity
     }
     //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Listeners">
     @Override
     public void onClick(View view) {
         onBackPressed();
     }
+    //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Region: Volley return">
     /**
@@ -155,7 +155,7 @@ public class RacesActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.id_toolbar); //races_toolbar);
         TextView textView = (TextView) toolbar.findViewById(R.id.id_tv_toolbar);
-        textView.setText("Races for ...");
+        textView.setText("Races for " + meetingDetails[0] + " " + meetingDetails[1]);
         ImageView imageView = (ImageView) toolbar.findViewById(R.id.id_iv_toolbar);
         imageView.setImageResource(R.drawable.ic_arrow_back);
         imageView.setOnClickListener(this);
@@ -183,5 +183,8 @@ public class RacesActivity extends AppCompatActivity
     }
     //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Private vars">
+    private String[] meetingDetails;   // meeting code and date.
     private DatabaseOperations dbOper;
+    //</editor-fold>
 }

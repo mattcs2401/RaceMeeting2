@@ -21,6 +21,7 @@ import com.mcssoft.racemeetings2.utility.Resources;
 public class RacesFragment extends Fragment
         implements IRaceItemClickListener {
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Lifecycle">
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_races, container, false);
@@ -43,7 +44,9 @@ public class RacesFragment extends Fragment
         setRaceAdapter();
         setRecyclerView(rootView);
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Listeners">
     @Override
     public void onItemClick(View view, int position) {
         // TODO - show the associated Race runners.
@@ -53,7 +56,9 @@ public class RacesFragment extends Fragment
 //        intent.putExtra(Resources.getInstance().getString(R.string.meetings_db_rowid_key),  dbRowId); // getDbRowId(position));
 //        startActivity(intent);
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Utility">
     private void setRaceAdapter() {
         racesAdapter = new RacesAdapter();
 
@@ -75,8 +80,6 @@ public class RacesFragment extends Fragment
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         llm.scrollToPosition(0);
         recyclerView.setLayoutManager(llm);
-//        recyclerView.setHasFixedSize(true);
-//        recyclerView.addItemDecoration(new ListingDivider(getActivity(), LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(racesAdapter);
     }
@@ -86,10 +89,12 @@ public class RacesFragment extends Fragment
         Cursor cursor = racesAdapter.getCursor();
         return cursor.getInt(cursor.getColumnIndex(SchemaConstants.RACE_ROWID));
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Private vars">
     private int position;
     private Cursor cursor;
     private View rootView;
     private RacesAdapter racesAdapter;
-
+    //</editor-fold>
 }

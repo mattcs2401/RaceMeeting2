@@ -1,7 +1,6 @@
 package com.mcssoft.racemeetings2.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,10 +9,6 @@ import com.mcssoft.racemeetings2.interfaces.IRaceItemClickListener;
 
 public class RacesViewHolder extends RecyclerView.ViewHolder
         implements View.OnClickListener {
-
-    public RacesViewHolder(View view) {
-        super(view);
-    }
 
     public RacesViewHolder(View view, IRaceItemClickListener listener) {
         super(view);
@@ -42,10 +37,12 @@ public class RacesViewHolder extends RecyclerView.ViewHolder
     public TextView getTvRaceDist() { return tvRaceDist; }
     //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Private vars">
     private TextView tvRaceNo;
     private TextView tvRaceName;
     private TextView tvRaceTime;
     private TextView tvRaceDist;
 
     private IRaceItemClickListener itemClickListener;
-}
+    //</editor-fold>
+ }

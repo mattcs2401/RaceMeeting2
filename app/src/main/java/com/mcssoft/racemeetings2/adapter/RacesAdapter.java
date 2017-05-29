@@ -12,6 +12,7 @@ import com.mcssoft.racemeetings2.interfaces.IRaceItemClickListener;
 
 public class RacesAdapter extends RecyclerView.Adapter<RacesViewHolder> {
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Overrides">
     @Override
     public RacesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if ( parent instanceof RecyclerView ) {
@@ -30,7 +31,7 @@ public class RacesAdapter extends RecyclerView.Adapter<RacesViewHolder> {
     @Override
     public int getItemCount() {
         if(isEmptyView) {
-            return  1; // need to do this so the onCreateViewHolder fires.
+            return  0; // need to do this so the onCreateViewHolder fires.
         } else {
             if(cursor != null) {
                 return cursor.getCount();
@@ -45,7 +46,9 @@ public class RacesAdapter extends RecyclerView.Adapter<RacesViewHolder> {
         cursor.moveToPosition(position);
         return cursor.getLong(idColNdx);
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Utility">
     public void swapCursor(Cursor newCursor) {
         cursor = newCursor;
         if(cursor != null) {
@@ -76,7 +79,9 @@ public class RacesAdapter extends RecyclerView.Adapter<RacesViewHolder> {
         holder.getTvRaceTime().setText(cursor.getString(raceTimeColNdx));
         holder.getTvRaceDist().setText(cursor.getString(raceDistColNdx));
     }
+    //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Private vars">
     private int idColNdx;
     private int raceNoColNdx;
     private int raceNameColNdx;
@@ -88,4 +93,5 @@ public class RacesAdapter extends RecyclerView.Adapter<RacesViewHolder> {
     private boolean isEmptyView;
 
     private IRaceItemClickListener itemClickListener;
+    //</editor-fold>
 }
