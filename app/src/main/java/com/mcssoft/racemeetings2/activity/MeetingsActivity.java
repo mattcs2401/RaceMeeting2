@@ -140,19 +140,28 @@ public class MeetingsActivity extends AppCompatActivity
         initialise();
         Bundle bundle = new Bundle();
 
+        String raceCodePref = Preferences.getInstance().getDefaultRaceCode();
+
         if(Preferences.getInstance().getMeetingsShowToday()) {
             // Preference to show today's meetings is set.
             DateTime dt = new DateTime();
             String today = dt.getCurrentDateYearFirst();
-            meetingsExist = dbOper.checkMeetingDate(today);
+
+            if(raceCodePref.equals(Resources.getInstance().getString(R.string.race_code_none))) {
+                meetingsExist = dbOper.checkMeetingDate(today);
+            } else {
+
+            }
 
             if(meetingsExist) {
                 // Meetings for day exist in the database.
-                bundle.putString("meetings_show_day_key", today);
+                bundle.putString(Resources.getInstance()
+                        .getString(R.string.meetings_show_day_key), today);
                 loadMeetingsFragment(bundle);
             } else {
                 // Meetings for day will need to be downloaded.
-                bundle.putString("meetings_show_day_key", today);
+                bundle.putString(Resources.getInstance()
+                        .getString(R.string.meetings_show_day_key), today);
                 this.bundle = bundle;
                 getMeetingsOnDay(today.split("-"));
             }
@@ -160,7 +169,8 @@ public class MeetingsActivity extends AppCompatActivity
             // Preference to show today's meetings is not set (show all if exists).
             meetingsExist = dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE);
             if(meetingsExist) {
-                bundle.putString("meetings_show_all_key", null);
+                bundle.putString(Resources.getInstance()
+                        .getString(R.string.meetings_show_all_key), null);
                 loadMeetingsFragment(bundle);
             } else {
                 loadMeetingsFragment(setEmptyView());

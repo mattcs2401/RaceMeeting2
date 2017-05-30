@@ -142,18 +142,16 @@ public class MeetingsFragment extends Fragment
     private void setKeyAction() {
         Bundle args = getArguments();
         String key = (String) args.keySet().toArray()[0];  // should only be one key at a time.
-        switch(key) {
-            case "meetings_show_day_key":
-                showDay = true;
-                date = (String) args.get(key);
-                break;
-            case "meetings_show_all_key":
-                showAll = true;
-                break;
-            case "meetings_show_empty_key":
-                isEmptyView = true;
-                break;
-            default: isEmptyView = true;
+
+        if(key.equals(Resources.getInstance().getString(R.string.meetings_show_day_key))) {
+            showDay = true;
+            date = (String) args.get(key);
+        } else if(key.equals(Resources.getInstance().getString(R.string.meetings_show_all_key))) {
+            showAll = true;
+        } else if(key.equals(Resources.getInstance().getString(R.string.meetings_show_empty_key))) {
+            isEmptyView = true;
+        } else {
+            isEmptyView = true;
         }
     }
 

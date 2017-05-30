@@ -27,27 +27,31 @@ public class Preferences {
     public static synchronized Preferences getInstance() {
         return instance;
     }
-
-    public static boolean instanceExists() {
-        return instance != null ? true : false;
-    }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Region: Keys/Values">
-    public String getMeetingsShowTodayKey() {
-        return Resources.getInstance().getString(R.string.pref_meetings_show_today_key);
-    }
-
     public boolean getMeetingsShowToday() {
         return getDefaultSharedPreferences().getBoolean(getMeetingsShowTodayKey(), false);
     }
 
-    public String getSaveMeetingsKey() {
+    public boolean getSaveMeetings() {
+        return getDefaultSharedPreferences().getBoolean(getSaveMeetingsKey(), false);
+    }
+
+    public String getDefaultRaceCode() {
+        return getDefaultSharedPreferences().getString(getDefaultRaceCodeKey(), null);
+    }
+
+    private String getMeetingsShowTodayKey() {
+        return Resources.getInstance().getString(R.string.pref_meetings_show_today_key);
+    }
+
+    private String getSaveMeetingsKey() {
         return Resources.getInstance().getString(R.string.pref_meetings_save_key);
     }
 
-    public boolean getSaveMeetings() {
-        return getDefaultSharedPreferences().getBoolean(getSaveMeetingsKey(), false);
+    private String getDefaultRaceCodeKey() {
+        return Resources.getInstance().getString(R.string.race_code_pref_val_key);
     }
     //</editor-fold>
 
@@ -80,6 +84,10 @@ public class Preferences {
         }
 
         return prefsState;
+    }
+
+    public static boolean instanceExists() {
+        return instance != null ? true : false;
     }
     //</editor-fold>
 
