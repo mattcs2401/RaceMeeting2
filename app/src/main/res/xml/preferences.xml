@@ -2,7 +2,9 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
+
         android:title="Meetings General">
+
         <CheckBoxPreference
             android:key="@string/pref_meetings_show_today_key"
             android:title="@string/pref_meetings_show_today_title"
@@ -14,6 +16,11 @@
             android:title="@string/pref_meetings_save_title"
             android:summary="@string/pref_meetings_save_summary"
             android:defaultValue="true" />
+
+        <com.mcssoft.racemeetings2.dialog.RaceCodesDialog
+            android:title="Default Race Code"
+            android:summary="Set the default Race code when viewing races." />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

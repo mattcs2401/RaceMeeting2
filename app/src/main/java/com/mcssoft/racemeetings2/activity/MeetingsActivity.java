@@ -127,6 +127,9 @@ public class MeetingsActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Resources.getInstance(this);   // setup resources access.
+        Preferences.getInstance(this); // setup preferenxes access.
+
         setBaseUI();    // set screen elements.
     }
 
@@ -169,6 +172,13 @@ public class MeetingsActivity extends AppCompatActivity
     protected void onStop() {
         super.onStop();
         finalise();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Preferences.getInstance().destroy();
+        Resources.getInstance().destroy();
     }
     //</editor-fold>
 
@@ -352,8 +362,8 @@ public class MeetingsActivity extends AppCompatActivity
     private void initialise() {
         registerReceiver();            // register network broadcast receiver.
         DownloadRequestQueue.getInstance(this);
-        Preferences.getInstance(this); // setup preferenxes access.
-        Resources.getInstance(this);   // setup resources access.
+//        Resources.getInstance(this);   // setup resources access, must be before Preferences.
+//        Preferences.getInstance(this); // setup preferenxes access.
         dbOper = new DatabaseOperations(this);
     }
 
@@ -370,8 +380,8 @@ public class MeetingsActivity extends AppCompatActivity
         unRegisterReceiver();
 
         // Close off static references.
-        Preferences.getInstance().destroy();
-        Resources.getInstance().destroy();
+//        Preferences.getInstance(this).destroy();
+//        Resources.getInstance(this).destroy();
         DownloadRequestQueue.getInstance().destroy();
 
         // Basically just ensure database is closed.

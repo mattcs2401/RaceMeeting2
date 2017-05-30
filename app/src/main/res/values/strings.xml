@@ -55,6 +55,16 @@
     <string name="pref_meetings_save_title">Save Meetings</string>
     <string name="pref_meetings_save_summary">Save Meetings previously downloaded.</string>
 
+    <string name="pref_default_race_code_key">default_race_code_pref_key</string>
+    <string name="pref_default_race_code_title">Default Race Code</string>
+    <string name="pref_default_race_code_summary">Sets the default race code.</string>
+
+    <!-- Misc. -->
+    <string name="race_code_pref_val_key">race_code_pref_val_key</string>
+    <string name="race_code_pref_id_key">race_code_pref_id_key</string>
+    <string name="race_code_default_val">R</string>
+    <string name="race_code_none">None</string>
+
     <!-- Dialog title. -->
     <string name="title_dialog_delete">Delete Meetings</string>
     <string name="title_dialog_network">Network Problem</string>
