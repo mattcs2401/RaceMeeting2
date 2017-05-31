@@ -380,7 +380,7 @@ public class MeetingsActivity extends AppCompatActivity
                 meetingsExist = dbOper.checkMeetingDate(today, null);
             } else {
                 // race code preference is seet (e.g. one of R, T, G or S)
-                meetingsExist = dbOper.checkMeetingDate(today,
+                meetingsExist = dbOper.checkMeetingDate(today, "%" +
                         Preferences.getInstance().getDefaultRaceCode());
             }
 

@@ -21,8 +21,6 @@ import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.interfaces.IMeetingItemClickListener;
 import com.mcssoft.racemeetings2.utility.Resources;
 
-import java.util.Set;
-
 public class MeetingsFragment extends Fragment
         implements IMeetingItemClickListener {
 
@@ -38,7 +36,7 @@ public class MeetingsFragment extends Fragment
 
         if(isEmptyView) {
             rootView = inflater.inflate(R.layout.fragment_meetings_empty, container, false);
-            showTitle(null);
+            showToolbarTitle(null);
         } else {
             rootView = inflater.inflate(R.layout.fragment_meetings, container, false);
         }
@@ -49,17 +47,17 @@ public class MeetingsFragment extends Fragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         if(!isEmptyView) {
-            DatabaseOperations dbOper = new DatabaseOperations(getActivity());
+            dbOper = new DatabaseOperations(getActivity());
 
             if(showDay) {
-                showTodaysMeetings();
+                getMeetingsOnDate();
 
             } else if(showAll) {
-                showAllMeetings();
+                getAllMeetings();
             }
 
-//            setMeetingAdapter();
-//            setRecyclerView(rootView);
+            setMeetingAdapter();
+            setRecyclerView(rootView);
         }
     }
 
@@ -134,10 +132,10 @@ public class MeetingsFragment extends Fragment
     private void setKeyAction() {
         String key = null;
         Bundle args = getArguments();
-        String[] keySet = (String[]) args.keySet().toArray();
-        key = keySet[0];
+        Object[] keySet = args.keySet().toArray();
+        key = (String) keySet[0];
         if(keySet.length > 1) {
-            code = keySet[1];
+            code = args.getString((String) keySet[1]);
             hasCode = true;
         }
 
@@ -161,7 +159,7 @@ public class MeetingsFragment extends Fragment
         showAll = showDay = isEmptyView = hasCode = false;
     }
 
-    private void showTitle(String title) {
+    private void showToolbarTitle(String title) {
         TextView textView =  ((TextView)(((MeetingsActivity) getActivity()).getToolbar())
                 .findViewById(R.id.id_tv_toolbar));
         if(title != null) {
@@ -171,25 +169,43 @@ public class MeetingsFragment extends Fragment
         }
     }
 
-    private void showTodaysMeetings() {
-        // TODO - check meeting race code pref.
-        //                if(dbOper.checkMeetingDate(date)) {
-//                    cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE, null,
-//                            SchemaConstants.WHERE_MEETING_DATE, new String[] {date});
-//
-//                    showTitle("Meetings for " + date);
-//                }
+    private void getMeetingsOnDate() {
+        if(hasCode) {
+            // get meetings by date and code
+            if(dbOper.checkMeetingDate(date, "%" + code)) {
+                cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE, null,
+                        SchemaConstants.WHERE_MEETING_DATE_CODE, new String[] {date, "%" + code});
 
+                showToolbarTitle("(" + code + ")" + " Meetings for " + date);
+            }
+        } else {
+            // get meetings by date.
+            if(dbOper.checkMeetingDate(date, null)) {
+                cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE, null,
+                            SchemaConstants.WHERE_MEETING_DATE, new String[] {date});
+
+                showToolbarTitle("Meetings for " + date);
+            }
+        }
     }
 
-    private void showAllMeetings() {
-        // TODO - check meeting race code pref.
-        //                if(dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE)) {
-//                    cursor = dbOper.getAllFromTable(SchemaConstants.MEETINGS_TABLE);
-//
-//                    showTitle("All Meetings");
-//                }
+    private void getAllMeetings() {
+        if(hasCode) {
+            // get all meetings by code
+            if(dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE, SchemaConstants.WHERE_MEETING_CODE, new String[] {code})) {
+                cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE, null,
+                        SchemaConstants.WHERE_MEETING_CODE, new String[] {"%" + code});
 
+                showToolbarTitle("(" + code + ")" + " All Meetings");
+            }
+        } else {
+            // get all meetings.
+            if(dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE, null, null)) {
+                cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE, null, null, null);
+
+                showToolbarTitle("All Meetings");
+            }
+        }
     }
     //</editor-fold>
 
@@ -198,7 +214,6 @@ public class MeetingsFragment extends Fragment
     private String date;          // show Meetings for this date (may not be used).
     private View rootView;
     private Cursor cursor;        // the current result set from the database to populate adapter.
-
     private boolean hasCode;      // flag, race code in arguments.
     private boolean showDay;      // flag, show meetings on date.
     private boolean showAll;      // flag, show all Meetings.
@@ -206,4 +221,6 @@ public class MeetingsFragment extends Fragment
 
     private MeetingsAdapter meetingsAdapter;
     //</editor-fold>
+
+    private DatabaseOperations dbOper;
 }
