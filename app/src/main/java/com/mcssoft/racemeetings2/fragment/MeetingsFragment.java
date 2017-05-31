@@ -21,6 +21,8 @@ import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.interfaces.IMeetingItemClickListener;
 import com.mcssoft.racemeetings2.utility.Resources;
 
+import java.util.Set;
+
 public class MeetingsFragment extends Fragment
         implements IMeetingItemClickListener {
 
@@ -95,8 +97,6 @@ public class MeetingsFragment extends Fragment
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         llm.scrollToPosition(0);
         recyclerView.setLayoutManager(llm);
-//        recyclerView.setHasFixedSize(true);
-//        recyclerView.addItemDecoration(new ListingDivider(getActivity(), LinearLayoutManager.VERTICAL));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(meetingsAdapter);
     }
@@ -132,8 +132,14 @@ public class MeetingsFragment extends Fragment
      * Get the key from the arguments and set variables as to what "action" to perform.
      */
     private void setKeyAction() {
+        String key = null;
         Bundle args = getArguments();
-        String key = (String) args.keySet().toArray()[0];  // should only be one key at a time.
+        String[] keySet = (String[]) args.keySet().toArray();
+        key = keySet[0];
+        if(keySet.length > 1) {
+            code = keySet[1];
+            hasCode = true;
+        }
 
         if(key.equals(Resources.getInstance().getString(R.string.meetings_show_day_key))) {
             showDay = true;
@@ -148,15 +154,14 @@ public class MeetingsFragment extends Fragment
     }
 
     private void initialise() {
-        date = null;
+        date = code = null;
         cursor = null;
         rootView = null;
         meetingsAdapter = null;
-        showAll = showDay = isEmptyView = false;
+        showAll = showDay = isEmptyView = hasCode = false;
     }
 
     private void showTitle(String title) {
-//        MeetingsActivity activity = ((MeetingsActivity) getActivity());
         TextView textView =  ((TextView)(((MeetingsActivity) getActivity()).getToolbar())
                 .findViewById(R.id.id_tv_toolbar));
         if(title != null) {
@@ -189,11 +194,13 @@ public class MeetingsFragment extends Fragment
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Region: Private vars">
+    private String code;          // meeting race code (may not exist);
     private String date;          // show Meetings for this date (may not be used).
     private View rootView;
     private Cursor cursor;        // the current result set from the database to populate adapter.
 
-    private boolean showDay;
+    private boolean hasCode;      // flag, race code in arguments.
+    private boolean showDay;      // flag, show meetings on date.
     private boolean showAll;      // flag, show all Meetings.
     private boolean isEmptyView;  // flag, nothing to show.
 

@@ -336,7 +336,32 @@ public class MeetingsActivity extends AppCompatActivity
         registerReceiver();                      // register network broadcast receiver.
         bundle = new Bundle();                   // for fragment arguments.
         DownloadRequestQueue.getInstance(this);  // setup download.
+        processPreferences();                    // check preferences and set keys for fragment.
+    }
 
+    private void finalise() {
+
+        // Check cache preference.
+        if(!Preferences.getInstance().getSaveMeetings()) {
+            dbOper.deleteAllFromTable(SchemaConstants.RUNNERS_TABLE);
+            dbOper.deleteAllFromTable(SchemaConstants.RACES_TABLE);
+            dbOper.deleteAllFromTable(SchemaConstants.MEETINGS_TABLE);
+        }
+
+        // De-register the network state broadcast receiver.
+        unRegisterReceiver();
+
+        // Close off static references.
+        DownloadRequestQueue.getInstance().destroy();
+
+        // Basically just ensure database is closed.
+        if(dbOper.getDbHelper() != null) {
+            dbOper.getDbHelper().onDestroy();
+        }
+        dbOper = null;
+    }
+
+    private void processPreferences() {
         // check if the race code preference is set as 'None'.
         raceCodePrefNone = checkRaceCodePrefNone();
 
@@ -387,37 +412,13 @@ public class MeetingsActivity extends AppCompatActivity
         }
     }
 
-    private void finalise() {
-
-        // Check cache preference.
-        if(!Preferences.getInstance().getSaveMeetings()) {
-            dbOper.deleteAllFromTable(SchemaConstants.RUNNERS_TABLE);
-            dbOper.deleteAllFromTable(SchemaConstants.RACES_TABLE);
-            dbOper.deleteAllFromTable(SchemaConstants.MEETINGS_TABLE);
-        }
-
-        // De-register the network state broadcast receiver.
-        unRegisterReceiver();
-
-        // Close off static references.
-//        Preferences.getInstance(this).destroy();
-//        Resources.getInstance(this).destroy();
-        DownloadRequestQueue.getInstance().destroy();
-
-        // Basically just ensure database is closed.
-        if(dbOper.getDbHelper() != null) {
-            dbOper.getDbHelper().onDestroy();
-        }
-        dbOper = null;
-    }
-
     /**
      * Quick and dirty check on race code preference.
      * @return True if preference set to 'None', else false.
      */
     private boolean checkRaceCodePrefNone() {
-        String raceCodePref = Preferences.getInstance().getDefaultRaceCode();
-        if(raceCodePref.equals(Resources.getInstance().getString(R.string.race_code_none))) {
+        if(Preferences.getInstance().getDefaultRaceCode()
+                .equals(Resources.getInstance().getString(R.string.race_code_none))) {
             return true;
         } else {
             return false;
