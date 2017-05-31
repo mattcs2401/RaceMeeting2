@@ -24,9 +24,10 @@ public class DatabaseOperations {
 
     /**
      * Get all the records in a table.
+     *
      * @param tableName The table name.
      * @return A cursor over the records.
-     *         Note: No guarantee the cursor contains anything.
+     * Note: No guarantee the cursor contains anything.
      */
     public Cursor getAllFromTable(String tableName) {
         SQLiteDatabase db = dbHelper.getDatabase();
@@ -38,12 +39,13 @@ public class DatabaseOperations {
 
     /**
      * Delete all the records in a table.
+     *
      * @param tableName The table name.
      * @return The number of rows deleted.
      */
     public int deleteAllFromTable(String tableName) {
         int rows = 0;
-        if(checkTableRowCount(tableName)) {
+        if (checkTableRowCount(tableName, null, null)) {
             SQLiteDatabase db = dbHelper.getDatabase();
             db.beginTransaction();
             rows = db.delete(tableName, "1", null);
@@ -55,30 +57,32 @@ public class DatabaseOperations {
 
     /**
      * Utility wrapper method to query the database.
-     * @param tableName The table name.
+     *
+     * @param tableName   The table name.
      * @param columnNames The table columns required (Null equals all columns).
      * @param whereClause Where clause (without the "where").
-     * @param whereVals Where clause values
+     * @param whereVals   Where clause values
      * @return A cursor over the parseResult set.
      */
     public Cursor getSelectionFromTable(String tableName, @Nullable String[] columnNames, String whereClause, String[] whereVals) {
-        if(columnNames == null) {
+        if (columnNames == null) {
             columnNames = getProjection(tableName);
         }
         SQLiteDatabase db = dbHelper.getDatabase();
         db.beginTransaction();
-        Cursor cursor =  db.query(tableName, columnNames, whereClause, whereVals, null, null, null);
+        Cursor cursor = db.query(tableName, columnNames, whereClause, whereVals, null, null, null);
         db.endTransaction();
         return cursor;
     }
 
     /**
      * Utility method to update a single value in a single row.
+     *
      * @param tableName The table name.
-     * @param where The where clause (without the "where").
-     * @param rowId The table row id.
-     * @param colName The table column name.
-     * @param value The column value.
+     * @param where     The where clause (without the "where").
+     * @param rowId     The table row id.
+     * @param colName   The table column name.
+     * @param value     The column value.
      * @return The update count.
      */
     public int updateTableByRowId(String tableName, String where, int rowId, String colName, String value) {
@@ -88,7 +92,7 @@ public class DatabaseOperations {
         cv.put(colName, value);
 
         db.beginTransaction();
-        int counr = db.update(tableName, cv, where, new String[] {Integer.toString(rowId)});
+        int counr = db.update(tableName, cv, where, new String[]{Integer.toString(rowId)});
         db.setTransactionSuccessful();
         db.endTransaction();
 
@@ -97,13 +101,14 @@ public class DatabaseOperations {
 
     /**
      * Utility to create the '?' parameter part of an IN statement.
+     *
      * @param iterations The number of '?' characters to insert.
      * @return The formatted string e.g. " IN (?,?)".
      */
     public String createWhereIN(int iterations) {
         StringBuilder sb = new StringBuilder();
         sb.append(" IN (");
-        for(int ndx = 0; ndx < iterations; ndx++) {
+        for (int ndx = 0; ndx < iterations; ndx++) {
             sb.append("?,");
         }
         sb.deleteCharAt(sb.length() - 1);   // remove last comma.
@@ -113,6 +118,7 @@ public class DatabaseOperations {
 
     /**
      * Check a record exists using the given record identifier.
+     *
      * @param tableName  The record's associated table.
      * @param columnName The record's column to check.
      * @param identifier The identifier in the column.
@@ -120,9 +126,9 @@ public class DatabaseOperations {
      */
     public boolean checkRecordsExist(String tableName, String columnName, String identifier) {
         Cursor cursor = null;
-        String[] col = new String[] {columnName};
-        String[] id = new String[] {identifier};
-        switch(tableName) {
+        String[] col = new String[]{columnName};
+        String[] id = new String[]{identifier};
+        switch (tableName) {
             case SchemaConstants.MEETINGS_TABLE:
                 cursor = getSelectionFromTable(tableName, col, SchemaConstants.WHERE_MEETING_ID, id);
                 break;
@@ -138,6 +144,7 @@ public class DatabaseOperations {
 
     /**
      * Insert a record into the MEETINGS table.
+     *
      * @param meeting Meeting object to derive values from.
      */
     public void insertMeetingRecord(Meeting meeting) {
@@ -175,7 +182,7 @@ public class DatabaseOperations {
         try {
             db.beginTransaction();
             db.update(SchemaConstants.MEETINGS_TABLE, cv, SchemaConstants.WHERE_MEETING_ID,
-                    new String[] {meetingId});
+                    new String[]{meetingId});
             db.setTransactionSuccessful();
         } catch (SQLException ex) {
             Log.d(context.getClass().getCanonicalName(), ex.getMessage());
@@ -186,6 +193,7 @@ public class DatabaseOperations {
 
     /**
      * Insert a record into the RACES table.
+     *
      * @param race Race object to derive values from.
      */
     public void insertRaceRecord(Race race) {
@@ -211,14 +219,24 @@ public class DatabaseOperations {
 
     /**
      * Utility method to see if rows exist in the given table.
+     *
      * @param tableName The table to check.
+     * @param whereClause Optional where clause.
+     * @param whereArgs Optional arguments for where clause.
      * @return True if the row count > 0.
      */
-    public boolean checkTableRowCount(String tableName) {
+    public boolean checkTableRowCount(String tableName, @Nullable String whereClause, @Nullable String[] whereArgs) {
+        Cursor cursor = null;
         String rowId = getRowIdName(tableName);
         SQLiteDatabase db = dbHelper.getDatabase();
         db.beginTransaction();
-        Cursor cursor = getSelectionFromTable(tableName, new String[] {rowId}, null, null);
+        if ((whereClause == null && whereArgs == null) ||
+            (whereClause != null && whereArgs == null) ||
+            (whereClause == null && whereArgs != null)) {
+            cursor = getSelectionFromTable(tableName, new String[]{rowId}, null, null);
+        } else {
+            cursor = getSelectionFromTable(tableName, new String[]{rowId}, whereClause, whereArgs);
+        }
         db.endTransaction();
         return (cursor.getCount() > 0);
     }
@@ -226,14 +244,23 @@ public class DatabaseOperations {
     /**
      * Utility method to check if rows exist in the Meetings table for the given date.
      * @param date The date to check (formatted YYYY-M(M)-D(D)).
+     * @param code Optional race code value, else set as null.
      * @return True if records exist.
      */
-    public boolean checkMeetingDate(String date) {
+    public boolean checkMeetingDate(String date, @Nullable String code) {
+        String whereClause;
+        String[] whereArgs;
+        if(code == null) {
+            whereClause = SchemaConstants.WHERE_MEETING_DATE;
+            whereArgs = new String[] {date};
+        } else {
+            whereClause = SchemaConstants.WHERE_MEETING_DATE_CODE;
+            whereArgs = new String[] {date, code};
+        }
         SQLiteDatabase db = dbHelper.getDatabase();
         db.beginTransaction();
         Cursor cursor = getSelectionFromTable(SchemaConstants.MEETINGS_TABLE,
-                new String[] {SchemaConstants.MEETING_ROWID}, SchemaConstants.WHERE_MEETING_DATE,
-                new String[] {date});
+                new String[] {SchemaConstants.MEETING_ROWID}, whereClause, whereArgs);
         db.endTransaction();
         return (cursor.getCount() > 0);
     }

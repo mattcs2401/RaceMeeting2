@@ -136,46 +136,7 @@ public class MeetingsActivity extends AppCompatActivity
     @Override
     protected void onStart() {
         super.onStart();
-
         initialise();
-        Bundle bundle = new Bundle();
-
-        String raceCodePref = Preferences.getInstance().getDefaultRaceCode();
-
-        if(Preferences.getInstance().getMeetingsShowToday()) {
-            // Preference to show today's meetings is set.
-            DateTime dt = new DateTime();
-            String today = dt.getCurrentDateYearFirst();
-
-            if(raceCodePref.equals(Resources.getInstance().getString(R.string.race_code_none))) {
-                meetingsExist = dbOper.checkMeetingDate(today);
-            } else {
-
-            }
-
-            if(meetingsExist) {
-                // Meetings for day exist in the database.
-                bundle.putString(Resources.getInstance()
-                        .getString(R.string.meetings_show_day_key), today);
-                loadMeetingsFragment(bundle);
-            } else {
-                // Meetings for day will need to be downloaded.
-                bundle.putString(Resources.getInstance()
-                        .getString(R.string.meetings_show_day_key), today);
-                this.bundle = bundle;
-                getMeetingsOnDay(today.split("-"));
-            }
-        } else { //if (!Preferences.getInstance().getMeetingsShowToday()) {
-            // Preference to show today's meetings is not set (show all if exists).
-            meetingsExist = dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE);
-            if(meetingsExist) {
-                bundle.putString(Resources.getInstance()
-                        .getString(R.string.meetings_show_all_key), null);
-                loadMeetingsFragment(bundle);
-            } else {
-                loadMeetingsFragment(setEmptyView());
-            }
-        }
     }
 
     @Override
@@ -242,7 +203,8 @@ public class MeetingsActivity extends AppCompatActivity
 
             // Check if Meetings already exist for today.
             DatabaseOperations dbOper = new DatabaseOperations(this);
-            if(dbOper.checkMeetingDate(today)) {
+            // TODO - check race code preference.
+            if(dbOper.checkMeetingDate(today, null)) {
                 loadMeetingsFragment(bundle);
             } else {
                 // download today's Meetings.
@@ -370,11 +332,57 @@ public class MeetingsActivity extends AppCompatActivity
     }
 
     private void initialise() {
-        registerReceiver();            // register network broadcast receiver.
-        DownloadRequestQueue.getInstance(this);
-//        Resources.getInstance(this);   // setup resources access, must be before Preferences.
-//        Preferences.getInstance(this); // setup preferenxes access.
-        dbOper = new DatabaseOperations(this);
+
+        registerReceiver();                      // register network broadcast receiver.
+        bundle = new Bundle();                   // for fragment arguments.
+        DownloadRequestQueue.getInstance(this);  // setup download.
+
+        // check if the race code preference is set as 'None'.
+        raceCodePrefNone = checkRaceCodePrefNone();
+
+        if(Preferences.getInstance().getMeetingsShowToday()) {
+            // Preference to show today's meetings is set.
+
+            // get today's date as YYYYMMDD.
+            DateTime dateTime = new DateTime();
+            String today = dateTime.getCurrentDateYearFirst();
+
+            // check if Meetings already exist in datyabase.
+            if(raceCodePrefNone) {
+                // race code preference is 'None'.
+                meetingsExist = dbOper.checkMeetingDate(today, null);
+            } else {
+                // race code preference is seet (e.g. one of R, T, G or S)
+                meetingsExist = dbOper.checkMeetingDate(today,
+                        Preferences.getInstance().getDefaultRaceCode());
+            }
+
+            if(meetingsExist) {
+                // Meetings for day exist in the database (also checks race code pref).
+                showTodaysMeetings(today);
+            } else {
+                // Meetings for day will need to be downloaded (everything downloaded).
+                downloadTodaysMeetings(today);
+            }
+        } else {
+            // Preference to show today's meetings is not set (show all if exists).
+            if(raceCodePrefNone) {
+                // race code preference is 'None', check for any Meetings.
+                meetingsExist = dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE, null, null);
+            } else {
+                // race code preference is seet (e.g. one of R, T, G or S)
+                meetingsExist = dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE,
+                        SchemaConstants.WHERE_MEETING_CODE,
+                        new String[] {Preferences.getInstance().getDefaultRaceCode()});
+            }
+            if(meetingsExist) {
+                // Meetings exist in the database (also checks race code pref).
+                showMeetings();
+            } else {
+                // default show nothing.
+                loadMeetingsFragment(setEmptyView());
+            }
+        }
     }
 
     private void finalise() {
@@ -400,12 +408,65 @@ public class MeetingsActivity extends AppCompatActivity
         }
         dbOper = null;
     }
+
+    /**
+     * Quick and dirty check on race code preference.
+     * @return True if preference set to 'None', else false.
+     */
+    private boolean checkRaceCodePrefNone() {
+        String raceCodePref = Preferences.getInstance().getDefaultRaceCode();
+        if(raceCodePref.equals(Resources.getInstance().getString(R.string.race_code_none))) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void downloadTodaysMeetings(String today) {
+        this.bundle.putString(Resources.getInstance()
+                .getString(R.string.meetings_show_day_key), today);
+
+        if(!raceCodePrefNone) {
+            // A race code pref other tan 'None' is selected. Will still download all but frament
+            // will only display for selected race code.
+            this.bundle.putString(Resources.getInstance()
+                    .getString(R.string.meetings_show_code_key),
+                    Preferences.getInstance().getDefaultRaceCode());
+        }
+        getMeetingsOnDay(today.split("-"));
+    }
+
+    private void showTodaysMeetings(String today) {
+        this.bundle.putString(Resources.getInstance()
+                .getString(R.string.meetings_show_day_key), today);
+        if(!raceCodePrefNone) {
+            // A race code pref other tan 'None' is selected.
+            this.bundle.putString(Resources.getInstance()
+                    .getString(R.string.meetings_show_code_key),
+                    Preferences.getInstance().getDefaultRaceCode());
+        }
+        loadMeetingsFragment(bundle);
+    }
+
+    private void showMeetings() {
+        // Meetings exist and 'None' is selected for race code preference.
+        bundle.putString(Resources.getInstance()
+                .getString(R.string.meetings_show_all_key), null);
+        if (!raceCodePrefNone) {
+            // Meetings exist and a race code preference is set.
+            bundle.putString(Resources.getInstance()
+                    .getString(R.string.meetings_show_code_key),
+                    Preferences.getInstance().getDefaultRaceCode());
+        }
+        loadMeetingsFragment(bundle);
+    }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Region: Private vars">
     private Bundle bundle;                  // contains meeting action key, used by fragment.
     private Toolbar toolbar;                // to get access to the toolbar.
     private boolean meetingsExist;          // flag meetings exist in database.
+    private boolean raceCodePrefNone;       // true if 'None' is selected as race code preference.
     private NetworkReceiver receiver;       // for network availability check.
     private DatabaseOperations dbOper;      // database related methods.
     private ProgressDialog progressDialog;  // used by Volley download to show something happening.

@@ -62,6 +62,7 @@
     <string name="meetings_show_day_key">meetings_show_day_key</string>
     <string name="meetings_show_all_key">meetings_show_all_key</string>
     <string name="meetings_show_empty_key">meetings_show_empty_key</string>
+    <string name="meetings_show_code_key">meetings_show_code_key</string>
 
     <string name="race_code_pref_val_key">race_code_pref_val_key</string>
     <string name="race_code_pref_id_key">race_code_pref_id_key</string>
