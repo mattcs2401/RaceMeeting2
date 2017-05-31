@@ -340,6 +340,8 @@ public class MeetingsActivity extends AppCompatActivity
         // check if the race code preference is set as 'None'.
         raceCodePrefNone = checkRaceCodePrefNone();
 
+        if(dbOper == null) { dbOper = new DatabaseOperations(this); }
+
         if(Preferences.getInstance().getMeetingsShowToday()) {
             // Preference to show today's meetings is set.
 

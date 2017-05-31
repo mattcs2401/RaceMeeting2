@@ -50,22 +50,14 @@ public class MeetingsFragment extends Fragment
             DatabaseOperations dbOper = new DatabaseOperations(getActivity());
 
             if(showDay) {
-                if(dbOper.checkMeetingDate(date)) {
-                    cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE, null,
-                            SchemaConstants.WHERE_MEETING_DATE, new String[] {date});
+                showTodaysMeetings();
 
-                    showTitle("Meetings for " + date);
-                }
             } else if(showAll) {
-                if(dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE)) {
-                    cursor = dbOper.getAllFromTable(SchemaConstants.MEETINGS_TABLE);
-
-                    showTitle("All Meetings");
-                }
+                showAllMeetings();
             }
 
-            setMeetingAdapter();
-            setRecyclerView(rootView);
+//            setMeetingAdapter();
+//            setRecyclerView(rootView);
         }
     }
 
@@ -172,6 +164,27 @@ public class MeetingsFragment extends Fragment
         } else {
             textView.setText("");
         }
+    }
+
+    private void showTodaysMeetings() {
+        // TODO - check meeting race code pref.
+        //                if(dbOper.checkMeetingDate(date)) {
+//                    cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE, null,
+//                            SchemaConstants.WHERE_MEETING_DATE, new String[] {date});
+//
+//                    showTitle("Meetings for " + date);
+//                }
+
+    }
+
+    private void showAllMeetings() {
+        // TODO - check meeting race code pref.
+        //                if(dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE)) {
+//                    cursor = dbOper.getAllFromTable(SchemaConstants.MEETINGS_TABLE);
+//
+//                    showTitle("All Meetings");
+//                }
+
     }
     //</editor-fold>
 
