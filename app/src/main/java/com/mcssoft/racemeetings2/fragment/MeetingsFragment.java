@@ -19,6 +19,7 @@ import com.mcssoft.racemeetings2.adapter.MeetingsAdapter;
 import com.mcssoft.racemeetings2.database.DatabaseOperations;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.interfaces.IMeetingItemClickListener;
+import com.mcssoft.racemeetings2.utility.Preferences;
 import com.mcssoft.racemeetings2.utility.Resources;
 
 public class MeetingsFragment extends Fragment
@@ -181,7 +182,7 @@ public class MeetingsFragment extends Fragment
                 cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE, null,
                         SchemaConstants.WHERE_MEETING_DATE_CODE, new String[] {date, "%" + code});
 
-                showToolbarTitle("(" + code + ")" + " Meetings for " + date);
+                showToolbarTitle("(" + code + ")" + " Meetings " + date);
             }
         } else {
             // get meetings by date.
@@ -189,7 +190,7 @@ public class MeetingsFragment extends Fragment
                 cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE, null,
                             SchemaConstants.WHERE_MEETING_DATE, new String[] {date});
 
-                showToolbarTitle("Meetings for " + date);
+                showToolbarTitle("Meetings " + date);
             }
         }
     }

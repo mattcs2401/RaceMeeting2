@@ -54,6 +54,10 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
         meetingCodeNdx = cursor.getColumnIndex(SchemaConstants.MEETING_CODE);
         meetingVenueNdx = cursor.getColumnIndex(SchemaConstants.MEETING_VENUE);
 
+        if(showDate) {
+            meetingDateNdx = cursor.getColumnIndex(SchemaConstants.MEETING_DATE);
+        }
+
         notifyDataSetChanged();
     }
 
@@ -71,21 +75,29 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
         this.isEmptyView = isEmptyView;
     }
 
+    public void setShowDate(boolean showDate) {
+        this.showDate = showDate;
+    }
+
     private void adapaterOnBindViewHolder(MeetingsViewHolder holder, int position) {
         cursor.moveToPosition(position);
         holder.getTvMeetingCode().setText(cursor.getString(meetingCodeNdx));
         holder.getTvVenueName().setText(cursor.getString(meetingVenueNdx));
+
+        if(showDate) {
+            holder.getTvMeetingDate().setText(cursor.getString(meetingDateNdx));
+        }
     }
 
 
     private View view;
     private Cursor cursor;
     private boolean isEmptyView;
-
+    private boolean showDate;
     private int idColNdx;
     private int meetingCodeNdx;
     private int meetingVenueNdx;
-
+    private int meetingDateNdx;
     private IMeetingItemClickListener itemClickListener;
 //    private IMeetingItemLongClickListener itemLongClickListener;
 }

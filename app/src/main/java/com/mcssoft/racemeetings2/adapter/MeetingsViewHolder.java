@@ -14,6 +14,7 @@ public class MeetingsViewHolder extends RecyclerView.ViewHolder
         super(view);
         tvMeetingCode = (TextView) view.findViewById(R.id.tv_id_meeting_code);
         tvVenueName = (TextView) view.findViewById(R.id.tv_id_venue_name);
+        tvMeetingDate = (TextView) view.findViewById(R.id.tv_id_meeting_date);
 
         itemClickListener = listener;
         view.setOnClickListener(this);
@@ -33,10 +34,12 @@ public class MeetingsViewHolder extends RecyclerView.ViewHolder
     //<editor-fold defaultstate="collapsed" desc="Region: Accessors">
     public TextView getTvMeetingCode() { return tvMeetingCode; }
     public TextView getTvVenueName() { return tvVenueName; }
+    public TextView getTvMeetingDate() { return tvMeetingDate; }
     //</editor-fold>
 
     private TextView tvMeetingCode;
     private TextView tvVenueName;
+    private TextView tvMeetingDate;
 
     private IMeetingItemClickListener itemClickListener;
 //    private IMeetingItemLongClickListener itemLongClickListener;
