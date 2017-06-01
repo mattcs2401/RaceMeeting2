@@ -56,8 +56,13 @@ public class MeetingsFragment extends Fragment
                 getAllMeetings();
             }
 
+            if(cursor == null) {
+                // No rows.
+                isEmptyView = true;
+            }
             setMeetingAdapter();
             setRecyclerView(rootView);
+
         }
     }
 
@@ -192,7 +197,7 @@ public class MeetingsFragment extends Fragment
     private void getAllMeetings() {
         if(hasCode) {
             // get all meetings by code
-            if(dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE, SchemaConstants.WHERE_MEETING_CODE, new String[] {code})) {
+            if(dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE, SchemaConstants.WHERE_MEETING_CODE, new String[] {"%" + code})) {
                 cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE, null,
                         SchemaConstants.WHERE_MEETING_CODE, new String[] {"%" + code});
 

@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -58,10 +59,10 @@ public class MeetingsActivity extends AppCompatActivity
      */
     @Override
     public void iDateValues(String[] dateVals) {
-        Bundle bundle = new Bundle();
+        bundle = new Bundle();
+        bundle = checkForMeetingCode(bundle);
         String date = dateVals[0] + "-" + dateVals[1] + "-" + dateVals[2];
         bundle.putString("meetings_show_day_key", date);
-        this.bundle = bundle;
         getMeetingsOnDay(dateVals);
     }
 
@@ -77,7 +78,7 @@ public class MeetingsActivity extends AppCompatActivity
                     .getString(R.string.all_meetings_removed), Snackbar.LENGTH_SHORT).show();
             loadMeetingsFragment(setEmptyView());
         } else if(whichDelete == Resources.getInstance().getInteger(R.integer.rb_delete_prev)) {
-            // TBA - 
+            Toast.makeText(this, "Not implemented yet.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -186,11 +187,14 @@ public class MeetingsActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        // TODO - check race code preference.
+
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
         if(id == R.id.id_nav_menu_show_all) {
-            Bundle bundle = new Bundle();
+            bundle = new Bundle();
+            bundle = checkForMeetingCode(bundle);
             bundle.putString("meetings_show_all_key", null);
             loadMeetingsFragment(bundle);
         }
@@ -198,17 +202,16 @@ public class MeetingsActivity extends AppCompatActivity
             // Get today's date and set bundle args.
             DateTime dt = new DateTime();
             String today = dt.getCurrentDateYearFirst();
-            Bundle bundle = new Bundle();
+            bundle = new Bundle();
+            bundle = checkForMeetingCode(bundle);
             bundle.putString("meetings_show_day_key", today);
 
             // Check if Meetings already exist for today.
             DatabaseOperations dbOper = new DatabaseOperations(this);
-            // TODO - check race code preference.
             if(dbOper.checkMeetingDate(today, null)) {
                 loadMeetingsFragment(bundle);
             } else {
                 // download today's Meetings.
-                this.bundle = bundle;
                 getMeetingsOnDay(today.split("-"));
             }
 
@@ -216,7 +219,6 @@ public class MeetingsActivity extends AppCompatActivity
             DialogFragment dateSelectFragment = new DateSelectFragment();
             dateSelectFragment.show(getFragmentManager(),
                     Resources.getInstance().getString(R.string.date_select_fragment_tag));
-
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.id_drawer_layout);
@@ -422,6 +424,17 @@ public class MeetingsActivity extends AppCompatActivity
             return true;
         } else {
             return false;
+        }
+    }
+
+    private Bundle checkForMeetingCode(Bundle bundle) {
+        if(checkRaceCodePrefNone()) {
+            return bundle;
+        } else {
+            bundle.putString(Resources.getInstance()
+                    .getString(R.string.meetings_show_code_key),
+                    Preferences.getInstance().getDefaultRaceCode());
+            return bundle;
         }
     }
 
