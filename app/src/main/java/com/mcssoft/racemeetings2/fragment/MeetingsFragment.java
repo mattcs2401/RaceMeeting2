@@ -118,6 +118,9 @@ public class MeetingsFragment extends Fragment
                     meetingsAdapter.setEmptyView(true);
                 } else {
                     meetingsAdapter.setEmptyView(false);
+                    if(showAll) {
+                        meetingsAdapter.setShowDate(true);
+                    }
                 }
             } else {
                 meetingsAdapter.setEmptyView(true);

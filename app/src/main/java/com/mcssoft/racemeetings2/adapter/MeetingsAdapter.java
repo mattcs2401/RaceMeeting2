@@ -53,10 +53,7 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
         idColNdx = cursor.getColumnIndex(SchemaConstants.MEETING_ROWID);
         meetingCodeNdx = cursor.getColumnIndex(SchemaConstants.MEETING_CODE);
         meetingVenueNdx = cursor.getColumnIndex(SchemaConstants.MEETING_VENUE);
-
-        if(showDate) {
-            meetingDateNdx = cursor.getColumnIndex(SchemaConstants.MEETING_DATE);
-        }
+        meetingDateNdx = cursor.getColumnIndex(SchemaConstants.MEETING_DATE);
 
         notifyDataSetChanged();
     }
