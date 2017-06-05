@@ -66,31 +66,19 @@ public class MeetingsFragment extends Fragment
 
         }
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        cursor = null;
-    }
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Region: Listeners">
     @Override
     public void onItemClick(View view, int position) {
-//        this.position = position;
         int dbRowId = getDbRowId(position);
         Intent intent = new Intent(getActivity(), RacesActivity.class);
         intent.putExtra(Resources.getInstance().getString(R.string.meetings_db_rowid_key),  dbRowId);
         startActivity(intent);
-//        PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
-//        popupMenu.inflate(R.menu.meetings_context_menu);
-//        popupMenu.setOnMenuItemClickListener(this);
-//        popupMenu.show();
+        /*PopupMenu popupMenu = new PopupMenu(view.getContext(), view);
+        popupMenu.inflate(R.menu.meetings_context_menu);
+        popupMenu.setOnMenuItemClickListener(this);
+        popupMenu.show();*/
     }
     //</editor-fold>
 
@@ -107,24 +95,15 @@ public class MeetingsFragment extends Fragment
 
     private void setMeetingAdapter() {
         meetingsAdapter = new MeetingsAdapter();
-        if(isEmptyView) {
-            meetingsAdapter.setEmptyView(true);
-        } else {
-            if(cursor != null) {
-                meetingsAdapter.swapCursor(cursor);
-                meetingsAdapter.setOnItemClickListener(this);
-
-                if (cursor.getCount() == 0) {
-                    meetingsAdapter.setEmptyView(true);
-                } else {
-                    meetingsAdapter.setEmptyView(false);
-                    if(showAll) {
-                        meetingsAdapter.setShowDate(true);
-                    }
-                }
-            } else {
-                meetingsAdapter.setEmptyView(true);
+        if(!isEmptyView && cursor != null && cursor.getCount() > 0) {
+            meetingsAdapter.setEmptyView(false);
+            meetingsAdapter.swapCursor(cursor);
+            meetingsAdapter.setOnItemClickListener(this);
+            if(showAll) {
+                meetingsAdapter.setShowDate(true);
             }
+        } else {
+            meetingsAdapter.setEmptyView(true);
         }
     }
 
@@ -228,8 +207,7 @@ public class MeetingsFragment extends Fragment
     private boolean showAll;      // flag, show all Meetings.
     private boolean isEmptyView;  // flag, nothing to show.
 
+    private DatabaseOperations dbOper;
     private MeetingsAdapter meetingsAdapter;
     //</editor-fold>
-
-    private DatabaseOperations dbOper;
 }
