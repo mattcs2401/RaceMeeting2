@@ -12,6 +12,12 @@ import com.mcssoft.racemeetings2.interfaces.IMeetingItemClickListener;
 
 public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
 
+    public MeetingsAdapter() {
+        isEmptyView = false;
+        showDate = false;
+        cursor = null;
+    }
+
     @Override
     public MeetingsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if ( parent instanceof RecyclerView ) {
@@ -47,15 +53,17 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
     }
 
     public void swapCursor(Cursor newCursor) {
-        cursor = newCursor;
-        cursor.moveToFirst();
+        if(!isEmptyView && (newCursor != null) && (newCursor.getCount() > 0)) {
+            cursor = newCursor;
+            cursor.moveToFirst();
 
-        idColNdx = cursor.getColumnIndex(SchemaConstants.MEETING_ROWID);
-        meetingCodeNdx = cursor.getColumnIndex(SchemaConstants.MEETING_CODE);
-        meetingVenueNdx = cursor.getColumnIndex(SchemaConstants.MEETING_VENUE);
-        meetingDateNdx = cursor.getColumnIndex(SchemaConstants.MEETING_DATE);
+            idColNdx = cursor.getColumnIndex(SchemaConstants.MEETING_ROWID);
+            meetingCodeNdx = cursor.getColumnIndex(SchemaConstants.MEETING_CODE);
+            meetingVenueNdx = cursor.getColumnIndex(SchemaConstants.MEETING_VENUE);
+            meetingDateNdx = cursor.getColumnIndex(SchemaConstants.MEETING_DATE);
 
-        notifyDataSetChanged();
+            notifyDataSetChanged();
+        }
     }
 
     public void setOnItemClickListener(IMeetingItemClickListener listener) {

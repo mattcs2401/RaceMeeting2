@@ -19,7 +19,6 @@ import com.mcssoft.racemeetings2.adapter.MeetingsAdapter;
 import com.mcssoft.racemeetings2.database.DatabaseOperations;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.interfaces.IMeetingItemClickListener;
-import com.mcssoft.racemeetings2.utility.Preferences;
 import com.mcssoft.racemeetings2.utility.Resources;
 
 public class MeetingsFragment extends Fragment
@@ -50,20 +49,20 @@ public class MeetingsFragment extends Fragment
         if(!isEmptyView) {
             dbOper = new DatabaseOperations(getActivity());
 
+            // populate local cursor.
             if(showDay) {
                 getMeetingsOnDate();
-
             } else if(showAll) {
-                getAllMeetings();
+                getMeetings();
             }
 
-            if(cursor == null) {
-                // No rows.
+            // check if local cursor was populated by previous call.
+            if((cursor == null) || (cursor.getCount() == 0)) {
                 isEmptyView = true;
             }
+
             setMeetingAdapter();
             setRecyclerView(rootView);
-
         }
     }
     //</editor-fold>
@@ -95,7 +94,7 @@ public class MeetingsFragment extends Fragment
 
     private void setMeetingAdapter() {
         meetingsAdapter = new MeetingsAdapter();
-        if(!isEmptyView && cursor != null && cursor.getCount() > 0) {
+        if(!isEmptyView) {
             meetingsAdapter.setEmptyView(false);
             meetingsAdapter.swapCursor(cursor);
             meetingsAdapter.setOnItemClickListener(this);
@@ -115,21 +114,22 @@ public class MeetingsFragment extends Fragment
     }
 
     /**
-     * Get the key from the arguments and set variables as to what "action" to perform.
+     * Get the key(s) from the arguments and set variables as to what "action" to perform.
      */
     private void setKeyAction() {
         String key = null;
         Bundle args = getArguments();
         Object[] keySet = args.keySet().toArray();
         key = (String) keySet[0];
+
         if(keySet.length > 1) {
-            code = args.getString((String) keySet[1]);
+            meetingCode = args.getString((String) keySet[1]);
             hasCode = true;
         }
 
         if(key.equals(Resources.getInstance().getString(R.string.meetings_show_day_key))) {
             showDay = true;
-            date = (String) args.get(key);
+            meetingDate = (String) args.get(key);
         } else if(key.equals(Resources.getInstance().getString(R.string.meetings_show_all_key))) {
             showAll = true;
         } else if(key.equals(Resources.getInstance().getString(R.string.meetings_show_empty_key))) {
@@ -139,12 +139,19 @@ public class MeetingsFragment extends Fragment
         }
     }
 
+    /**
+     * Initialise local varaiable.
+     */
     private void initialise() {
-        date = code = null;
+        meetingDate = null;
+        meetingCode = null;
         cursor = null;
         rootView = null;
         meetingsAdapter = null;
-        showAll = showDay = isEmptyView = hasCode = false;
+        showAll = false;
+        showDay = false;
+        isEmptyView = false;
+        hasCode = false;
     }
 
     private void showToolbarTitle(String title) {
@@ -157,34 +164,42 @@ public class MeetingsFragment extends Fragment
         }
     }
 
+    /**
+     * Get all meetings for a particular date.
+     * Note: date value, and meeting code (if exists), passed in arguments.
+     */
     private void getMeetingsOnDate() {
         if(hasCode) {
-            // get meetings by date and code
-            if(dbOper.checkMeetingDate(date, "%" + code)) {
+            // get meetings by meetingDate and meetingCode
+            if(dbOper.checkMeetingDate(meetingDate, "%" + meetingCode)) {
                 cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE, null,
-                        SchemaConstants.WHERE_MEETING_DATE_CODE, new String[] {date, "%" + code});
+                        SchemaConstants.WHERE_MEETING_DATE_CODE, new String[] {meetingDate, "%" + meetingCode});
 
-                showToolbarTitle("(" + code + ")" + " Meetings " + date);
+                showToolbarTitle("(" + meetingCode + ")" + " Meetings " + meetingDate);
             }
         } else {
-            // get meetings by date.
-            if(dbOper.checkMeetingDate(date, null)) {
+            // get meetings by meetingDate.
+            if(dbOper.checkMeetingDate(meetingDate, null)) {
                 cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE, null,
-                            SchemaConstants.WHERE_MEETING_DATE, new String[] {date});
+                            SchemaConstants.WHERE_MEETING_DATE, new String[] {meetingDate});
 
-                showToolbarTitle("Meetings " + date);
+                showToolbarTitle("Meetings " + meetingDate);
             }
         }
     }
 
-    private void getAllMeetings() {
+    /**
+     * Get all meetings.
+     * Note: meeting code (if exists), passed in arguments.
+     */
+    private void getMeetings() {
         if(hasCode) {
-            // get all meetings by code
-            if(dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE, SchemaConstants.WHERE_MEETING_CODE, new String[] {"%" + code})) {
+            // get all meetings by meeting code
+            if(dbOper.checkTableRowCount(SchemaConstants.MEETINGS_TABLE, SchemaConstants.WHERE_MEETING_CODE, new String[] {"%" + meetingCode})) {
                 cursor = dbOper.getSelectionFromTable(SchemaConstants.MEETINGS_TABLE, null,
-                        SchemaConstants.WHERE_MEETING_CODE, new String[] {"%" + code});
+                        SchemaConstants.WHERE_MEETING_CODE, new String[] {"%" + meetingCode});
 
-                showToolbarTitle("(" + code + ")" + " All Meetings");
+                showToolbarTitle("(" + meetingCode + ")" + " All Meetings");
             }
         } else {
             // get all meetings.
@@ -198,13 +213,13 @@ public class MeetingsFragment extends Fragment
     //</editor-fold>
 
     //<editor-fold defaultstate="collapsed" desc="Region: Private vars">
-    private String code;          // meeting race code (may not exist);
-    private String date;          // show Meetings for this date (may not be used).
-    private View rootView;
+    private View rootView;        // the main view.
     private Cursor cursor;        // the current result set from the database to populate adapter.
-    private boolean hasCode;      // flag, race code in arguments.
+    private boolean hasCode;      // flag, meeting code in arguments.
     private boolean showDay;      // flag, show meetings on date.
     private boolean showAll;      // flag, show all Meetings.
+    private String meetingCode;   // meeting race code (may not exist);
+    private String meetingDate;   // show Meetings for this date (controlled by showDay if exists).
     private boolean isEmptyView;  // flag, nothing to show.
 
     private DatabaseOperations dbOper;

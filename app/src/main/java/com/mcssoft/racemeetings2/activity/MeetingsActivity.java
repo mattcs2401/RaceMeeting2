@@ -74,6 +74,7 @@ public class MeetingsActivity extends AppCompatActivity
     public void iDeleteDialog(int whichDelete) {
         if(whichDelete == Resources.getInstance().getInteger(R.integer.rb_delete_all)) {
             // 'Delete all' option selected.
+            meetingsExist = false;
             Snackbar.make(findViewById(R.id.id_meetings_container), Resources.getInstance()
                     .getString(R.string.all_meetings_removed), Snackbar.LENGTH_SHORT).show();
             loadMeetingsFragment(setEmptyView());
@@ -193,10 +194,14 @@ public class MeetingsActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if(id == R.id.id_nav_menu_show_all) {
-            bundle = new Bundle();
-            bundle = checkForMeetingCode(bundle);
-            bundle.putString("meetings_show_all_key", null);
-            loadMeetingsFragment(bundle);
+            if(meetingsExist) {
+                bundle = new Bundle();
+                bundle = checkForMeetingCode(bundle);
+                bundle.putString("meetings_show_all_key", null);
+                loadMeetingsFragment(bundle);
+            } else {
+                loadMeetingsFragment(setEmptyView());
+            }
         }
         else if (id == R.id.id_nav_menu_races_today) {
             // Get today's date and set bundle args.
@@ -264,6 +269,7 @@ public class MeetingsActivity extends AppCompatActivity
         initialiseToolbar();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.id_drawer_layout);
+
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
