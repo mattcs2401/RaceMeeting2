@@ -6,11 +6,11 @@ import android.widget.TextView;
 
 import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.adapter.base.ParentViewHolder;
-import com.mcssoft.racemeetings2.interfaces.IMeetingItemClickListener;
+import com.mcssoft.racemeetings2.interfaces.IItemClickListener;
 
 public class MeetingsViewHolder extends ParentViewHolder {
 
-    public MeetingsViewHolder(View view, IMeetingItemClickListener listener) { //, IMeetingItemLongClickListener longListener) {
+    public MeetingsViewHolder(View view, IItemClickListener listener) { //, IMeetingItemLongClickListener longListener) {
         super(view);
         tvMeetingCode = (TextView) view.findViewById(R.id.tv_id_meeting_code);
         tvVenueName = (TextView) view.findViewById(R.id.tv_id_venue_name);
@@ -21,6 +21,7 @@ public class MeetingsViewHolder extends ParentViewHolder {
 //        itemLongClickListener = longListener;
 //        view.setOnLongClickListener(this);
     }
+
 
     //<editor-fold defaultstate="collapsed" desc="Region: Listeners">
     @Override
@@ -41,6 +42,6 @@ public class MeetingsViewHolder extends ParentViewHolder {
     private TextView tvVenueName;
     private TextView tvMeetingDate;
 
-    private IMeetingItemClickListener itemClickListener;
+    private IItemClickListener itemClickListener;
 //    private IMeetingItemLongClickListener itemLongClickListener;
 }

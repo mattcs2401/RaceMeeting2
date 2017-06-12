@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
-import com.mcssoft.racemeetings2.interfaces.IRaceItemClickListener;
+import com.mcssoft.racemeetings2.interfaces.IItemClickListener;
 
 public class RacesAdapter extends RecyclerView.Adapter<RacesViewHolder> {
 
@@ -64,7 +64,7 @@ public class RacesAdapter extends RecyclerView.Adapter<RacesViewHolder> {
 
     public Cursor getCursor() { return cursor; }
 
-    public void setOnItemClickListener(IRaceItemClickListener listener) {
+    public void setOnItemClickListener(IItemClickListener listener) {
         this.itemClickListener = listener;
     }
 
@@ -92,6 +92,6 @@ public class RacesAdapter extends RecyclerView.Adapter<RacesViewHolder> {
     private Cursor cursor;
     private boolean isEmptyView;
 
-    private IRaceItemClickListener itemClickListener;
+    private IItemClickListener itemClickListener;
     //</editor-fold>
 }

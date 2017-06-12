@@ -1,16 +1,15 @@
 package com.mcssoft.racemeetings2.adapter;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
 import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.adapter.base.ParentViewHolder;
-import com.mcssoft.racemeetings2.interfaces.IRaceItemClickListener;
+import com.mcssoft.racemeetings2.interfaces.IItemClickListener;
 
 public class RacesViewHolder extends ParentViewHolder {
 
-    public RacesViewHolder(View view, IRaceItemClickListener listener) {
+    public RacesViewHolder(View view, IItemClickListener listener) {
         super(view);
         tvRaceNo = (TextView) view.findViewById(R.id.tv_id_race_no);
         tvRaceName = (TextView) view.findViewById(R.id.tv_id_race_name);
@@ -43,6 +42,6 @@ public class RacesViewHolder extends ParentViewHolder {
     private TextView tvRaceTime;
     private TextView tvRaceDist;
 
-    private IRaceItemClickListener itemClickListener;
+    private IItemClickListener itemClickListener;
     //</editor-fold>
  }

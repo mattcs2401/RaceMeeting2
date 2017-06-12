@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
-import com.mcssoft.racemeetings2.interfaces.IMeetingItemClickListener;
+import com.mcssoft.racemeetings2.interfaces.IItemClickListener;
 
 public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
 
@@ -31,6 +31,11 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
     @Override
     public void onBindViewHolder(MeetingsViewHolder holder, int position) {
         adapaterOnBindViewHolder(holder, position);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
     }
 
     @Override
@@ -66,7 +71,7 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
         }
     }
 
-    public void setOnItemClickListener(IMeetingItemClickListener listener) {
+    public void setOnItemClickListener(IItemClickListener listener) {
         this.itemClickListener = listener;
     }
 
@@ -103,6 +108,7 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
     private int meetingCodeNdx;
     private int meetingVenueNdx;
     private int meetingDateNdx;
-    private IMeetingItemClickListener itemClickListener;
+    private IItemClickListener itemClickListener;
+//    private IMeetingItemClickListener itemClickListener;
 //    private IMeetingItemLongClickListener itemLongClickListener;
 }

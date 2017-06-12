@@ -15,11 +15,10 @@ import com.mcssoft.racemeetings2.adapter.RacesAdapter;
 import com.mcssoft.racemeetings2.database.DatabaseHelper;
 import com.mcssoft.racemeetings2.database.DatabaseOperations;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
-import com.mcssoft.racemeetings2.interfaces.IRaceItemClickListener;
+import com.mcssoft.racemeetings2.interfaces.IItemClickListener;
 import com.mcssoft.racemeetings2.utility.Resources;
 
-public class RacesFragment extends Fragment
-        implements IRaceItemClickListener {
+public class RacesFragment extends Fragment implements IItemClickListener {
 
     //<editor-fold defaultstate="collapsed" desc="Region: Lifecycle">
     @Override

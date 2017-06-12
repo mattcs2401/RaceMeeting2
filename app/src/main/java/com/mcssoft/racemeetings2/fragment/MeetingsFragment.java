@@ -18,11 +18,10 @@ import com.mcssoft.racemeetings2.activity.RacesActivity;
 import com.mcssoft.racemeetings2.adapter.MeetingsAdapter;
 import com.mcssoft.racemeetings2.database.DatabaseOperations;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
-import com.mcssoft.racemeetings2.interfaces.IMeetingItemClickListener;
+import com.mcssoft.racemeetings2.interfaces.IItemClickListener;
 import com.mcssoft.racemeetings2.utility.Resources;
 
-public class MeetingsFragment extends Fragment
-        implements IMeetingItemClickListener {
+public class MeetingsFragment extends Fragment implements IItemClickListener {
 
     public MeetingsFragment() {
         initialise();
