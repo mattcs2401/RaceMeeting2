@@ -5,10 +5,10 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.mcssoft.racemeetings2.R;
+import com.mcssoft.racemeetings2.adapter.base.ParentViewHolder;
 import com.mcssoft.racemeetings2.interfaces.IRaceItemClickListener;
 
-public class RacesViewHolder extends RecyclerView.ViewHolder
-        implements View.OnClickListener {
+public class RacesViewHolder extends ParentViewHolder {
 
     public RacesViewHolder(View view, IRaceItemClickListener listener) {
         super(view);
