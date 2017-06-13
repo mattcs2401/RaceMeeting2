@@ -9,8 +9,10 @@ import android.view.ViewGroup;
 import com.mcssoft.racemeetings2.R;
 import com.mcssoft.racemeetings2.database.SchemaConstants;
 import com.mcssoft.racemeetings2.interfaces.IItemClickListener;
+import com.mcssoft.racemeetings2.interfaces.IItemExpandClickListener;
 
-public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
+public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
+        implements IItemExpandClickListener {
 
     public MeetingsAdapter() {
         isEmptyView = false;
@@ -22,7 +24,11 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
     public MeetingsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if ( parent instanceof RecyclerView ) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.meeting_row, parent, false);
-            return new MeetingsViewHolder(view, itemClickListener); //, itemLongClickListener);
+            MeetingsViewHolder mvh = new MeetingsViewHolder(view);
+            mvh.setItemClickListener(itemClickListener);
+            mvh.setItemExpandClickListener(this);
+            return mvh;
+//            return new MeetingsViewHolder(view, itemClickListener); //, itemLongClickListener);
         } else {
             throw new RuntimeException("Not bound to RecyclerView");
         }
@@ -75,6 +81,15 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
         this.itemClickListener = listener;
     }
 
+    @Override
+    public void onItemClick(View view, int position, boolean expanded) {
+        String bp = "";
+        if(expanded) {
+            notifyItemChanged(position);
+        }
+    }
+
+
 //    public void setOnItemLongClickListener(IMeetingItemLongClickListener listener) {
 //        this.itemLongClickListener = listener;
 //    }
@@ -109,6 +124,7 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder> {
     private int meetingVenueNdx;
     private int meetingDateNdx;
     private IItemClickListener itemClickListener;
+
 //    private IMeetingItemClickListener itemClickListener;
 //    private IMeetingItemLongClickListener itemLongClickListener;
 }
