@@ -15,6 +15,7 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
         implements IItemExpandClickListener {
 
     public MeetingsAdapter() {
+        doExpand = false;
         isEmptyView = false;
         showDate = false;
         cursor = null;
@@ -23,12 +24,17 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
     @Override
     public MeetingsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if ( parent instanceof RecyclerView ) {
-            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.meeting_row, parent, false);
-            MeetingsViewHolder mvh = new MeetingsViewHolder(view);
+            MeetingsViewHolder mvh;
+            if(doExpand) {
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.meeting_row_expanded, parent, false);
+                mvh = new MeetingsViewHolder(view, true);
+            } else {
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.meeting_row, parent, false);
+                mvh = new MeetingsViewHolder(view, false);
+            }
             mvh.setItemClickListener(icListener);
             mvh.setItemExpandClickListener(this);
             return mvh;
-//            return new MeetingsViewHolder(view, icListener); //, itemLongClickListener);
         } else {
             throw new RuntimeException("Not bound to RecyclerView");
         }
@@ -39,10 +45,10 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
         adapaterOnBindViewHolder(holder, position);
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return super.getItemViewType(position);
-    }
+//    @Override
+//    public int getItemViewType(int position) {
+//        return super.getItemViewType(position);
+//    }
 
     @Override
     public int getItemCount() {
@@ -81,18 +87,21 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
         this.icListener = listener;
     }
 
+    /**
+     *
+     * @param view The selected Adapter item view.
+     * @param position Row position of the Adapter's item.
+     * @param expand True - expand, else false - collapse.
+     */
     @Override
-    public void onItemClick(View view, int position, boolean expanded) {
-        String bp = "";
-        if(expanded) {
-            notifyItemChanged(position);
+    public void onItemClick(View view, int position, boolean expand) {
+        if(expand) {
+            doExpand = true;
+        } else {
+            doExpand = false;
         }
+        notifyItemChanged(position);
     }
-
-
-//    public void setOnItemLongClickListener(IMeetingItemLongClickListener listener) {
-//        this.itemLongClickListener = listener;
-//    }
 
     public Cursor getCursor() { return cursor; }
 
@@ -117,6 +126,7 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
 
     private View view;
     private Cursor cursor;
+    private boolean doExpand;
     private boolean isEmptyView;
     private boolean showDate;
     private int idColNdx;
@@ -124,7 +134,4 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
     private int meetingVenueNdx;
     private int meetingDateNdx;
     private IItemClickListener icListener;
-
-//    private IMeetingItemClickListener icListener;
-//    private IMeetingItemLongClickListener itemLongClickListener;
 }

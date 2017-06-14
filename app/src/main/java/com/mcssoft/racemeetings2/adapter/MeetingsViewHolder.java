@@ -11,13 +11,18 @@ import com.mcssoft.racemeetings2.interfaces.IItemExpandClickListener;
 
 public class MeetingsViewHolder extends ParentViewHolder {
 
-    public MeetingsViewHolder(View view) {
+    public MeetingsViewHolder(View view, boolean expand) {
         super(view);
         this.view = view;
         tvMeetingCode = (TextView) view.findViewById(R.id.tv_id_meeting_code);
         tvVenueName = (TextView) view.findViewById(R.id.tv_id_venue_name);
         tvMeetingDate = (TextView) view.findViewById(R.id.tv_id_meeting_date);
-        ivExpand = (ImageView) view.findViewById(R.id.iv_meeting_expand);
+
+        if(expand) {
+            ivExpand = (ImageView) view.findViewById(R.id.iv_meeting_expanded);
+        } else {
+            ivExpand = (ImageView) view.findViewById(R.id.iv_meeting_collapsed);
+        }
     }
 
     public void setItemClickListener(IItemClickListener listener) {
@@ -33,10 +38,19 @@ public class MeetingsViewHolder extends ParentViewHolder {
     //<editor-fold defaultstate="collapsed" desc="Region: Listeners">
     @Override
     public void onClick(View view) {
+        int position = getAdapterPosition();
         if(view instanceof ImageView) {
-            iecListener.onItemClick(view, getAdapterPosition(), true);
+            int id = view.getId();
+            switch (id) {
+                case R.id.iv_meeting_collapsed:
+                    iecListener.onItemClick(view, position, true);   // expand.
+                    break;
+                case R.id.iv_meeting_expanded:
+                    iecListener.onItemClick(view, position, false);  // collapse.
+                    break;
+            }
         } else {
-            icListener.onItemClick(view, getAdapterPosition());
+            icListener.onItemClick(view, position);
         }
     }
     //</editor-fold>
