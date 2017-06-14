@@ -25,9 +25,7 @@
             android:layout_marginTop="8dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:textAppearance="@android:style/TextAppearance.Material.Medium"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="8dp" />
+            android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
         <TextView
             android:id="@+id/id_tv_weather"
@@ -40,7 +38,8 @@
             android:textAppearance="@android:style/TextAppearance.Material.Small"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_id_meeting_code" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_id_meeting_code"
+            app:layout_constraintVertical_bias="1.0" />
 
         <TextView
             android:id="@+id/tv_id_venue_name"
@@ -50,20 +49,15 @@
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginLeft="56dp"
             app:layout_constraintLeft_toLeftOf="parent"
-            android:textAppearance="@android:style/TextAppearance.Material.Medium"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="8dp" />
+            android:textAppearance="@android:style/TextAppearance.Material.Medium" />
 
         <TextView
             android:id="@+id/tv_id_meeting_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
             android:textAppearance="@android:style/TextAppearance.Material.Small"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.571"
             app:layout_constraintRight_toLeftOf="@+id/iv_meeting_expanded"
             android:layout_marginRight="16dp" />
 
@@ -71,10 +65,8 @@
             android:id="@+id/iv_meeting_expanded"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             card_view:srcCompat="@drawable/ic_arrow_up" />
