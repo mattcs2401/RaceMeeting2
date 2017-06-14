@@ -25,10 +25,10 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
         if ( parent instanceof RecyclerView ) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.meeting_row, parent, false);
             MeetingsViewHolder mvh = new MeetingsViewHolder(view);
-            mvh.setItemClickListener(itemClickListener);
+            mvh.setItemClickListener(icListener);
             mvh.setItemExpandClickListener(this);
             return mvh;
-//            return new MeetingsViewHolder(view, itemClickListener); //, itemLongClickListener);
+//            return new MeetingsViewHolder(view, icListener); //, itemLongClickListener);
         } else {
             throw new RuntimeException("Not bound to RecyclerView");
         }
@@ -78,7 +78,7 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
     }
 
     public void setOnItemClickListener(IItemClickListener listener) {
-        this.itemClickListener = listener;
+        this.icListener = listener;
     }
 
     @Override
@@ -123,8 +123,8 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
     private int meetingCodeNdx;
     private int meetingVenueNdx;
     private int meetingDateNdx;
-    private IItemClickListener itemClickListener;
+    private IItemClickListener icListener;
 
-//    private IMeetingItemClickListener itemClickListener;
+//    private IMeetingItemClickListener icListener;
 //    private IMeetingItemLongClickListener itemLongClickListener;
 }
