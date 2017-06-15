@@ -20,6 +20,8 @@ public class MeetingsViewHolder extends ParentViewHolder {
 
         if(expand) {
             ivExpand = (ImageView) view.findViewById(R.id.iv_meeting_expanded);
+            tvWeatherDesc = (TextView) view.findViewById(R.id.id_tv_weather_val);
+            tvTrackDesc = (TextView) view.findViewById(R.id.id_tv_track_val);
         } else {
             ivExpand = (ImageView) view.findViewById(R.id.iv_meeting_collapsed);
         }
@@ -43,10 +45,10 @@ public class MeetingsViewHolder extends ParentViewHolder {
             int id = view.getId();
             switch (id) {
                 case R.id.iv_meeting_collapsed:
-                    iecListener.onItemClick(view, position, true);   // expand.
+                    iecListener.onItemClick(position, true);   // if collapsed then expand.
                     break;
                 case R.id.iv_meeting_expanded:
-                    iecListener.onItemClick(view, position, false);  // collapse.
+                    iecListener.onItemClick(position, false);  // if expanded then collapse.
                     break;
             }
         } else {
@@ -60,14 +62,19 @@ public class MeetingsViewHolder extends ParentViewHolder {
     public TextView getTvVenueName() { return tvVenueName; }
     public TextView getTvMeetingDate() { return tvMeetingDate; }
     public ImageView getIvExpand() { return ivExpand; }
+    public TextView getTvWeatherDesc() { return tvWeatherDesc; }
+    public TextView getTvTrackDesc() { return tvTrackDesc; }
     //</editor-fold>
 
+    //<editor-fold defaultstate="collapsed" desc="Region: Private vars">
     private TextView tvMeetingCode;
     private TextView tvVenueName;
     private TextView tvMeetingDate;
     private ImageView ivExpand;
-
+    private TextView tvWeatherDesc;
+    private TextView tvTrackDesc;
     private View view;
     private IItemClickListener icListener;
     private IItemExpandClickListener iecListener;
+    //</editor-fold>
 }

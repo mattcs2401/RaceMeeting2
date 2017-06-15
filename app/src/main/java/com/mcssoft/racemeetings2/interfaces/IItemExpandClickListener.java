@@ -8,9 +8,8 @@ import android.view.View;
  */
 public interface IItemExpandClickListener {
     /**
-     * @param view The selected Adapter item view.
      * @param position Row position of the Adapter's item.
      * @param expanded True==expand, else false==collapse.
      */
-    void onItemClick(View view, int position, boolean expanded);
+    void onItemClick(int position, boolean expanded);
 }

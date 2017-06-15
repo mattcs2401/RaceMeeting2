@@ -42,13 +42,21 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
 
     @Override
     public void onBindViewHolder(MeetingsViewHolder holder, int position) {
-        adapaterOnBindViewHolder(holder, position);
-    }
+        cursor.moveToPosition(position);
+        holder.getTvMeetingCode().setText(cursor.getString(meetingCodeNdx));
+        holder.getTvVenueName().setText(cursor.getString(meetingVenueNdx));
 
-//    @Override
-//    public int getItemViewType(int position) {
-//        return super.getItemViewType(position);
-//    }
+        if(showDate) {
+            holder.getTvMeetingDate().setText(cursor.getString(meetingDateNdx));
+        }
+
+        if(doExpand) {
+            holder.getTvWeatherDesc().setText(cursor.getString(meetingWeatherDescNdx));
+            String trackDesc = cursor.getString(meetingTrackDescNdx) + " " +
+                    cursor.getString(meetingTrackRatingNdx);
+            holder.getTvTrackDesc().setText(trackDesc);
+        }
+    }
 
     @Override
     public int getItemCount() {
@@ -79,6 +87,10 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
             meetingVenueNdx = cursor.getColumnIndex(SchemaConstants.MEETING_VENUE);
             meetingDateNdx = cursor.getColumnIndex(SchemaConstants.MEETING_DATE);
 
+            meetingWeatherDescNdx = cursor.getColumnIndex(SchemaConstants.MEETING_WEATHER_DESC);
+            meetingTrackDescNdx = cursor.getColumnIndex(SchemaConstants.MEETING_TRACK_DESC);
+            meetingTrackRatingNdx = cursor.getColumnIndex(SchemaConstants.MEETING_TRACK_RATING);
+
             notifyDataSetChanged();
         }
     }
@@ -88,13 +100,12 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
     }
 
     /**
-     *
-     * @param view The selected Adapter item view.
+     * Respond to click evcents on the expand icon.
      * @param position Row position of the Adapter's item.
      * @param expand True - expand, else false - collapse.
      */
     @Override
-    public void onItemClick(View view, int position, boolean expand) {
+    public void onItemClick(int position, boolean expand) {
         if(expand) {
             doExpand = true;
         } else {
@@ -113,17 +124,6 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
         this.showDate = showDate;
     }
 
-    private void adapaterOnBindViewHolder(MeetingsViewHolder holder, int position) {
-        cursor.moveToPosition(position);
-        holder.getTvMeetingCode().setText(cursor.getString(meetingCodeNdx));
-        holder.getTvVenueName().setText(cursor.getString(meetingVenueNdx));
-
-        if(showDate) {
-            holder.getTvMeetingDate().setText(cursor.getString(meetingDateNdx));
-        }
-    }
-
-
     private View view;
     private Cursor cursor;
     private boolean doExpand;
@@ -133,5 +133,8 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
     private int meetingCodeNdx;
     private int meetingVenueNdx;
     private int meetingDateNdx;
+    private int meetingWeatherDescNdx;
+    private int meetingTrackDescNdx;
+    private int meetingTrackRatingNdx;
     private IItemClickListener icListener;
 }
