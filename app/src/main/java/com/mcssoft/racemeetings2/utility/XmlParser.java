@@ -17,6 +17,7 @@ import java.util.List;
 public class XmlParser {
 
     public XmlParser(InputStream inputStream) throws XmlPullParserException, IOException {
+        haveWeather = false;
         nameSpace = null;
         parser = Xml.newPullParser();
         parser.setInput(inputStream, null);
@@ -64,9 +65,15 @@ public class XmlParser {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
-            if (parser.getName().equals("Meeting")) {
+            String name = parser.getName();
+            if (name.equals("Meeting")) {
                 entries.add(readMeeting(date));
-            } else {
+                haveWeather = false;
+            } else if(name.equals("Race") && !haveWeather) {
+                entries = readMeetingWeather(entries);
+                haveWeather = true;
+            }
+            else {
                 skip();
             }
         }
@@ -92,18 +99,27 @@ public class XmlParser {
         return meeting;
     }
 
-    /**
-     * Read Meeting weather related info.
-     * @return A list of (primarily) weather related info.
-     *         [0]-meeting id, [1]-track desc, [2]-track rating, [3]-weather desc.
-     *                       e.g.  Soft            7                 Fine
-     */
-    private List readMeetingWeather() {
-        List list = new ArrayList();
-        list.add(parser.getAttributeValue(nameSpace, "MtgId"));
-        list.add(parser.getAttributeValue(nameSpace, "TrackDesc"));
-        list.add(parser.getAttributeValue(nameSpace, "TrackRating"));
-        list.add(parser.getAttributeValue(nameSpace, "WeatherDesc"));
+//    /**
+//     * Read Meeting weather related info.
+//     * @return A list of (primarily) weather related info.
+//     *         [0]-meeting id, [1]-track desc, [2]-track rating, [3]-weather desc.
+//     *                       e.g.  Soft            7                 Fine
+//     */
+//    private List readMeetingWeather() {
+//        List list = new ArrayList();
+//        list.add(parser.getAttributeValue(nameSpace, "MtgId"));
+//        list.add(parser.getAttributeValue(nameSpace, "TrackDesc"));
+//        list.add(parser.getAttributeValue(nameSpace, "TrackRating"));
+//        list.add(parser.getAttributeValue(nameSpace, "WeatherDesc"));
+//        return list;
+//    }
+
+    private List readMeetingWeather(List list) {
+        int ndx = list.size() - 1;
+        Meeting meeting = (Meeting) list.get(ndx);
+        meeting.setTrackWeather(parser.getAttributeValue(nameSpace, "WeatherDesc"));
+        meeting.setTrackRating(parser.getAttributeValue(nameSpace, "TrackRating"));
+        meeting.setTrackDescription(parser.getAttributeValue(nameSpace, "TrackDesc"));
         return list;
     }
     //</editor-fold>
@@ -125,13 +141,13 @@ public class XmlParser {
                 continue;
             }
             String name = parser.getName();
-            if (name.equals("Meeting")) {
+            /*if (name.equals("Meeting")) {
                 // in this case we're only after weather information.
                 theList.add(readMeetingWeather());
 //            } else if (name.equals("Pool")) {
 //                // Note: this doesn;t seem to work, i.e. skipp all pool entries.
 //                skip();
-            } else if(name.equals("Race")) {
+            } else*/ if(name.equals("Race")) {
                 theList.add(readRace());
                 skip();
             } else if (name.equals("Tipster")) {
@@ -210,5 +226,6 @@ public class XmlParser {
     //</editor-fold>
 
     private String nameSpace;
+    private  boolean haveWeather;      // flag, weather details retieved.
     private XmlPullParser parser;
 }

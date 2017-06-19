@@ -56,9 +56,9 @@ public class DownloadRequest<T> extends Request<List> {
                     theResult = parser.parse(Resources.getInstance()
                             .getString(R.string.races_xml_tag));
                     // Meeting weather info is 1st element in list.
-                    meetingWeather = (List) theResult.get(0);
-                    // Only want Race objects.
-                    theResult = theResult.subList(1, theResult.size());
+//                    meetingWeather = (List) theResult.get(0);
+//                    // Only want Race objects.
+//                    theResult = theResult.subList(1, theResult.size());
                     break;
                 case SchemaConstants.RUNNERS_TABLE:
                     theResult = parser.parse(Resources.getInstance()
@@ -66,13 +66,13 @@ public class DownloadRequest<T> extends Request<List> {
                     break;
             }
             // Write the results to the database (if don't already exist).
-            if (meetingWeather != null) {
-                // put weather info into the Meeting record.
-                checkOrInsert(meetingWeather, SchemaConstants.MEETINGS_TABLE, true);
-                // put meeting id into Race records (meeting id is part of weather info).
-                theResult = mergeMeetingId((String) meetingWeather.get(0), theResult);
-            }
-            checkOrInsert(theResult, tableName, false);
+//            if (meetingWeather != null) {
+//                // put weather info into the Meeting record.
+//                checkOrInsert(meetingWeather, SchemaConstants.MEETINGS_TABLE, true);
+//                // put meeting id into Race records (meeting id is part of weather info).
+//                theResult = mergeMeetingId((String) meetingWeather.get(0), theResult);
+//            }
+            checkOrInsert(theResult, tableName); //, false);
 
         } catch(Exception ex) {
             Log.d(this.getClass().getCanonicalName(), ex.getMessage());
@@ -96,18 +96,18 @@ public class DownloadRequest<T> extends Request<List> {
      * Insert objects into the database (if don't already exist).
      * @param theList The list of objects (Meeting or Race or Runner).
      * @param output An indicator as to what table to write to.
-     * @param hasWeather An indicator that only updating one Meeting's weather related info.
+//     * @param hasWeather An indicator that only updating one Meeting's weather related info.
      */
-    private void checkOrInsert(List theList, String output, boolean hasWeather) {
+    private void checkOrInsert(List theList, String output) { //}, boolean hasWeather) {
         DatabaseOperations dbOper = new DatabaseOperations(context);
         switch (output) {
             case SchemaConstants.MEETINGS_TABLE:
-                if(!hasWeather) {
+//                if(!hasWeather) {
                     checkOrInsertMeetings(theList); //Meeting objects (less weather info).
-                } else {
-                    // Update existing Meeting record with weather info.
-                    dbOper.updateMeetingRecordWeather(createMeetingWeather(theList));
-                }
+//                } else {
+//                    // Update existing Meeting record with weather info.
+//                    dbOper.updateMeetingRecordWeather(createMeetingWeather(theList));
+//                }
                 break;
             case SchemaConstants.RACES_TABLE:
                 checkOrInsertRaces(theList);
