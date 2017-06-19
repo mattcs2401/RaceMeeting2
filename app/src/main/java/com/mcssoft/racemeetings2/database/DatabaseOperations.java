@@ -173,27 +173,6 @@ public class DatabaseOperations {
         }
     }
 
-//    public void updateMeetingRecordWeather(Meeting meeting) {
-//        SQLiteDatabase db = dbHelper.getDatabase();
-//        ContentValues cv = new ContentValues();
-//        String meetingId = meeting.getMeetingId();
-//
-//        cv.put(SchemaConstants.MEETING_TRACK_DESC, meeting.getTrackDescription());
-//        cv.put(SchemaConstants.MEETING_TRACK_RATING, meeting.getTrackRating());
-//        cv.put(SchemaConstants.MEETING_WEATHER_DESC, meeting.getTrackWeather());
-//
-//        try {
-//            db.beginTransaction();
-//            db.update(SchemaConstants.MEETINGS_TABLE, cv, SchemaConstants.WHERE_MEETING_ID,
-//                    new String[]{meetingId});
-//            db.setTransactionSuccessful();
-//        } catch (SQLException ex) {
-//            Log.d(context.getClass().getCanonicalName(), ex.getMessage());
-//        } finally {
-//            db.endTransaction();
-//        }
-//    }
-
     /**
      * Insert a record into the RACES table.
      *
