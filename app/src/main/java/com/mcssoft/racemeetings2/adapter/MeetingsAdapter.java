@@ -51,9 +51,18 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
         }
 
         if(doExpand) {
-            holder.getTvWeatherDesc().setText(cursor.getString(meetingWeatherDescNdx));
-            String trackDesc = cursor.getString(meetingTrackDescNdx) + " " +
-                    cursor.getString(meetingTrackRatingNdx);
+            String weatherDesc = cursor.getString(meetingWeatherDescNdx);
+            if(weatherDesc == null) {
+                weatherDesc = "NA";
+            }
+            holder.getTvWeatherDesc().setText(weatherDesc);
+
+            String trackDesc = cursor.getString(meetingTrackDescNdx);
+            if(trackDesc == null) {
+                trackDesc = "NA";
+            } else {
+                trackDesc = trackDesc + " " + cursor.getString(meetingTrackRatingNdx);
+            }
             holder.getTvTrackDesc().setText(trackDesc);
         }
     }
