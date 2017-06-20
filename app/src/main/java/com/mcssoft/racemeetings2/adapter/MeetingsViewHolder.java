@@ -18,10 +18,9 @@ public class MeetingsViewHolder extends ParentViewHolder {
         tvVenueName = (TextView) view.findViewById(R.id.tv_id_venue_name);
         tvMeetingDate = (TextView) view.findViewById(R.id.tv_id_meeting_date);
 
-        tvWeatherDesc = (TextView) view.findViewById(R.id.id_tv_weather_val);
-        tvTrackDesc = (TextView) view.findViewById(R.id.id_tv_track_val);
-
         if(expand) {
+            tvWeatherDesc = (TextView) view.findViewById(R.id.id_tv_weather_val);
+            tvTrackDesc = (TextView) view.findViewById(R.id.id_tv_track_val);
             ivExpand = (ImageView) view.findViewById(R.id.iv_meeting_expanded);
         } else {
             ivExpand = (ImageView) view.findViewById(R.id.iv_meeting_collapsed);
