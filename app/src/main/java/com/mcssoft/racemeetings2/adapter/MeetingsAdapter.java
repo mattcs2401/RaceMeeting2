@@ -15,22 +15,23 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
         implements IItemExpandClickListener {
 
     public MeetingsAdapter() {
-        doExpand = false;
+        doExpanded = false;
+        isExpanded = false;
         isEmptyView = false;
         showDate = false;
         cursor = null;
+        mvh = null;
     }
 
     @Override
     public MeetingsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if ( parent instanceof RecyclerView ) {
-            MeetingsViewHolder mvh;
-            if(doExpand) {
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.meeting_row_expanded, parent, false);
-                mvh = new MeetingsViewHolder(view, true);
+            if(doExpanded) {
+                mvh = expand(parent);
+                isExpanded = true;
             } else {
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.meeting_row, parent, false);
-                mvh = new MeetingsViewHolder(view, false);
+                mvh = collapse(parent);
+                isExpanded = false;
             }
             mvh.setItemClickListener(icListener);
             mvh.setItemExpandClickListener(this);
@@ -50,7 +51,7 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
             holder.getTvMeetingDate().setText(cursor.getString(meetingDateNdx));
         }
 
-        if(doExpand) {
+        if(doExpanded) {
             String weatherDesc = cursor.getString(meetingWeatherDescNdx);
             if(weatherDesc == null) {
                 weatherDesc = "NA";
@@ -116,9 +117,10 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
     @Override
     public void onItemClick(int position, boolean expand) {
         if(expand) {
-            doExpand = true;
+            doExpanded = true;
+            expandedPos = position;
         } else {
-            doExpand = false;
+            doExpanded = false;
         }
         notifyItemChanged(position);
     }
@@ -133,11 +135,19 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
         this.showDate = showDate;
     }
 
-    private View view;
-    private Cursor cursor;
-    private boolean doExpand;
-    private boolean isEmptyView;
-    private boolean showDate;
+    private MeetingsViewHolder expand(ViewGroup parent) {
+       View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.meeting_row_expanded, parent, false);
+       return new MeetingsViewHolder(view, true);
+    }
+
+    private MeetingsViewHolder collapse(ViewGroup parent) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.meeting_row, parent, false);
+        return new MeetingsViewHolder(view, false);
+    }
+
+    //<editor-fold defaultstate="collapsed" desc="Region: Private vars">
+    private Cursor cursor;             // backing data.
+
     private int idColNdx;
     private int meetingCodeNdx;
     private int meetingVenueNdx;
@@ -145,5 +155,14 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
     private int meetingWeatherDescNdx;
     private int meetingTrackDescNdx;
     private int meetingTrackRatingNdx;
+
+    private boolean doExpanded;        // flag, expand the list item at position.
+    private boolean isExpanded;        // flag, a list item is already expanded.
+    private boolean isEmptyView;       // flag, nothing to show.
+    private boolean showDate;          // flag, show the meeting date value as well.
+    private int expandedPos;           // list item already expanded list position.
+
     private IItemClickListener icListener;
+    private MeetingsViewHolder mvh;
+    //</editor-fold>
 }
