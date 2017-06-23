@@ -87,6 +87,27 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
         return cursor.getLong(idColNdx);
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
+    }
+
+    /**
+     * Respond to click evcents on the expand icon.
+     * @param position Row position of the Adapter's item.
+     * @param expand True - expand, else false - collapse.
+     */
+    @Override
+    public void onItemClick(int position, boolean expand) {
+        if(expand) {
+            doExpanded = true;
+            expandedPos = position;
+        } else {
+            doExpanded = false;
+        }
+        notifyItemChanged(position);
+    }
+
     public void swapCursor(Cursor newCursor) {
         if(!isEmptyView && (newCursor != null) && (newCursor.getCount() > 0)) {
             cursor = newCursor;
@@ -107,22 +128,6 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
 
     public void setOnItemClickListener(IItemClickListener listener) {
         this.icListener = listener;
-    }
-
-    /**
-     * Respond to click evcents on the expand icon.
-     * @param position Row position of the Adapter's item.
-     * @param expand True - expand, else false - collapse.
-     */
-    @Override
-    public void onItemClick(int position, boolean expand) {
-        if(expand) {
-            doExpanded = true;
-            expandedPos = position;
-        } else {
-            doExpanded = false;
-        }
-        notifyItemChanged(position);
     }
 
     public Cursor getCursor() { return cursor; }
