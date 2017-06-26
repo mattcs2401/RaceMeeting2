@@ -2,6 +2,7 @@ package com.mcssoft.racemeetings2.adapter;
 
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
         implements IItemExpandClickListener {
 
     public MeetingsAdapter() {
+        Log.d(getClass().getSimpleName(), "constructor");
         doExpanded = false;
         isExpanded = false;
         isEmptyView = false;
@@ -25,46 +27,52 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
 
     @Override
     public MeetingsViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if ( parent instanceof RecyclerView ) {
-            if(doExpanded) {
-                mvh = expand(parent);
-                isExpanded = true;
-            } else {
-                mvh = collapse(parent);
-                isExpanded = false;
-            }
-            mvh.setItemClickListener(icListener);
-            mvh.setItemExpandClickListener(this);
-            return mvh;
-        } else {
-            throw new RuntimeException("Not bound to RecyclerView");
+        Log.d(getClass().getSimpleName(), "onCreateViewHolder");
+        View view;
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        switch(viewType) {
+            case BASIC:
+                view = inflater.inflate(R.layout.meeting_row, parent, false);
+                mvh = new MeetingsViewHolder(view, false);
+                break;
+            case EXTENDED:
+                view = inflater.inflate(R.layout.meeting_row_expanded, parent, false);
+                mvh = new MeetingsViewHolder(view, true);
+                break;
         }
+        mvh.setItemClickListener(icListener);
+        mvh.setItemExpandClickListener(this);
+        return mvh;
     }
 
     @Override
     public void onBindViewHolder(MeetingsViewHolder holder, int position) {
+        Log.d(getClass().getSimpleName(), "onBindViewHolder");
         cursor.moveToPosition(position);
+
         holder.getTvMeetingCode().setText(cursor.getString(meetingCodeNdx));
         holder.getTvVenueName().setText(cursor.getString(meetingVenueNdx));
 
-        if(showDate) {
-            holder.getTvMeetingDate().setText(cursor.getString(meetingDateNdx));
+        switch(holder.getItemViewType()) {
+            case EXTENDED:
+                String weatherDesc = cursor.getString(meetingWeatherDescNdx);
+                if(weatherDesc == null) {
+                    weatherDesc = "NA";
+                }
+                holder.getTvWeatherDesc().setText(weatherDesc);
+
+                String trackDesc = cursor.getString(meetingTrackDescNdx);
+                if(trackDesc == null) {
+                    trackDesc = "NA";
+                } else {
+                    trackDesc = trackDesc + " " + cursor.getString(meetingTrackRatingNdx);
+                }
+                holder.getTvTrackDesc().setText(trackDesc);
+                break;
         }
 
-        if(doExpanded) {
-            String weatherDesc = cursor.getString(meetingWeatherDescNdx);
-            if(weatherDesc == null) {
-                weatherDesc = "NA";
-            }
-            holder.getTvWeatherDesc().setText(weatherDesc);
-
-            String trackDesc = cursor.getString(meetingTrackDescNdx);
-            if(trackDesc == null) {
-                trackDesc = "NA";
-            } else {
-                trackDesc = trackDesc + " " + cursor.getString(meetingTrackRatingNdx);
-            }
-            holder.getTvTrackDesc().setText(trackDesc);
+        if(showDate) {
+            holder.getTvMeetingDate().setText(cursor.getString(meetingDateNdx));
         }
     }
 
@@ -89,7 +97,14 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
 
     @Override
     public int getItemViewType(int position) {
-        return super.getItemViewType(position);
+        Log.d(getClass().getSimpleName(), "getItemViewType");
+        int type;
+        if(doExpanded) {
+            type = EXTENDED;
+        } else {
+            type = BASIC;
+        }
+        return type;
     }
 
     /**
@@ -99,6 +114,7 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
      */
     @Override
     public void onItemClick(int position, boolean expand) {
+        Log.d(getClass().getSimpleName(), "onItemClick");
         if(expand) {
             doExpanded = true;
             expandedPos = position;
@@ -140,16 +156,6 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
         this.showDate = showDate;
     }
 
-    private MeetingsViewHolder expand(ViewGroup parent) {
-       View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.meeting_row_expanded, parent, false);
-       return new MeetingsViewHolder(view, true);
-    }
-
-    private MeetingsViewHolder collapse(ViewGroup parent) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.meeting_row, parent, false);
-        return new MeetingsViewHolder(view, false);
-    }
-
     //<editor-fold defaultstate="collapsed" desc="Region: Private vars">
     private Cursor cursor;             // backing data.
 
@@ -169,5 +175,8 @@ public class MeetingsAdapter extends RecyclerView.Adapter<MeetingsViewHolder>
 
     private IItemClickListener icListener;
     private MeetingsViewHolder mvh;
+
+    private final int BASIC = 1;
+    public final int EXTENDED = 2;
     //</editor-fold>
 }

@@ -58,18 +58,17 @@
             android:layout_marginTop="8dp"
             android:textAppearance="@android:style/TextAppearance.Material.Small"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintRight_toLeftOf="@+id/iv_meeting_expanded"
+            app:layout_constraintRight_toLeftOf="@+id/iv_meeting_expand_collapse"
             android:layout_marginRight="16dp" />
 
         <ImageView
-            android:id="@+id/iv_meeting_expanded"
+            android:id="@+id/iv_meeting_expand_collapse"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            card_view:srcCompat="@drawable/ic_arrow_up" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/id_tv_weather_val"
